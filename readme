@@ -1,0 +1,14 @@
+# 🐶🐱 Sistema de Veterinaria
+
+Este es un sistema desarrollado para la gestión de una clínica veterinaria.  
+Permite registrar clientes, pacientes (mascotas), citas médicas, tratamientos y control de inventario de medicamentos.  
+
+---
+
+## 🚀 Características principales
+- 👨‍⚕️ Gestión de clientes (dueños de mascotas).
+- 🐾 Registro de mascotas (con especie, raza, edad y observaciones).
+- 📅 Administración de citas médicas.
+- 💊 Control de tratamientos y medicamentos.
+- 📋 Generación de reportes básicos.
+- 🔐 Sistema de autenticación para usuarios del sistema.
