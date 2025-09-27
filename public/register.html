@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrarse - Veterinaria PetCare</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Estilos personalizados -->
+  <link href="css/register.css" rel="stylesheet">
+</head>
+<body>
+  <div class="main-container">
+    <!-- Lado izquierdo - Información -->
+    <div class="info-side">
+      <div class="brand-section">
+        <div class="brand-icon">
+          <i class="bi bi-heart-pulse-fill"></i>
+        </div>
+        <h1 class="brand-title">¡Únete a nuestra familia!</h1>
+        <p class="brand-subtitle">Registra a tu mascota en el mejor sistema de cuidado veterinario</p>
+      </div>
+      
+      <div class="benefits">
+        <div class="benefit-item">
+          <i class="bi bi-check-circle-fill"></i>
+          <div>
+            <h4>Historial médico completo</h4>
+            <p>Lleva un registro detallado de la salud de tu mascota</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <i class="bi bi-calendar-check"></i>
+          <div>
+            <h4>Citas programadas</h4>
+            <p>Agenda citas de manera fácil y rápida online</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <i class="bi bi-bell"></i>
+          <div>
+            <h4>Recordatorios automáticos</h4>
+            <p>Nunca olvides vacunas o controles importantes</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="login-link">
+        <p>¿Ya tienes cuenta? <a href="/">Inicia sesión aquí</a></p>
+      </div>
+    </div>
+
+    <!-- Lado derecho - Formulario -->
+    <div class="form-side">
+      <div class="form-container">
+        <div class="form-header">
+          <h2>Crear nueva cuenta</h2>
+          <p>Completa los siguientes datos para registrarte</p>
+        </div>
+
+        <!-- Mensajes -->
+        <div class="alert alert-danger alert-custom d-none" id="errorMessage"></div>
+        <div class="alert alert-success alert-custom d-none" id="successMessage"></div>
+
+        <!-- Formulario -->
+        <form id="registerForm" class="register-form">
+          
+          <!-- Información Personal -->
+          <div class="form-section">
+            <h5 class="section-title">
+              <i class="bi bi-person-fill"></i>
+              Información Personal
+            </h5>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="input-group-custom">
+                  <div class="input-icon">
+                    <i class="bi bi-person"></i>
+                  </div>
+                  <input 
+                    type="text" 
+                    class="form-control-custom" 
+                    id="nombre" 
+                    placeholder="Tu nombre" 
+                    required
+                    maxlength="50"
+                  >
+                  <label class="input-label">Nombre</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group-custom">
+                  <div class="input-icon">
+                    <i class="bi bi-person"></i>
+                  </div>
+                  <input 
+                    type="text" 
+                    class="form-control-custom" 
+                    id="apellido" 
+                    placeholder="Tu apellido" 
+                    required
+                    maxlength="50"
+                  >
+                  <label class="input-label">Apellido</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Información de Contacto -->
+          <div class="form-section">
+            <h5 class="section-title">
+              <i class="bi bi-envelope-fill"></i>
+              Información de Contacto
+            </h5>
+            
+            <div class="input-group-custom">
+              <div class="input-icon">
+                <i class="bi bi-envelope"></i>
+              </div>
+              <input 
+                type="email" 
+                class="form-control-custom" 
+                id="email" 
+                placeholder="correo@ejemplo.com" 
+                required
+              >
+              <label class="input-label">Correo Electrónico</label>
+            </div>
+
+            <div class="input-group-custom">
+              <div class="input-icon">
+                <i class="bi bi-telephone"></i>
+              </div>
+              <input 
+                type="tel" 
+                class="form-control-custom" 
+                id="telefono" 
+                placeholder="12345678" 
+                required
+                maxlength="8"
+                pattern="[0-9]{8}"
+              >
+              <label class="input-label">Teléfono (8 dígitos)</label>
+              <small class="input-help">Solo números, 8 dígitos</small>
+            </div>
+          </div>
+
+          <!-- Contraseña -->
+          <div class="form-section">
+            <h5 class="section-title">
+              <i class="bi bi-shield-lock-fill"></i>
+              Seguridad
+            </h5>
+            
+            <div class="input-group-custom">
+              <div class="input-icon">
+                <i class="bi bi-lock"></i>
+              </div>
+              <input 
+                type="password" 
+                class="form-control-custom" 
+                id="password" 
+                placeholder="Contraseña segura" 
+                required
+                minlength="6"
+              >
+              <label class="input-label">Contraseña</label>
+              <small class="input-help">Mínimo 6 caracteres</small>
+            </div>
+
+            <div class="input-group-custom">
+              <div class="input-icon">
+                <i class="bi bi-lock-fill"></i>
+              </div>
+              <input 
+                type="password" 
+                class="form-control-custom" 
+                id="confirmPassword" 
+                placeholder="Repite tu contraseña" 
+                required
+              >
+              <label class="input-label">Confirmar Contraseña</label>
+              <div class="password-match d-none" id="passwordMatch">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <span class="text-success">Las contraseñas coinciden</span>
+              </div>
+              <div class="password-mismatch d-none" id="passwordMismatch">
+                <i class="bi bi-x-circle-fill text-danger"></i>
+                <span class="text-danger">Las contraseñas no coinciden</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dirección -->
+          <div class="form-section">
+            <h5 class="section-title">
+              <i class="bi bi-geo-alt-fill"></i>
+              Dirección
+            </h5>
+            
+            <div class="row">
+              <div class="col-md-8">
+                <div class="input-group-custom">
+                  <div class="input-icon">
+                    <i class="bi bi-signpost"></i>
+                  </div>
+                  <input 
+                    type="text" 
+                    class="form-control-custom" 
+                    id="calle" 
+                    placeholder="Ej: 5ta Avenida, Zona 1" 
+                    required
+                    maxlength="100"
+                  >
+                  <label class="input-label">Calle/Avenida</label>
+                  <small class="input-help">Solo letras, números, puntos y comas</small>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group-custom">
+                  <div class="input-icon">
+                    <i class="bi bi-house"></i>
+                  </div>
+                  <input 
+                    type="text" 
+                    class="form-control-custom" 
+                    id="numeroCasa" 
+                    placeholder="Ej: 15-20" 
+                    required
+                    maxlength="20"
+                  >
+                  <label class="input-label">No. Casa</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="input-group-custom">
+                  <div class="input-icon">
+                    <i class="bi bi-building"></i>
+                  </div>
+                  <select class="form-control-custom" id="municipio" required>
+                    <option value="">Selecciona municipio</option>
+                    <!-- Se llenarán desde la API -->
+                  </select>
+                  <label class="input-label">Municipio</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group-custom">
+                  <div class="input-icon">
+                    <i class="bi bi-map"></i>
+                  </div>
+                  <select class="form-control-custom" id="departamento" required>
+                    <option value="">Selecciona departamento</option>
+                    <!-- Se llenarán desde la API -->
+                  </select>
+                  <label class="input-label">Departamento</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de registro -->
+          <button type="submit" class="btn-register" id="registerBtn">
+            <span class="btn-spinner d-none" id="registerSpinner">
+              <i class="bi bi-arrow-clockwise spin"></i>
+            </span>
+            <span id="btnText">
+              <i class="bi bi-person-plus"></i>
+              Crear mi cuenta
+            </span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- JavaScript personalizado -->
+  <script src="js/register.js"></script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+/* Variables CSS */
+:root {
+  --primary-purple: #7729d3;
+  --primary-green: #8CD12A;
+  --dark-text: #2c2c2c;
+  --light-text: #6c757d;
+  --light-bg: #f8f9fa;
+  --white: #ffffff;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Reset y base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--light-bg);
+  color: var(--dark-text);
+  line-height: 1.6;
+}
+
+/* Contenedor principal */
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Lado izquierdo - Información */
+.info-side {
+  background-color: var(--primary-purple);
+  color: var(--white);
+  padding: 3rem 2.5rem;
+  border-radius: 20px 0 0 20px;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-side::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.brand-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 2;
+}
+
+.brand-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  color: var(--primary-green);
+}
+
+.brand-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--white);
+}
+
+.brand-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+/* Características */
+.features {
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 2;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+}
+
+.feature-item i {
+  color: var(--primary-green);
+  font-size: 1.3rem;
+  margin-right: 1rem;
+  width: 24px;
+}
+
+/* Ilustraciones de mascotas */
+.pet-illustrations {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.pet-icon {
+  font-size: 2.5rem;
+  opacity: 0.7;
+  animation: float 6s ease-in-out infinite;
+}
+
+.pet-icon:nth-child(1) { animation-delay: 0s; }
+.pet-icon:nth-child(2) { animation-delay: 2s; }
+.pet-icon:nth-child(3) { animation-delay: 4s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Lado derecho - Formulario */
+.form-side {
+  background-color: var(--white);
+  padding: 3rem 2.5rem;
+  border-radius: 0 20px 20px 0;
+  width: 50%;
+  box-shadow: var(--shadow);
+}
+
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.form-header h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--dark-text);
+  margin-bottom: 0.5rem;
+}
+
+.form-header p {
+  color: var(--light-text);
+  font-size: 0.95rem;
+}
+
+/* Mensajes de alerta */
+.alert-custom {
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  border: none;
+}
+
+/* Formulario */
+.login-form {
+  margin-bottom: 2rem;
+}
+
+.input-group-custom {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--light-text);
+  font-size: 1.1rem;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.form-control-custom {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: var(--white);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-control-custom:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 0.2rem rgba(119, 41, 211, 0.1);
+}
+
+.form-control-custom:focus + .input-label {
+  color: var(--primary-purple);
+}
+
+.form-control-custom:focus ~ .input-icon {
+  color: var(--primary-purple);
+}
+
+.input-label {
+  position: absolute;
+  left: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--light-text);
+  font-size: 0.9rem;
+  font-weight: 400;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  background-color: var(--white);
+  padding: 0 0.5rem;
+}
+
+.form-control-custom:focus ~ .input-label,
+.form-control-custom:not(:placeholder-shown) ~ .input-label {
+  top: 0;
+  left: 2.5rem;
+  font-size: 0.75rem;
+  color: var(--primary-purple);
+}
+
+/* Botón de login */
+.btn-login {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--primary-purple);
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-login:hover {
+  background-color: #5f1fa8;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.btn-login:active {
+  transform: translateY(0);
+}
+
+.btn-login:disabled {
+  background-color: var(--light-text);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-spinner {
+  display: none;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Pie del formulario */
+.form-footer {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.form-footer p {
+  color: var(--light-text);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.register-link {
+  color: var(--primary-green);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.register-link:hover {
+  color: #6ba824;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-container {
+    padding: 1rem;
+  }
+  
+  .info-side,
+  .form-side {
+    width: 100%;
+    border-radius: 20px;
+  }
+  
+  .info-side {
+    display: none; /* Ocultar en móvil para más espacio */
+  }
+  
+  .form-side {
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+  }
+  
+  .brand-title {
+    font-size: 1.8rem;
+  }
+  
+  .form-header h2 {
+    font-size: 1.6rem;
+  }
+  
+  .form-container {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-container {
+    padding: 0.5rem;
+  }
+  
+  .form-side {
+    padding: 1.5rem 1rem;
+  }
+  
+  .form-control-custom {
+    padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .input-icon {
+    left: 0.8rem;
+    font-size: 1rem;
+  }
+  
+  .input-label {
+    left: 2.3rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Asegúrate de que el input no muestre el placeholder cuando se active */
+.form-control-custom {
+  width: 100%;
+  padding: 0.9rem 0.9rem 0.9rem 2.8rem;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background-color: var(--white);
+  transition: all 0.3s ease;
+  outline: none;
+  position: relative; /* Asegura el posicionamiento relativo para el label */
+}
+
+/* Al enfocar el input, el placeholder desaparece y se mueve la etiqueta */
+.form-control-custom:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 0.2rem rgba(119, 41, 211, 0.1);
+}
+
+.form-control-custom:focus + .input-label {
+  color: var(--primary-purple);
+  top: -10px; /* Esto hace que suba la etiqueta */
+  font-size: 0.7rem; /* Reduce el tamaño de la etiqueta al subir */
+}
+
+/* Asegúrate de que el label tenga el comportamiento de flotar al hacer clic */
+.form-control-custom:focus ~ .input-label,
+.form-control-custom:not(:placeholder-shown) ~ .input-label,
+.form-control-custom:valid ~ .input-label {
+  top: -10px; /* Esto hace que suba la etiqueta */
+  font-size: 0.7rem;
+  color: var(--primary-purple);
+}
+
+/* Asegúrate de que el placeholder no se vea */
+.form-control-custom::placeholder {
+  color: transparent; /* Esto hace que el texto del placeholder se vuelva invisible */
+}

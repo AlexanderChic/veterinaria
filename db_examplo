@@ -1,0 +1,89 @@
+-- Crear la base de datos
+CREATE DATABASE IF NOT EXISTS mascotico;
+USE mascotico;
+
+-- Crear la tabla de usuarios
+CREATE TABLE IF NOT EXISTS usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  telefono VARCHAR(20),
+  direccion TEXT,
+  rol ENUM('admin', 'vendedor', 'cliente') NOT NULL
+);
+
+-- Crear la tabla de clientes
+CREATE TABLE IF NOT EXISTS cliente (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT,
+  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- Crear la tabla de departamentos
+CREATE TABLE IF NOT EXISTS departamento (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255) NOT NULL
+);
+
+-- Crear la tabla de municipios
+CREATE TABLE IF NOT EXISTS municipio (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255) NOT NULL,
+  departamento_id INT,
+  FOREIGN KEY (departamento_id) REFERENCES departamento(id) ON DELETE CASCADE
+);
+
+-- Crear la tabla de zonas
+CREATE TABLE IF NOT EXISTS zona (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255) NOT NULL
+);
+
+-- Crear la tabla de sucursales
+CREATE TABLE IF NOT EXISTS sucursal (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255) NOT NULL,
+  direccion TEXT NOT NULL,
+  telefono VARCHAR(20),
+  zona_id INT,
+  FOREIGN KEY (zona_id) REFERENCES zona(id) ON DELETE CASCADE
+);
+
+-- Crear la tabla de servicios (como grooming, chequeos, etc.)
+CREATE TABLE IF NOT EXISTS servicio (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255) NOT NULL,
+  descripcion TEXT,
+  precio DECIMAL(10, 2) NOT NULL
+);
+
+-- Crear la tabla de mascotas
+CREATE TABLE IF NOT EXISTS mascota (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255),
+  especie VARCHAR(255),
+  raza VARCHAR(255),
+  edad INT,
+  peso FLOAT,
+  observaciones TEXT,
+  cliente_id INT,
+  FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE
+);
+
+-- Crear la tabla de citas
+CREATE TABLE IF NOT EXISTS cita (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  fecha DATE NOT NULL,
+  hora TIME NOT NULL,
+  cliente_id INT,
+  mascota_id INT,
+  sucursal_id INT,
+  servicio_id INT,
+  estado ENUM('pendiente', 'confirmada', 'cancelada') DEFAULT 'pendiente',
+  FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE,
+  FOREIGN KEY (mascota_id) REFERENCES mascota(id) ON DELETE CASCADE,
+  FOREIGN KEY (sucursal_id) REFERENCES sucursal(id) ON DELETE CASCADE,
+  FOREIGN KEY (servicio_id) REFERENCES servicio(id) ON DELETE CASCADE
+);
