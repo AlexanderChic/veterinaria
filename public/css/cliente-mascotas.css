@@ -1,0 +1,515 @@
+/* /css/mascotas.css - Estilos específicos para mascotas */
+
+/* Variables CSS para consistencia */
+:root {
+  --primary-purple: #7729d3;
+  --primary-green: #00d4aa;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --error-color: #dc3545;
+  --info-color: #17a2b8;
+  --dark-text: #2d3748;
+  --light-text: #718096;
+  --white: #ffffff;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Tarjetas de mascotas */
+.mascota-card {
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border: none;
+}
+
+.mascota-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Header de la tarjeta */
+.mascota-header {
+  padding: 1.5rem;
+  position: relative;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+}
+
+.mascota-imagen {
+  position: relative;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.mascota-avatar {
+  font-size: 3rem;
+  width: 80px;
+  height: 80px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-purple), var(--primary-green));
+  border-radius: 50%;
+  color: white;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(119, 41, 211, 0.3);
+}
+
+/* Estados de salud */
+.mascota-estado {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mascota-estado.excelente { 
+  background-color: var(--success-color);
+}
+
+.mascota-estado.bueno { 
+  background-color: var(--warning-color);
+}
+
+.mascota-estado.regular { 
+  background-color: var(--info-color);
+}
+
+.mascota-estado.delicado { 
+  background-color: var(--error-color);
+}
+
+/* Acciones de la tarjeta */
+.mascota-actions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mascota-card:hover .mascota-actions {
+  opacity: 1;
+}
+
+/* Cuerpo de la tarjeta */
+.mascota-body {
+  padding: 0 1.5rem 1rem;
+}
+
+.mascota-nombre {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--dark-text);
+}
+
+.mascota-raza {
+  color: var(--light-text);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.mascota-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.info-item i {
+  color: var(--primary-purple);
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.info-item span {
+  color: var(--dark-text);
+  font-weight: 500;
+}
+
+/* Tags/Etiquetas */
+.mascota-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.tag.vacunado { 
+  background-color: rgba(40, 167, 69, 0.1); 
+  color: var(--success-color);
+  border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.tag.pendiente { 
+  background-color: rgba(255, 193, 7, 0.1); 
+  color: #856404;
+  border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+.tag.microchip { 
+  background-color: rgba(0, 123, 255, 0.1); 
+  color: #0056b3;
+  border: 1px solid rgba(0, 123, 255, 0.2);
+}
+
+.tag.esterilizado { 
+  background-color: rgba(108, 117, 125, 0.1); 
+  color: var(--light-text);
+  border: 1px solid rgba(108, 117, 125, 0.2);
+}
+
+.tag.tratamiento { 
+  background-color: rgba(220, 53, 69, 0.1); 
+  color: var(--error-color);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+/* Footer de la tarjeta */
+.mascota-footer {
+  padding: 0 1.5rem 1.5rem;
+  border-top: 1px solid #f1f3f4;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+/* Estilos para upload de imagen */
+.mascota-imagen-upload {
+  text-align: center;
+}
+
+.imagen-preview {
+  width: 200px;
+  height: 200px;
+  border: 2px dashed #dee2e6;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.imagen-preview:hover {
+  border-color: var(--primary-purple);
+  background-color: rgba(119, 41, 211, 0.05);
+  transform: scale(1.02);
+}
+
+.imagen-preview i {
+  font-size: 3rem;
+  color: var(--light-text);
+  margin-bottom: 0.5rem;
+}
+
+.imagen-preview p {
+  margin: 0;
+  color: var(--light-text);
+  font-size: 0.9rem;
+}
+
+.imagen-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Tarjetas de estadísticas mejoradas */
+.stat-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-purple), var(--primary-green));
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.stat-icon.success {
+  background: rgba(40, 167, 69, 0.1);
+  color: var(--success-color);
+}
+
+.stat-icon.primary {
+  background: rgba(119, 41, 211, 0.1);
+  color: var(--primary-purple);
+}
+
+.stat-icon.warning {
+  background: rgba(255, 193, 7, 0.1);
+  color: #856404;
+}
+
+.stat-icon.info {
+  background: rgba(23, 162, 184, 0.1);
+  color: var(--info-color);
+}
+
+.stat-content h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--dark-text);
+}
+
+.stat-content p {
+  font-size: 0.9rem;
+  color: var(--light-text);
+  margin-bottom: 0.5rem;
+}
+
+.stat-change {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.stat-change.positive {
+  background: rgba(40, 167, 69, 0.1);
+  color: var(--success-color);
+}
+
+.stat-change.negative {
+  background: rgba(220, 53, 69, 0.1);
+  color: var(--error-color);
+}
+
+.stat-change.neutral {
+  background: rgba(108, 117, 125, 0.1);
+  color: var(--light-text);
+}
+
+/* Filtros mejorados */
+.content-card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  border: none;
+}
+
+.content-card .card-header {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 16px 16px 0 0;
+  padding: 1.25rem;
+}
+
+.content-card .card-body {
+  padding: 1.25rem;
+}
+
+/* Botones de vista mejorados */
+.btn-group .btn-check:checked + .btn {
+  background-color: var(--primary-purple);
+  border-color: var(--primary-purple);
+  color: white;
+}
+
+/* Tabla mejorada para vista lista */
+.table-hover > tbody > tr:hover > td {
+  background-color: rgba(119, 41, 211, 0.05);
+}
+
+/* Modales mejorados */
+.modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, var(--primary-purple), var(--primary-green));
+  color: white;
+  border-radius: 16px 16px 0 0;
+  border-bottom: none;
+}
+
+.modal-header .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+/* Formularios mejorados */
+.form-control:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 0.2rem rgba(119, 41, 211, 0.25);
+}
+
+.form-select:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 0.2rem rgba(119, 41, 211, 0.25);
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-purple);
+  border-color: var(--primary-purple);
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.25rem rgba(119, 41, 211, 0.25);
+}
+
+/* Sidebar widget mejorado */
+.sidebar-widget {
+  background: linear-gradient(135deg, rgba(119, 41, 211, 0.1), rgba(0, 212, 170, 0.1));
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.widget-header i {
+  color: var(--primary-purple);
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.widget-header h6 {
+  margin: 0;
+  color: var(--dark-text);
+  font-weight: 600;
+}
+
+/* Estados de carga */
+.loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(119, 41, 211, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-purple);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Animaciones suaves */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mascota-card {
+    margin-bottom: 1rem;
+  }
+  
+  .mascota-actions {
+    position: static;
+    opacity: 1;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  
+  .mascota-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .info-item {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+  
+  .imagen-preview {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .stat-card {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .modal-dialog.modal-xl {
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .mascota-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+  
+  .mascota-info {
+    gap: 0.25rem;
+  }
+  
+  .info-item {
+    font-size: 0.75rem;
+  }
+  
+  .mascota-tags .tag {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+  }
+}

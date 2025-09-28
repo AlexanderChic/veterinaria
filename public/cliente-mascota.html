@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Estilos personalizados -->
   <link href="css/visitas.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/cliente-mascotas.css">
 </head>
 <body>
   <!-- Header/Navbar -->
@@ -67,7 +68,7 @@
                 <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
                 <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+                <li><a class="dropdown-item text-danger" href="#" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
               </ul>
             </div>
           </div>
@@ -96,11 +97,10 @@
                 <a href="cliente-citas.html" class="nav-link">
                   <i class="bi bi-calendar-event"></i>
                   <span>Citas</span>
-                  <span class="badge">5</span>
                 </a>
               </li>
               <li class="nav-item active">
-                <a href="cliente-mascotas.html" class="nav-link">
+                <a href="cliente-mascota.html" class="nav-link">
                   <i class="bi bi-heart"></i>
                   <span>Mascotas</span>
                 </a>
@@ -158,8 +158,8 @@
             <h6>Recordatorio</h6>
           </div>
           <div class="widget-content">
-            <p class="mb-1"><strong>Vacuna de Luna</strong></p>
-            <small class="text-muted">Próxima semana</small>
+            <p class="mb-1"><strong>Sin recordatorios</strong></p>
+            <small class="text-muted">Todo al día</small>
           </div>
         </div>
       </div>
@@ -191,7 +191,7 @@
                 <i class="bi bi-heart-pulse"></i>
               </div>
               <div class="stat-content">
-                <h3>3</h3>
+                <h3 id="totalMascotas">0</h3>
                 <p>Mascotas Registradas</p>
                 <small class="stat-change neutral">Total</small>
               </div>
@@ -203,9 +203,9 @@
                 <i class="bi bi-shield-check"></i>
               </div>
               <div class="stat-content">
-                <h3>2</h3>
-                <p>Vacunas al Día</p>
-                <small class="stat-change positive">Excelente</small>
+                <h3 id="vacunasAlDia">0</h3>
+                <p>Con Información</p>
+                <small class="stat-change positive" id="cambioVacunas">Registradas</small>
               </div>
             </div>
           </div>
@@ -215,9 +215,9 @@
                 <i class="bi bi-exclamation-triangle"></i>
               </div>
               <div class="stat-content">
-                <h3>1</h3>
-                <p>Vacuna Pendiente</p>
-                <small class="stat-change negative">Requiere atención</small>
+                <h3 id="vacunasPendientes">0</h3>
+                <p>Por Completar</p>
+                <small class="stat-change negative" id="cambioPendientes">Información faltante</small>
               </div>
             </div>
           </div>
@@ -227,9 +227,9 @@
                 <i class="bi bi-calendar-heart"></i>
               </div>
               <div class="stat-content">
-                <h3>5</h3>
+                <h3 id="proximasCitas">0</h3>
                 <p>Próximas Citas</p>
-                <small class="stat-change positive">Este mes</small>
+                <small class="stat-change positive" id="cambioCitas">Este mes</small>
               </div>
             </div>
           </div>
@@ -267,7 +267,7 @@
             </div>
             <div class="col-md-2">
               <select class="form-select" id="filtroSalud">
-                <option value="">Estado de salud</option>
+                <option value="">Estado general</option>
                 <option value="excelente">Excelente</option>
                 <option value="bueno">Bueno</option>
                 <option value="regular">Regular</option>
@@ -301,273 +301,17 @@
         <div class="card-body">
           <!-- Vista Grid -->
           <div id="vista-grid-content">
-            <div class="row g-4">
-              <!-- Mascota 1 - Max -->
-              <div class="col-lg-4 col-md-6">
-                <div class="mascota-card">
-                  <div class="mascota-header">
-                    <div class="mascota-imagen">
-                      <div class="mascota-avatar">🐕</div>
-                      <div class="mascota-estado excelente"></div>
-                    </div>
-                    <div class="mascota-actions">
-                      <button class="btn btn-sm btn-outline-primary" onclick="verMascota(1)" title="Ver detalles">
-                        <i class="bi bi-eye"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-warning" onclick="editarMascota(1)" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-danger" onclick="eliminarMascota(1)" title="Eliminar">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="mascota-body">
-                    <h5 class="mascota-nombre">Max</h5>
-                    <p class="mascota-raza">Golden Retriever</p>
-                    <div class="mascota-info">
-                      <div class="info-item">
-                        <i class="bi bi-calendar3"></i>
-                        <span>3 años</span>
-                      </div>
-                      <div class="info-item">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>28 kg</span>
-                      </div>
-                      <div class="info-item">
-                        <i class="bi bi-gender-male"></i>
-                        <span>Macho</span>
-                      </div>
-                    </div>
-                    <div class="mascota-tags">
-                      <span class="tag vacunado">Vacunado</span>
-                      <span class="tag microchip">Microchip</span>
-                    </div>
-                  </div>
-                  <div class="mascota-footer">
-                    <small class="text-muted">Última consulta: 20 Sep 2024</small>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Mascota 2 - Luna -->
-              <div class="col-lg-4 col-md-6">
-                <div class="mascota-card">
-                  <div class="mascota-header">
-                    <div class="mascota-imagen">
-                      <div class="mascota-avatar">🐱</div>
-                      <div class="mascota-estado bueno"></div>
-                    </div>
-                    <div class="mascota-actions">
-                      <button class="btn btn-sm btn-outline-primary" onclick="verMascota(2)" title="Ver detalles">
-                        <i class="bi bi-eye"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-warning" onclick="editarMascota(2)" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-danger" onclick="eliminarMascota(2)" title="Eliminar">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="mascota-body">
-                    <h5 class="mascota-nombre">Luna</h5>
-                    <p class="mascota-raza">Gato Persa</p>
-                    <div class="mascota-info">
-                      <div class="info-item">
-                        <i class="bi bi-calendar3"></i>
-                        <span>2 años</span>
-                      </div>
-                      <div class="info-item">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>4.5 kg</span>
-                      </div>
-                      <div class="info-item">
-                        <i class="bi bi-gender-female"></i>
-                        <span>Hembra</span>
-                      </div>
-                    </div>
-                    <div class="mascota-tags">
-                      <span class="tag pendiente">Vacuna pendiente</span>
-                      <span class="tag esterilizado">Esterilizada</span>
-                    </div>
-                  </div>
-                  <div class="mascota-footer">
-                    <small class="text-muted">Última consulta: 15 Sep 2024</small>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Mascota 3 - Toby -->
-              <div class="col-lg-4 col-md-6">
-                <div class="mascota-card">
-                  <div class="mascota-header">
-                    <div class="mascota-imagen">
-                      <div class="mascota-avatar">🐕</div>
-                      <div class="mascota-estado regular"></div>
-                    </div>
-                    <div class="mascota-actions">
-                      <button class="btn btn-sm btn-outline-primary" onclick="verMascota(3)" title="Ver detalles">
-                        <i class="bi bi-eye"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-warning" onclick="editarMascota(3)" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                      </button>
-                      <button class="btn btn-sm btn-outline-danger" onclick="eliminarMascota(3)" title="Eliminar">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="mascota-body">
-                    <h5 class="mascota-nombre">Toby</h5>
-                    <p class="mascota-raza">Bulldog Francés</p>
-                    <div class="mascota-info">
-                      <div class="info-item">
-                        <i class="bi bi-calendar3"></i>
-                        <span>5 años</span>
-                      </div>
-                      <div class="info-item">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>12 kg</span>
-                      </div>
-                      <div class="info-item">
-                        <i class="bi bi-gender-male"></i>
-                        <span>Macho</span>
-                      </div>
-                    </div>
-                    <div class="mascota-tags">
-                      <span class="tag tratamiento">En tratamiento</span>
-                      <span class="tag microchip">Microchip</span>
-                    </div>
-                  </div>
-                  <div class="mascota-footer">
-                    <small class="text-muted">Última consulta: 22 Sep 2024</small>
-                  </div>
-                </div>
-              </div>
+            <div class="text-center py-5">
+              <i class="bi bi-hourglass-split display-4 text-muted"></i>
+              <h5 class="text-muted mt-3">Cargando mascotas...</h5>
             </div>
           </div>
 
           <!-- Vista Lista (inicialmente oculta) -->
           <div id="vista-lista-content" style="display: none;">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>Mascota</th>
-                    <th>Tipo/Raza</th>
-                    <th>Edad</th>
-                    <th>Peso</th>
-                    <th>Estado</th>
-                    <th>Última Consulta</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <span class="me-2" style="font-size: 1.5rem;">🐕</span>
-                        <div>
-                          <h6 class="mb-0">Max</h6>
-                          <small class="text-muted">ID: #001</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div>
-                        <span class="fw-medium">Perro</span><br>
-                        <small class="text-muted">Golden Retriever</small>
-                      </div>
-                    </td>
-                    <td>3 años</td>
-                    <td>28 kg</td>
-                    <td><span class="badge bg-success">Excelente</span></td>
-                    <td>20 Sep 2024</td>
-                    <td>
-                      <div class="btn-group" role="group">
-                        <button class="btn btn-sm btn-outline-primary" onclick="verMascota(1)">
-                          <i class="bi bi-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-warning" onclick="editarMascota(1)">
-                          <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="eliminarMascota(1)">
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <span class="me-2" style="font-size: 1.5rem;">🐱</span>
-                        <div>
-                          <h6 class="mb-0">Luna</h6>
-                          <small class="text-muted">ID: #002</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div>
-                        <span class="fw-medium">Gato</span><br>
-                        <small class="text-muted">Persa</small>
-                      </div>
-                    </td>
-                    <td>2 años</td>
-                    <td>4.5 kg</td>
-                    <td><span class="badge bg-warning">Bueno</span></td>
-                    <td>15 Sep 2024</td>
-                    <td>
-                      <div class="btn-group" role="group">
-                        <button class="btn btn-sm btn-outline-primary" onclick="verMascota(2)">
-                          <i class="bi bi-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-warning" onclick="editarMascota(2)">
-                          <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="eliminarMascota(2)">
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <span class="me-2" style="font-size: 1.5rem;">🐕</span>
-                        <div>
-                          <h6 class="mb-0">Toby</h6>
-                          <small class="text-muted">ID: #003</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div>
-                        <span class="fw-medium">Perro</span><br>
-                        <small class="text-muted">Bulldog Francés</small>
-                      </div>
-                    </td>
-                    <td>5 años</td>
-                    <td>12 kg</td>
-                    <td><span class="badge bg-secondary">Regular</span></td>
-                    <td>22 Sep 2024</td>
-                    <td>
-                      <div class="btn-group" role="group">
-                        <button class="btn btn-sm btn-outline-primary" onclick="verMascota(3)">
-                          <i class="bi bi-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-warning" onclick="editarMascota(3)">
-                          <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="eliminarMascota(3)">
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="text-center py-5">
+              <i class="bi bi-hourglass-split display-4 text-muted"></i>
+              <h5 class="text-muted mt-3">Cargando mascotas...</h5>
             </div>
           </div>
         </div>
@@ -588,27 +332,6 @@
         <div class="modal-body">
           <form id="formNuevaMascota">
             <div class="row g-4">
-              <!-- Sección de imagen -->
-              <div class="col-12">
-                <div class="text-center mb-4">
-                  <div class="mascota-imagen-upload">
-                    <div class="imagen-preview" id="imagenPreview">
-                      <i class="bi bi-image"></i>
-                      <p>Subir foto de la mascota</p>
-                    </div>
-                    <input type="file" class="form-control" id="imagenMascota" accept="image/*" style="display: none;">
-                    <div class="mt-2">
-                      <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('imagenMascota').click()">
-                        <i class="bi bi-camera me-1"></i>Seleccionar Imagen
-                      </button>
-                      <button type="button" class="btn btn-outline-danger ms-2" onclick="eliminarImagen()">
-                        <i class="bi bi-trash me-1"></i>Eliminar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               <!-- Información básica -->
               <div class="col-12">
                 <h6 class="border-bottom pb-2 mb-3">Información Básica</h6>
@@ -621,16 +344,16 @@
               
               <div class="col-md-6">
                 <label for="tipoMascota" class="form-label">Tipo de mascota *</label>
-                <select class="form-select" id="tipoMascota" required onchange="actualizarEmoji()">
+                <select class="form-select" id="tipoMascota" required>
                   <option value="">Selecciona el tipo</option>
-                  <option value="perro" data-emoji="🐕">Perro</option>
-                  <option value="gato" data-emoji="🐱">Gato</option>
-                  <option value="ave" data-emoji="🐦">Ave</option>
-                  <option value="conejo" data-emoji="🐰">Conejo</option>
-                  <option value="hamster" data-emoji="🐹">Hamster</option>
-                  <option value="pez" data-emoji="🐠">Pez</option>
-                  <option value="reptil" data-emoji="🦎">Reptil</option>
-                  <option value="tortuga" data-emoji="🐢">Tortuga</option>
+                  <option value="perro">Perro</option>
+                  <option value="gato">Gato</option>
+                  <option value="ave">Ave</option>
+                  <option value="conejo">Conejo</option>
+                  <option value="hamster">Hamster</option>
+                  <option value="pez">Pez</option>
+                  <option value="reptil">Reptil</option>
+                  <option value="tortuga">Tortuga</option>
                 </select>
               </div>
 
@@ -640,85 +363,18 @@
               </div>
 
               <div class="col-md-6">
-                <label for="colorMascota" class="form-label">Color</label>
-                <input type="text" class="form-control" id="colorMascota" placeholder="Ej: Dorado, Blanco, Atigrado">
+                <label for="edadMascota" class="form-label">Edad (años)</label>
+                <input type="number" class="form-control" id="edadMascota" min="0" max="30" step="1">
               </div>
 
-              <div class="col-md-4">
-                <label for="generoMascota" class="form-label">Género</label>
-                <select class="form-select" id="generoMascota">
-                  <option value="">Seleccionar</option>
-                  <option value="macho">Macho</option>
-                  <option value="hembra">Hembra</option>
-                </select>
-              </div>
-
-              <div class="col-md-4">
-                <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
-                <input type="date" class="form-control" id="fechaNacimiento">
-              </div>
-
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <label for="pesoMascota" class="form-label">Peso (kg)</label>
                 <input type="number" class="form-control" id="pesoMascota" step="0.1" min="0">
               </div>
 
-              <!-- Información médica -->
-              <div class="col-12 mt-4">
-                <h6 class="border-bottom pb-2 mb-3">Información Médica</h6>
-              </div>
-
               <div class="col-md-6">
-                <label for="estadoSalud" class="form-label">Estado de salud</label>
-                <select class="form-select" id="estadoSalud">
-                  <option value="excelente">Excelente</option>
-                  <option value="bueno" selected>Bueno</option>
-                  <option value="regular">Regular</option>
-                  <option value="delicado">Delicado</option>
-                </select>
-              </div>
-
-              <div class="col-md-6">
-                <label for="microchip" class="form-label">Número de microchip</label>
-                <input type="text" class="form-control" id="microchip" placeholder="Opcional">
-              </div>
-
-              <div class="col-12">
-                <label for="observaciones" class="form-label">Observaciones médicas</label>
-                <textarea class="form-control" id="observaciones" rows="3" placeholder="Alergias, medicamentos, condiciones especiales, etc."></textarea>
-              </div>
-
-              <!-- Información adicional -->
-              <div class="col-12 mt-4">
-                <h6 class="border-bottom pb-2 mb-3">Información Adicional</h6>
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label">Vacunas</label>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="vacunaRabica">
-                  <label class="form-check-label" for="vacunaRabica">Antirrábica</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="vacunaMultiple">
-                  <label class="form-check-label" for="vacunaMultiple">Múltiple/Polivalente</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="vacunaOtras">
-                  <label class="form-check-label" for="vacunaOtras">Otras</label>
-                </div>
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label">Estado reproductivo</label>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="esterilizado">
-                  <label class="form-check-label" for="esterilizado">Esterilizado/Castrado</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="enTratamiento">
-                  <label class="form-check-label" for="enTratamiento">En tratamiento médico</label>
-                </div>
+                <label for="observaciones" class="form-label">Observaciones</label>
+                <textarea class="form-control" id="observaciones" rows="2" placeholder="Características especiales, alergias, etc."></textarea>
               </div>
             </div>
           </form>
@@ -768,9 +424,7 @@
         </div>
         <div class="modal-body">
           <form id="formEditarMascota">
-            <!-- Mismo formulario que nuevo pero pre-rellenado -->
             <input type="hidden" id="editarMascotaId">
-            <!-- El formulario se carga dinámicamente con los datos existentes -->
             <div id="formularioEdicion">
               <!-- Contenido dinámico -->
             </div>
@@ -788,494 +442,6 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    // Datos de ejemplo para las mascotas
-    const mascotas = [
-      {
-        id: 1,
-        nombre: "Max",
-        tipo: "perro",
-        raza: "Golden Retriever",
-        edad: 3,
-        peso: 28,
-        genero: "macho",
-        color: "Dorado",
-        estadoSalud: "excelente",
-        microchip: "123456789",
-        observaciones: "Muy activo, le gusta jugar con pelotas",
-        vacunas: ["rabica", "multiple"],
-        esterilizado: true,
-        ultimaConsulta: "2024-09-20",
-        emoji: "🐕"
-      },
-      {
-        id: 2,
-        nombre: "Luna",
-        tipo: "gato",
-        raza: "Persa",
-        edad: 2,
-        peso: 4.5,
-        genero: "hembra",
-        color: "Blanco",
-        estadoSalud: "bueno",
-        microchip: "",
-        observaciones: "Gata tranquila, le gusta dormir",
-        vacunas: ["rabica"],
-        esterilizado: true,
-        ultimaConsulta: "2024-09-15",
-        emoji: "🐱"
-      },
-      {
-        id: 3,
-        nombre: "Toby",
-        tipo: "perro",
-        raza: "Bulldog Francés",
-        edad: 5,
-        peso: 12,
-        genero: "macho",
-        color: "Atigrado",
-        estadoSalud: "regular",
-        microchip: "987654321",
-        observaciones: "Problemas respiratorios leves, requiere cuidados especiales",
-        vacunas: ["rabica", "multiple"],
-        esterilizado: false,
-        ultimaConsulta: "2024-09-22",
-        emoji: "🐕"
-      }
-    ];
-
-    let mascotaEditandoId = null;
-
-    // Función para cambiar vista
-    document.addEventListener('DOMContentLoaded', function() {
-      const vistaGrid = document.getElementById('vista-grid');
-      const vistaLista = document.getElementById('vista-lista');
-      const vistaGridContent = document.getElementById('vista-grid-content');
-      const vistaListaContent = document.getElementById('vista-lista-content');
-
-      vistaGrid.addEventListener('change', function() {
-        if (this.checked) {
-          vistaGridContent.style.display = 'block';
-          vistaListaContent.style.display = 'none';
-        }
-      });
-
-      vistaLista.addEventListener('change', function() {
-        if (this.checked) {
-          vistaGridContent.style.display = 'none';
-          vistaListaContent.style.display = 'block';
-        }
-      });
-
-      // Manejo de imagen
-      const imagenInput = document.getElementById('imagenMascota');
-      if (imagenInput) {
-        imagenInput.addEventListener('change', previewImagen);
-      }
-    });
-
-    // Función para actualizar emoji según tipo de mascota
-    function actualizarEmoji() {
-      const select = document.getElementById('tipoMascota');
-      const selectedOption = select.options[select.selectedIndex];
-      const emoji = selectedOption.getAttribute('data-emoji');
-      
-      // Actualizar preview de imagen si no hay imagen subida
-      const preview = document.getElementById('imagenPreview');
-      if (preview && !preview.querySelector('img')) {
-        if (emoji) {
-          preview.innerHTML = `<div style="font-size: 4rem; margin-bottom: 1rem;">${emoji}</div><p>Mascota seleccionada</p>`;
-        } else {
-          preview.innerHTML = '<i class="bi bi-image"></i><p>Subir foto de la mascota</p>';
-        }
-      }
-    }
-
-    // Función para preview de imagen
-    function previewImagen(event) {
-      const file = event.target.files[0];
-      const preview = document.getElementById('imagenPreview');
-      
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    // Función para eliminar imagen
-    function eliminarImagen() {
-      const preview = document.getElementById('imagenPreview');
-      const input = document.getElementById('imagenMascota');
-      
-      if (input) input.value = '';
-      if (preview) {
-        preview.innerHTML = '<i class="bi bi-image"></i><p>Subir foto de la mascota</p>';
-      }
-      
-      // Actualizar con emoji si hay tipo seleccionado
-      actualizarEmoji();
-    }
-
-    // Funciones para gestión de mascotas
-    function verMascota(mascotaId) {
-      const mascota = mascotas.find(m => m.id === mascotaId);
-      if (mascota) {
-        const estadoBadges = {
-          'excelente': '<span class="badge bg-success">Excelente</span>',
-          'bueno': '<span class="badge bg-warning">Bueno</span>',
-          'regular': '<span class="badge bg-secondary">Regular</span>',
-          'delicado': '<span class="badge bg-danger">Delicado</span>'
-        };
-
-        document.getElementById('detallesMascotaContent').innerHTML = `
-          <div class="row g-4">
-            <div class="col-12 text-center mb-3">
-              <div style="font-size: 5rem;">${mascota.emoji}</div>
-              <h3>${mascota.nombre}</h3>
-              <p class="text-muted">${mascota.raza || mascota.tipo}</p>
-            </div>
-            
-            <div class="col-md-6">
-              <h6>Información Básica</h6>
-              <table class="table table-sm">
-                <tr><td><strong>Tipo:</strong></td><td>${mascota.tipo.charAt(0).toUpperCase() + mascota.tipo.slice(1)}</td></tr>
-                <tr><td><strong>Raza:</strong></td><td>${mascota.raza || 'No especificada'}</td></tr>
-                <tr><td><strong>Edad:</strong></td><td>${mascota.edad} años</td></tr>
-                <tr><td><strong>Peso:</strong></td><td>${mascota.peso} kg</td></tr>
-                <tr><td><strong>Género:</strong></td><td>${mascota.genero || 'No especificado'}</td></tr>
-                <tr><td><strong>Color:</strong></td><td>${mascota.color || 'No especificado'}</td></tr>
-              </table>
-            </div>
-            
-            <div class="col-md-6">
-              <h6>Estado de Salud</h6>
-              <div class="mb-3">${estadoBadges[mascota.estadoSalud]}</div>
-              
-              <h6>Información Médica</h6>
-              <table class="table table-sm">
-                <tr><td><strong>Microchip:</strong></td><td>${mascota.microchip || 'No registrado'}</td></tr>
-                <tr><td><strong>Esterilizado:</strong></td><td>${mascota.esterilizado ? 'Sí' : 'No'}</td></tr>
-                <tr><td><strong>Última consulta:</strong></td><td>${new Date(mascota.ultimaConsulta).toLocaleDateString('es-ES')}</td></tr>
-              </table>
-            </div>
-            
-            <div class="col-12">
-              <h6>Vacunas</h6>
-              <div class="mb-3">
-                ${mascota.vacunas.map(v => `<span class="badge bg-primary me-1">${v.charAt(0).toUpperCase() + v.slice(1)}</span>`).join('')}
-              </div>
-              
-              <h6>Observaciones</h6>
-              <p class="text-muted">${mascota.observaciones || 'Sin observaciones'}</p>
-            </div>
-          </div>
-        `;
-
-        new bootstrap.Modal(document.getElementById('verMascotaModal')).show();
-      }
-    }
-
-    function editarMascota(mascotaId) {
-      mascotaEditandoId = mascotaId;
-      const mascota = mascotas.find(m => m.id === mascotaId);
-      
-      if (mascota) {
-        // Cargar formulario de edición con datos existentes
-        document.getElementById('formularioEdicion').innerHTML = `
-          <!-- Aquí iría el mismo formulario que el de nueva mascota pero pre-rellenado -->
-          <div class="text-center mb-4">
-            <div class="mascota-imagen-upload">
-              <div class="imagen-preview" id="imagenPreviewEdit">
-                <div style="font-size: 4rem;">${mascota.emoji}</div>
-              </div>
-              <input type="file" class="form-control" id="imagenMascotaEdit" accept="image/*" style="display: none;">
-              <div class="mt-2">
-                <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('imagenMascotaEdit').click()">
-                  <i class="bi bi-camera me-1"></i>Cambiar Imagen
-                </button>
-              </div>
-            </div>
-          </div>
-          <p class="text-center"><em>Función de edición completa en desarrollo</em></p>
-        `;
-        
-        new bootstrap.Modal(document.getElementById('editarMascotaModal')).show();
-      }
-    }
-
-    function eliminarMascota(mascotaId) {
-      const mascota = mascotas.find(m => m.id === mascotaId);
-      if (mascota && confirm(`¿Estás seguro de que deseas eliminar a ${mascota.nombre}? Esta acción no se puede deshacer.`)) {
-        alert(`${mascota.nombre} ha sido eliminado del registro.`);
-        // Aquí iría la lógica para eliminar de la base de datos
-      }
-    }
-
-    function registrarMascota() {
-      const form = document.getElementById('formNuevaMascota');
-      
-      // Validar campos requeridos
-      const nombre = document.getElementById('nombreMascota').value;
-      const tipo = document.getElementById('tipoMascota').value;
-      
-      if (!nombre || !tipo) {
-        alert('Por favor, completa al menos el nombre y tipo de mascota.');
-        return;
-      }
-      
-      // Aquí iría la lógica para enviar al servidor
-      alert('¡Mascota registrada exitosamente!');
-      
-      // Cerrar modal y limpiar formulario
-      bootstrap.Modal.getInstance(document.getElementById('nuevaMascotaModal')).hide();
-      form.reset();
-      eliminarImagen();
-    }
-
-    function actualizarMascota() {
-      if (mascotaEditandoId) {
-        alert(`Mascota ${mascotaEditandoId} actualizada exitosamente!`);
-        bootstrap.Modal.getInstance(document.getElementById('editarMascotaModal')).hide();
-      }
-    }
-
-    function editarMascotaDesdeVer() {
-      bootstrap.Modal.getInstance(document.getElementById('verMascotaModal')).hide();
-      // Buscar la mascota que se está viendo y editarla
-      const mascotaId = 1; // Esto se obtendría del contexto
-      editarMascota(mascotaId);
-    }
-
-    function limpiarFiltros() {
-      document.getElementById('buscarMascota').value = '';
-      document.getElementById('filtroTipo').value = '';
-      document.getElementById('filtroEdad').value = '';
-      document.getElementById('filtroSalud').value = '';
-    }
-
-    // Event listeners para filtros
-    document.getElementById('buscarMascota').addEventListener('input', function() {
-      const termino = this.value.toLowerCase();
-      console.log('Buscando:', termino);
-    });
-
-    document.getElementById('filtroTipo').addEventListener('change', function() {
-      const tipo = this.value;
-      console.log('Filtrar por tipo:', tipo);
-    });
-
-    document.getElementById('filtroEdad').addEventListener('change', function() {
-      const edad = this.value;
-      console.log('Filtrar por edad:', edad);
-    });
-
-    document.getElementById('filtroSalud').addEventListener('change', function() {
-      const salud = this.value;
-      console.log('Filtrar por salud:', salud);
-    });
-  </script>
-
-  <style>
-    /* Estilos específicos para mascotas */
-    .mascota-card {
-      background: var(--white);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      transition: all 0.3s ease;
-      overflow: hidden;
-    }
-
-    .mascota-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .mascota-header {
-      padding: 1.5rem;
-      position: relative;
-      background: linear-gradient(135deg, #f8f9fa, #ffffff);
-    }
-
-    .mascota-imagen {
-      position: relative;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-
-    .mascota-avatar {
-      font-size: 3rem;
-      width: 80px;
-      height: 80px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--primary-purple), var(--primary-green));
-      border-radius: 50%;
-      color: white;
-      position: relative;
-    }
-
-    .mascota-estado {
-      position: absolute;
-      bottom: 5px;
-      right: 5px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      border: 3px solid white;
-    }
-
-    .mascota-estado.excelente { background-color: var(--success-color); }
-    .mascota-estado.bueno { background-color: var(--warning-color); }
-    .mascota-estado.regular { background-color: var(--info-color); }
-    .mascota-estado.delicado { background-color: var(--error-color); }
-
-    .mascota-actions {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      display: flex;
-      gap: 0.5rem;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .mascota-card:hover .mascota-actions {
-      opacity: 1;
-    }
-
-    .mascota-body {
-      padding: 0 1.5rem 1rem;
-    }
-
-    .mascota-nombre {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-      color: var(--dark-text);
-    }
-
-    .mascota-raza {
-      color: var(--light-text);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .mascota-info {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-    }
-
-    .info-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 0.8rem;
-    }
-
-    .info-item i {
-      color: var(--primary-purple);
-      margin-bottom: 0.25rem;
-    }
-
-    .mascota-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .tag {
-      padding: 0.25rem 0.5rem;
-      border-radius: 12px;
-      font-size: 0.7rem;
-      font-weight: 500;
-    }
-
-    .tag.vacunado { background-color: rgba(40, 167, 69, 0.1); color: var(--success-color); }
-    .tag.pendiente { background-color: rgba(255, 193, 7, 0.1); color: #856404; }
-    .tag.microchip { background-color: rgba(0, 123, 255, 0.1); color: #0056b3; }
-    .tag.esterilizado { background-color: rgba(108, 117, 125, 0.1); color: var(--light-text); }
-    .tag.tratamiento { background-color: rgba(220, 53, 69, 0.1); color: var(--error-color); }
-
-    .mascota-footer {
-      padding: 0 1.5rem 1.5rem;
-      border-top: 1px solid #f1f3f4;
-      padding-top: 1rem;
-      margin-top: 1rem;
-    }
-
-    /* Estilos para upload de imagen */
-    .mascota-imagen-upload {
-      text-align: center;
-    }
-
-    .imagen-preview {
-      width: 200px;
-      height: 200px;
-      border: 2px dashed #dee2e6;
-      border-radius: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      background-color: #f8f9fa;
-    }
-
-    .imagen-preview:hover {
-      border-color: var(--primary-purple);
-      background-color: rgba(119, 41, 211, 0.05);
-    }
-
-    .imagen-preview i {
-      font-size: 3rem;
-      color: var(--light-text);
-      margin-bottom: 0.5rem;
-    }
-
-    .imagen-preview p {
-      margin: 0;
-      color: var(--light-text);
-      font-size: 0.9rem;
-    }
-
-    .imagen-preview img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: cover;
-      border-radius: 12px;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .mascota-card {
-        margin-bottom: 1rem;
-      }
-      
-      .mascota-actions {
-        position: static;
-        opacity: 1;
-        justify-content: center;
-        margin-top: 1rem;
-      }
-      
-      .mascota-info {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-      
-      .info-item {
-        flex-direction: row;
-        justify-content: space-between;
-      }
-    }
-  </style>
+  <script src="js/cliente-mascotas.js"></script>
 </body>
 </html>

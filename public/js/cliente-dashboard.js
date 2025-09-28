@@ -7,6 +7,7 @@ let citasData = [];
 let mascotasData = [];
 let diasActivos = 0;
 
+
 // Al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     inicializarDashboard();
