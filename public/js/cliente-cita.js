@@ -7,6 +7,7 @@ let serviciosData = [];
 let sucursalesData = [];
 let clienteId = null;
 let usuarioActual = null;
+let citaEditando = null;
 
 // Al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
@@ -16,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // Función principal de inicialización
 async function inicializarPagina() {
   try {
-    // Verificar autenticación
     usuarioActual = obtenerUsuarioActual();
     if (!usuarioActual) {
       console.log('Usuario no autenticado, redirigiendo...');
@@ -25,18 +25,14 @@ async function inicializarPagina() {
     }
 
     console.log('Usuario autenticado:', usuarioActual);
-
-    // Actualizar información del usuario en la UI
     actualizarInfoUsuario();
 
-    // Cargar datos necesarios
     await Promise.all([
       cargarClienteId(),
       cargarServicios(),
       cargarSucursales()
     ]);
 
-    // Solo cargar mascotas y citas después de tener el clienteId
     if (clienteId) {
       await Promise.all([
         cargarMascotas(),
@@ -48,10 +44,7 @@ async function inicializarPagina() {
       return;
     }
 
-    // Configurar fecha mínima para nueva cita
     configurarFechaMinima();
-
-    // Configurar event listeners
     configurarEventListeners();
 
   } catch (error) {
@@ -60,25 +53,18 @@ async function inicializarPagina() {
   }
 }
 
-// Obtener usuario actual del sessionStorage
 function obtenerUsuarioActual() {
   const usuario = sessionStorage.getItem('usuario');
-  if (!usuario) {
-    console.log('No hay usuario en sessionStorage');
-    return null;
-  }
+  if (!usuario) return null;
   
   try {
-    const usuarioObj = JSON.parse(usuario);
-    console.log('Usuario parseado:', usuarioObj);
-    return usuarioObj;
+    return JSON.parse(usuario);
   } catch (error) {
     console.error('Error al parsear usuario:', error);
     return null;
   }
 }
 
-// Actualizar información del usuario en la UI
 function actualizarInfoUsuario() {
   if (usuarioActual) {
     const userNameElement = document.getElementById('userName');
@@ -88,7 +74,6 @@ function actualizarInfoUsuario() {
   }
 }
 
-// Cargar ID del cliente basado en el usuario
 async function cargarClienteId() {
   try {
     console.log('Buscando cliente para usuario ID:', usuarioActual.id);
@@ -106,7 +91,6 @@ async function cargarClienteId() {
       clienteId = cliente.id;
       console.log('Cliente ID asignado:', clienteId);
     } else {
-      console.error('Cliente no encontrado para usuario ID:', usuarioActual.id);
       throw new Error('Cliente no encontrado');
     }
   } catch (error) {
@@ -115,7 +99,6 @@ async function cargarClienteId() {
   }
 }
 
-// Cargar mascotas del cliente específico
 async function cargarMascotas() {
   try {
     if (!clienteId) {
@@ -125,11 +108,9 @@ async function cargarMascotas() {
 
     console.log('Cargando mascotas para cliente ID:', clienteId);
 
-    // Cambiar la URL para filtrar directamente por cliente
     const response = await fetch(`/api/mascotas/cliente/${clienteId}`);
     
     if (!response.ok) {
-      // Si no existe la ruta específica, usar la ruta general y filtrar
       const responseGeneral = await fetch(`/api/mascotas`);
       if (!responseGeneral.ok) throw new Error('Error al obtener mascotas');
       
@@ -141,10 +122,7 @@ async function cargarMascotas() {
     
     console.log('Mascotas del cliente cargadas:', mascotasData);
     
-    // Actualizar select de mascotas en el modal
     actualizarSelectMascotas();
-    
-    // Actualizar filtro de mascotas
     actualizarFiltroMascotas();
 
   } catch (error) {
@@ -153,7 +131,6 @@ async function cargarMascotas() {
   }
 }
 
-// Cargar servicios disponibles
 async function cargarServicios() {
   try {
     const response = await fetch(`/api/servicios`);
@@ -162,7 +139,6 @@ async function cargarServicios() {
     serviciosData = await response.json();
     console.log('Servicios cargados:', serviciosData);
     
-    // Actualizar select de servicios
     actualizarSelectServicios();
 
   } catch (error) {
@@ -171,7 +147,6 @@ async function cargarServicios() {
   }
 }
 
-// Cargar sucursales disponibles
 async function cargarSucursales() {
   try {
     const response = await fetch(`/api/sucursales`);
@@ -180,7 +155,6 @@ async function cargarSucursales() {
     sucursalesData = await response.json();
     console.log('Sucursales cargadas:', sucursalesData);
     
-    // Actualizar select de sucursales
     actualizarSelectSucursales();
 
   } catch (error) {
@@ -189,7 +163,6 @@ async function cargarSucursales() {
   }
 }
 
-// Cargar citas del cliente específico
 async function cargarCitas() {
   try {
     if (!clienteId) {
@@ -200,11 +173,9 @@ async function cargarCitas() {
     mostrarEstadoCarga(true);
     console.log('Cargando citas para cliente ID:', clienteId);
 
-    // Primero intentar la ruta específica del cliente
     let response = await fetch(`/api/citas/cliente/${clienteId}`);
     
     if (!response.ok) {
-      // Si no existe la ruta específica, usar la ruta general y filtrar
       response = await fetch(`/api/citas`);
       if (!response.ok) throw new Error('Error al obtener citas');
       
@@ -216,7 +187,6 @@ async function cargarCitas() {
     
     console.log('Citas del cliente cargadas:', citasData);
     
-    // Actualizar UI
     actualizarEstadisticas();
     mostrarCitas();
     actualizarProximaCita();
@@ -231,7 +201,6 @@ async function cargarCitas() {
   }
 }
 
-// Mostrar/ocultar estado de carga
 function mostrarEstadoCarga(mostrar) {
   const loadingState = document.getElementById('loadingState');
   const filtrosSection = document.getElementById('filtrosSection');
@@ -258,34 +227,43 @@ function mostrarEstadoCarga(mostrar) {
   }
 }
 
-// Actualizar estadísticas
 function actualizarEstadisticas() {
   const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  
   const inicioSemana = new Date(hoy);
   inicioSemana.setDate(hoy.getDate() - hoy.getDay());
   
-  // Filtrar citas del cliente actual
-  const citasProgramadas = citasData.filter(cita => 
-    cita.estado === 'pendiente' || cita.estado === 'confirmada'
+  const finSemana = new Date(inicioSemana);
+  finSemana.setDate(inicioSemana.getDate() + 6);
+  finSemana.setHours(23, 59, 59, 999);
+  
+  const citasProgramadas = citasData.filter(cita => {
+    const fechaCita = new Date(cita.fecha);
+    return fechaCita >= hoy && (cita.estado === 'pendiente' || cita.estado === 'confirmada');
+  });
+  
+  const citasCompletadas = citasData.filter(cita => 
+    cita.estado === 'completada' || cita.estado === 'confirmada'
   );
-  const citasCompletadas = citasData.filter(cita => cita.estado === 'confirmada');
+  
   const citasHoy = citasData.filter(cita => {
     const fechaCita = new Date(cita.fecha);
-    return fechaCita.toDateString() === hoy.toDateString();
+    fechaCita.setHours(0, 0, 0, 0);
+    return fechaCita.getTime() === hoy.getTime();
   });
+  
   const citasSemana = citasData.filter(cita => {
     const fechaCita = new Date(cita.fecha);
-    return fechaCita >= inicioSemana && fechaCita <= hoy;
+    return fechaCita >= inicioSemana && fechaCita <= finSemana;
   });
 
-  // Actualizar elementos
   document.getElementById('citasProgramadas').textContent = citasProgramadas.length;
   document.getElementById('citasCompletadas').textContent = citasCompletadas.length;
   document.getElementById('citasHoy').textContent = citasHoy.length;
   document.getElementById('citasSemana').textContent = citasSemana.length;
   document.getElementById('citasCount').textContent = citasProgramadas.length;
 
-  // Actualizar cambios (estos serían calculados comparando con períodos anteriores)
   document.getElementById('cambioSemanal').textContent = '+2 esta semana';
   document.getElementById('cambioMensual').textContent = '+15% vs mes anterior';
   
@@ -295,7 +273,6 @@ function actualizarEstadisticas() {
   }
 }
 
-// Actualizar select de mascotas del modal (SOLO las del cliente actual)
 function actualizarSelectMascotas() {
   const select = document.getElementById('mascotaSelect');
   if (!select) return;
@@ -304,15 +281,12 @@ function actualizarSelectMascotas() {
   
   if (mascotasData.length === 0) {
     select.innerHTML += '<option value="" disabled>No tienes mascotas registradas</option>';
-    console.log('No hay mascotas para el cliente ID:', clienteId);
     return;
   }
   
   mascotasData.forEach(mascota => {
     select.innerHTML += `<option value="${mascota.id}">${mascota.nombre} - ${mascota.especie} ${mascota.raza}</option>`;
   });
-  
-  console.log('Select de mascotas actualizado con', mascotasData.length, 'mascotas');
 }
 
 function actualizarSelectServicios() {
@@ -348,7 +322,6 @@ function actualizarFiltroMascotas() {
   });
 }
 
-// Mostrar citas en la UI (SOLO las del cliente actual)
 function mostrarCitas() {
   const container = document.getElementById('citasListContainer');
   
@@ -357,7 +330,6 @@ function mostrarCitas() {
     return;
   }
 
-  // Ordenar citas por fecha (más recientes primero)
   const citasOrdenadas = [...citasData].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
   
   let html = '';
@@ -367,16 +339,24 @@ function mostrarCitas() {
     const servicio = serviciosData.find(s => s.id === cita.servicio_id);
     const fecha = new Date(cita.fecha);
     
+    // Formato día/mes/año
+    const dia = fecha.getDate();
+    const mes = fecha.getMonth();
+    const anio = fecha.getFullYear();
+    
     const estadoBadge = obtenerBadgeEstado(cita.estado);
     const avatarMascota = obtenerAvatarMascota(mascota?.especie);
+    
+    const puedeEditar = cita.estado === 'pendiente';
+    const puedeCancelar = cita.estado === 'pendiente' || cita.estado === 'confirmada';
     
     html += `
       <div class="cita-item border rounded-3 p-3 mb-3 ${cita.estado}" data-cita-id="${cita.id}">
         <div class="row align-items-center">
           <div class="col-md-2">
             <div class="fecha-cita text-center">
-              <div class="dia">${fecha.getDate()}</div>
-              <div class="mes">${obtenerMesAbrev(fecha.getMonth())}</div>
+              <div class="dia">${dia}</div>
+              <div class="mes">${obtenerMesAbrev(mes)}</div>
               <div class="hora">${cita.hora}</div>
             </div>
           </div>
@@ -405,19 +385,18 @@ function mostrarCitas() {
               <button class="btn btn-sm btn-outline-primary" onclick="verDetalles(${cita.id})" title="Ver detalles">
                 <i class="bi bi-eye"></i>
               </button>
-              ${cita.estado !== 'confirmada' && cita.estado !== 'cancelada' ? 
+              ${puedeEditar ? 
                 `<button class="btn btn-sm btn-outline-warning" onclick="editarCita(${cita.id})" title="Editar">
                   <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" onclick="cancelarCita(${cita.id})" title="Cancelar">
+                </button>` : 
+                ''
+              }
+              ${puedeCancelar ? 
+                `<button class="btn btn-sm btn-outline-danger" onclick="cancelarCita(${cita.id})" title="Cancelar">
                   <i class="bi bi-x-circle"></i>
                 </button>` : 
-                cita.estado === 'confirmada' ?
-                `<button class="btn btn-sm btn-outline-secondary" disabled title="Confirmada">
-                  <i class="bi bi-check-circle"></i>
-                </button>` :
-                `<button class="btn btn-sm btn-outline-secondary" disabled title="Cancelada">
-                  <i class="bi bi-x-circle"></i>
+                `<button class="btn btn-sm btn-outline-secondary" disabled title="${cita.estado === 'completada' ? 'Completada' : 'Cancelada'}">
+                  <i class="bi bi-${cita.estado === 'completada' ? 'check' : 'x'}-circle"></i>
                 </button>`
               }
             </div>
@@ -430,18 +409,15 @@ function mostrarCitas() {
   container.innerHTML = html;
 }
 
-// Función para agendar nueva cita (asegurando que sea del cliente actual)
 window.agendarCita = async function() {
   try {
     const form = document.getElementById('formNuevaCita');
     
-    // Verificar que tenemos el clienteId
     if (!clienteId) {
       mostrarError('Error: No se pudo identificar tu perfil de cliente');
       return;
     }
     
-    // Obtener datos del formulario
     const mascotaId = document.getElementById('mascotaSelect').value;
     const servicioId = document.getElementById('servicioSelect').value;
     const sucursalId = document.getElementById('sucursalSelect')?.value;
@@ -450,24 +426,11 @@ window.agendarCita = async function() {
     const motivo = document.getElementById('motivoConsulta')?.value || '';
     const observaciones = document.getElementById('observaciones')?.value || '';
     
-    console.log('Datos del formulario:', {
-      clienteId, mascotaId, servicioId, sucursalId, fecha, hora
-    });
-    
-    // Validar campos requeridos
     if (!mascotaId || !servicioId || !fecha || !hora) {
       mostrarError('Por favor, completa todos los campos obligatorios');
       return;
     }
 
-    // Verificar que la mascota pertenece al cliente actual
-    const mascotaSeleccionada = mascotasData.find(m => m.id == mascotaId);
-    if (!mascotaSeleccionada) {
-      mostrarError('La mascota seleccionada no es válida');
-      return;
-    }
-
-    // Validar que la fecha no sea en el pasado
     const fechaCita = new Date(fecha);
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
@@ -477,9 +440,8 @@ window.agendarCita = async function() {
       return;
     }
 
-    // Preparar datos para enviar (SIEMPRE con el clienteId actual)
     const datosCita = {
-      cliente_id: clienteId, // FORZAR el cliente actual
+      cliente_id: clienteId,
       mascota_id: parseInt(mascotaId),
       servicio_id: parseInt(servicioId),
       fecha: fecha,
@@ -489,14 +451,10 @@ window.agendarCita = async function() {
       observaciones: observaciones
     };
 
-    // Agregar sucursal_id solo si existe y está seleccionada
     if (sucursalId) {
       datosCita.sucursal_id = parseInt(sucursalId);
     }
 
-    console.log('Enviando datos de cita:', datosCita);
-
-    // Enviar petición al servidor
     const response = await fetch('/api/citas', {
       method: 'POST',
       headers: {
@@ -506,27 +464,22 @@ window.agendarCita = async function() {
     });
 
     const result = await response.json();
-    console.log('Respuesta del servidor:', result);
 
     if (!response.ok) throw new Error(result.error || 'Error al crear la cita');
     
-    // Actualizar datos locales
     citasData.push(result.data || result);
     
-    // Actualizar UI
     actualizarEstadisticas();
     mostrarCitas();
     actualizarProximaCita();
     actualizarNotificaciones();
     
-    // Cerrar modal y limpiar formulario
     const modal = bootstrap.Modal.getInstance(document.getElementById('nuevaCitaModal'));
     if (modal) modal.hide();
     form.reset();
     
     mostrarExito('Cita agendada exitosamente');
     
-    // Si era la primera cita, ocultar estado vacío y mostrar secciones
     if (citasData.length === 1) {
       document.getElementById('sinCitasState').style.display = 'none';
       document.getElementById('filtrosSection').style.display = 'block';
@@ -539,11 +492,191 @@ window.agendarCita = async function() {
   }
 };
 
-// Funciones auxiliares
+// FUNCIÓN CORREGIDA: Editar cita con formato de fecha correcto
+window.editarCita = async function(citaId) {
+  try {
+    // Buscar la cita completa en el servidor
+    const response = await fetch(`/api/citas/${citaId}`);
+    if (!response.ok) throw new Error('Error al obtener la cita');
+    
+    const cita = await response.json();
+    console.log('Cita obtenida para editar:', cita);
+    
+    if (!cita) {
+      mostrarError('Cita no encontrada');
+      return;
+    }
+    
+    if (cita.cliente_id !== clienteId) {
+      mostrarError('No tienes permisos para editar esta cita');
+      return;
+    }
+    
+    if (cita.estado !== 'pendiente') {
+      mostrarError('Solo se pueden editar citas pendientes');
+      return;
+    }
+    
+    // Guardar la cita que estamos editando
+    citaEditando = cita;
+    
+    // Cambiar el título del modal
+    document.querySelector('#nuevaCitaModal .modal-title').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Cita';
+    
+    // Formatear la fecha correctamente para el input type="date"
+    let fechaFormateada = cita.fecha;
+    if (cita.fecha && !cita.fecha.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      // Si la fecha viene en otro formato, convertirla
+      const fechaObj = new Date(cita.fecha);
+      const year = fechaObj.getFullYear();
+      const month = String(fechaObj.getMonth() + 1).padStart(2, '0');
+      const day = String(fechaObj.getDate()).padStart(2, '0');
+      fechaFormateada = `${year}-${month}-${day}`;
+    }
+    
+    // Formatear la hora correctamente para el select (HH:MM)
+    let horaFormateada = cita.hora;
+    if (cita.hora && cita.hora.includes(':')) {
+      // Extraer solo HH:MM si viene con segundos
+      const partesHora = cita.hora.split(':');
+      horaFormateada = `${partesHora[0]}:${partesHora[1]}`;
+    }
+    
+    console.log('Datos formateados:', {
+      fecha: fechaFormateada,
+      hora: horaFormateada,
+      mascota: cita.mascota_id,
+      servicio: cita.servicio_id,
+      sucursal: cita.sucursal_id
+    });
+    
+    // Llenar el formulario con los datos actuales
+    document.getElementById('mascotaSelect').value = cita.mascota_id;
+    document.getElementById('servicioSelect').value = cita.servicio_id;
+    document.getElementById('sucursalSelect').value = cita.sucursal_id || '';
+    document.getElementById('fechaCita').value = fechaFormateada;
+    document.getElementById('horaCita').value = horaFormateada;
+    document.getElementById('motivoConsulta').value = cita.motivo || '';
+    document.getElementById('observaciones').value = cita.observaciones || '';
+    
+    // Verificar que los valores se asignaron correctamente
+    console.log('Valores asignados al formulario:', {
+      mascota: document.getElementById('mascotaSelect').value,
+      servicio: document.getElementById('servicioSelect').value,
+      sucursal: document.getElementById('sucursalSelect').value,
+      fecha: document.getElementById('fechaCita').value,
+      hora: document.getElementById('horaCita').value
+    });
+    
+    // Cambiar el botón de acción
+    const botonSubmit = document.querySelector('#nuevaCitaModal .modal-footer button.btn-primary');
+    botonSubmit.innerHTML = '<i class="bi bi-check-circle me-1"></i>Actualizar Cita';
+    botonSubmit.onclick = actualizarCitaEditada;
+    
+    // Mostrar el modal
+    const modal = new bootstrap.Modal(document.getElementById('nuevaCitaModal'));
+    modal.show();
+    
+    // Cuando se cierre el modal, restaurar el estado original
+    document.getElementById('nuevaCitaModal').addEventListener('hidden.bs.modal', function handler() {
+      restaurarModalNuevaCita();
+      document.getElementById('nuevaCitaModal').removeEventListener('hidden.bs.modal', handler);
+    });
+    
+  } catch (error) {
+    console.error('Error al cargar cita para editar:', error);
+    mostrarError('Error al cargar los datos de la cita');
+  }
+};
+
+async function actualizarCitaEditada() {
+  try {
+    if (!citaEditando) return;
+    
+    const mascotaId = document.getElementById('mascotaSelect').value;
+    const servicioId = document.getElementById('servicioSelect').value;
+    const sucursalId = document.getElementById('sucursalSelect')?.value;
+    const fecha = document.getElementById('fechaCita').value;
+    const hora = document.getElementById('horaCita').value;
+    const motivo = document.getElementById('motivoConsulta')?.value || '';
+    const observaciones = document.getElementById('observaciones')?.value || '';
+    
+    if (!mascotaId || !servicioId || !fecha || !hora) {
+      mostrarError('Por favor, completa todos los campos obligatorios');
+      return;
+    }
+
+    const fechaCita = new Date(fecha);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    
+    if (fechaCita < hoy) {
+      mostrarError('No se pueden agendar citas en fechas pasadas');
+      return;
+    }
+
+    const datosActualizar = {
+      fecha: fecha,
+      hora: hora,
+    };
+
+    if (sucursalId) {
+      datosActualizar.sucursal_id = parseInt(sucursalId);
+    }
+
+    const response = await fetch(`/api/citas/${citaEditando.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(datosActualizar)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) throw new Error(result.error || 'Error al actualizar la cita');
+    
+    // Actualizar datos locales
+    const citaIndex = citasData.findIndex(c => c.id === citaEditando.id);
+    if (citaIndex !== -1) {
+      citasData[citaIndex] = { ...citasData[citaIndex], ...datosActualizar };
+    }
+    
+    actualizarEstadisticas();
+    mostrarCitas();
+    actualizarProximaCita();
+    actualizarNotificaciones();
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById('nuevaCitaModal'));
+    if (modal) modal.hide();
+    
+    restaurarModalNuevaCita();
+    
+    mostrarExito('Cita actualizada exitosamente');
+
+  } catch (error) {
+    console.error('Error al actualizar cita:', error);
+    mostrarError(error.message || 'Error al actualizar la cita. Por favor, intenta de nuevo.');
+  }
+}
+
+function restaurarModalNuevaCita() {
+  citaEditando = null;
+  
+  document.querySelector('#nuevaCitaModal .modal-title').innerHTML = '<i class="bi bi-calendar-plus me-2"></i>Agendar Nueva Cita';
+  
+  const botonSubmit = document.querySelector('#nuevaCitaModal .modal-footer button.btn-primary');
+  botonSubmit.innerHTML = '<i class="bi bi-check-circle me-1"></i>Agendar Cita';
+  botonSubmit.onclick = agendarCita;
+  
+  document.getElementById('formNuevaCita').reset();
+}
+
 function obtenerBadgeEstado(estado) {
   const badges = {
     'pendiente': '<span class="badge bg-warning rounded-pill">Pendiente</span>',
     'confirmada': '<span class="badge bg-success rounded-pill">Confirmada</span>',
+    'completada': '<span class="badge bg-info rounded-pill">Completada</span>',
     'cancelada': '<span class="badge bg-danger rounded-pill">Cancelada</span>'
   };
   return badges[estado] || '<span class="badge bg-secondary rounded-pill">Desconocido</span>';
@@ -567,14 +700,12 @@ function obtenerMesAbrev(mes) {
   return meses[mes];
 }
 
-// Actualizar próxima cita en sidebar
 function actualizarProximaCita() {
   const widget = document.getElementById('proximaCitaWidget');
   if (!widget) return;
   
   const hoy = new Date();
   
-  // Buscar la próxima cita del cliente actual
   const proximasCitas = citasData
     .filter(cita => new Date(cita.fecha) >= hoy && (cita.estado === 'pendiente' || cita.estado === 'confirmada'))
     .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
@@ -594,26 +725,27 @@ function actualizarProximaCita() {
   }
 }
 
-// Actualizar notificaciones
 function actualizarNotificaciones() {
   const badge = document.getElementById('notificationCount');
   const list = document.getElementById('notificationList');
   
   if (!badge || !list) return;
   
-  // Calcular notificaciones (citas próximas del cliente actual)
   const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
   const manana = new Date(hoy.getTime() + 24*60*60*1000);
   
   const citasHoy = citasData.filter(cita => {
     const fechaCita = new Date(cita.fecha);
-    return fechaCita.toDateString() === hoy.toDateString() && 
+    fechaCita.setHours(0, 0, 0, 0);
+    return fechaCita.getTime() === hoy.getTime() && 
            (cita.estado === 'pendiente' || cita.estado === 'confirmada');
   });
   
   const citasManana = citasData.filter(cita => {
     const fechaCita = new Date(cita.fecha);
-    return fechaCita.toDateString() === manana.toDateString() && 
+    fechaCita.setHours(0, 0, 0, 0);
+    return fechaCita.getTime() === manana.getTime() && 
            (cita.estado === 'pendiente' || cita.estado === 'confirmada');
   });
   
@@ -635,11 +767,9 @@ function actualizarNotificaciones() {
     });
   });
   
-  // Actualizar badge
   badge.textContent = notificaciones.length;
   badge.style.display = notificaciones.length > 0 ? 'flex' : 'none';
   
-  // Actualizar lista
   if (notificaciones.length > 0) {
     let html = '<li><h6 class="dropdown-header">Notificaciones</h6></li>';
     notificaciones.forEach(notif => {
@@ -654,7 +784,6 @@ function actualizarNotificaciones() {
   }
 }
 
-// Configurar fecha mínima para nueva cita
 function configurarFechaMinima() {
   const fechaInput = document.getElementById('fechaCita');
   if (fechaInput) {
@@ -663,9 +792,7 @@ function configurarFechaMinima() {
   }
 }
 
-// Configurar event listeners
 function configurarEventListeners() {
-  // Cambio de vista
   const vistaLista = document.getElementById('vista-lista');
   const vistaCalendario = document.getElementById('vista-calendario');
   
@@ -685,47 +812,106 @@ function configurarEventListeners() {
     });
   }
 
-  // Filtros
-  document.getElementById('buscarCitas')?.addEventListener('input', aplicarFiltros);
+  let filtroTimeout;
+  
+  document.getElementById('buscarCitas')?.addEventListener('input', function() {
+    clearTimeout(filtroTimeout);
+    filtroTimeout = setTimeout(aplicarFiltros, 300);
+  });
+  
   document.getElementById('filtroEstado')?.addEventListener('change', aplicarFiltros);
   document.getElementById('filtroMascota')?.addEventListener('change', aplicarFiltros);
   document.getElementById('filtroFecha')?.addEventListener('change', aplicarFiltros);
 }
 
-// Aplicar filtros (solo sobre las citas del cliente actual)
+// FUNCIÓN CORREGIDA: Extraer solo la parte de fecha considerando zona horaria local
+function extraerSoloFecha(fechaStr) {
+  if (!fechaStr) return null;
+  
+  // Crear objeto Date y extraer fecha en zona horaria local
+  const fecha = new Date(fechaStr);
+  
+  // Obtener componentes en hora local
+  const year = fecha.getFullYear();
+  const month = String(fecha.getMonth() + 1).padStart(2, '0');
+  const day = String(fecha.getDate()).padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+}
+
+// FUNCIÓN CORREGIDA: Aplicar filtros
 function aplicarFiltros() {
-  const termino = document.getElementById('buscarCitas')?.value.toLowerCase() || '';
+  const termino = document.getElementById('buscarCitas')?.value.toLowerCase().trim() || '';
   const estadoFiltro = document.getElementById('filtroEstado')?.value || '';
   const mascotaFiltro = document.getElementById('filtroMascota')?.value || '';
   const fechaFiltro = document.getElementById('filtroFecha')?.value || '';
 
+  console.log('==================== FILTROS ====================');
+  console.log('Filtros aplicados:', { termino, estadoFiltro, mascotaFiltro, fechaFiltro });
+  
+  if (citasData.length > 0) {
+    console.log('Ejemplo fecha original:', citasData[0].fecha);
+    console.log('Ejemplo fecha procesada:', extraerSoloFecha(citasData[0].fecha));
+  }
+
   const citasFiltradas = citasData.filter(cita => {
-    const mascota = mascotasData.find(m => m.id === cita.mascota_id);
-    const servicio = serviciosData.find(s => s.id === cita.servicio_id);
-    
-    // Filtro de búsqueda
-    if (termino) {
-      const textoCompleto = `${mascota?.nombre || ''} ${mascota?.especie || ''} ${mascota?.raza || ''} ${servicio?.nombre || ''} ${cita.veterinario || ''}`.toLowerCase();
-      if (!textoCompleto.includes(termino)) return false;
+    // Filtro de estado
+    if (estadoFiltro && cita.estado !== estadoFiltro) {
+      return false;
     }
     
-    // Filtro de estado
-    if (estadoFiltro && cita.estado !== estadoFiltro) return false;
-    
     // Filtro de mascota
-    if (mascotaFiltro && cita.mascota_id != mascotaFiltro) return false;
+    if (mascotaFiltro && cita.mascota_id != mascotaFiltro) {
+      return false;
+    }
     
-    // Filtro de fecha
-    if (fechaFiltro && cita.fecha !== fechaFiltro) return false;
+    // Filtro de fecha - CORREGIDO con zona horaria local
+    if (fechaFiltro) {
+      const fechaCita = extraerSoloFecha(cita.fecha);
+      
+      console.log('Comparando:', { 
+        fechaCitaOriginal: cita.fecha,
+        fechaCitaExtraida: fechaCita, 
+        fechaFiltro: fechaFiltro,
+        coincide: fechaCita === fechaFiltro
+      });
+      
+      if (fechaCita !== fechaFiltro) {
+        return false;
+      }
+    }
+    
+    // Filtro de búsqueda por texto
+    if (termino) {
+      const mascota = mascotasData.find(m => m.id === cita.mascota_id);
+      const servicio = serviciosData.find(s => s.id === cita.servicio_id);
+      
+      const textoCompleto = [
+        mascota?.nombre || '',
+        mascota?.especie || '',
+        mascota?.raza || '',
+        servicio?.nombre || '',
+        cita.veterinario || '',
+        cita.estado || '',
+        cita.fecha || '',
+        cita.hora || ''
+      ].join(' ').toLowerCase();
+      
+      if (!textoCompleto.includes(termino)) {
+        return false;
+      }
+    }
     
     return true;
   });
 
-  // Mostrar resultados filtrados
+  console.log('RESULTADO:', `${citasFiltradas.length} de ${citasData.length} citas encontradas`);
+  console.log('IDs filtradas:', citasFiltradas.map(c => c.id));
+  console.log('================================================');
+  
   mostrarCitasFiltradas(citasFiltradas);
 }
 
-// Mostrar citas filtradas
 function mostrarCitasFiltradas(citasFiltradas) {
   const container = document.getElementById('citasListContainer');
   
@@ -740,7 +926,6 @@ function mostrarCitasFiltradas(citasFiltradas) {
     return;
   }
 
-  // Reutilizar la lógica de mostrarCitas pero con las citas filtradas
   const citasOrdenadas = [...citasFiltradas].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
   
   let html = '';
@@ -750,16 +935,24 @@ function mostrarCitasFiltradas(citasFiltradas) {
     const servicio = serviciosData.find(s => s.id === cita.servicio_id);
     const fecha = new Date(cita.fecha);
     
+    // Formato día/mes/año
+    const dia = fecha.getDate();
+    const mes = fecha.getMonth();
+    const anio = fecha.getFullYear();
+    
     const estadoBadge = obtenerBadgeEstado(cita.estado);
     const avatarMascota = obtenerAvatarMascota(mascota?.especie);
+    
+    const puedeEditar = cita.estado === 'pendiente';
+    const puedeCancelar = cita.estado === 'pendiente' || cita.estado === 'confirmada';
     
     html += `
       <div class="cita-item border rounded-3 p-3 mb-3 ${cita.estado}" data-cita-id="${cita.id}">
         <div class="row align-items-center">
           <div class="col-md-2">
             <div class="fecha-cita text-center">
-              <div class="dia">${fecha.getDate()}</div>
-              <div class="mes">${obtenerMesAbrev(fecha.getMonth())}</div>
+              <div class="dia">${dia}</div>
+              <div class="mes">${obtenerMesAbrev(mes)}</div>
               <div class="hora">${cita.hora}</div>
             </div>
           </div>
@@ -788,15 +981,18 @@ function mostrarCitasFiltradas(citasFiltradas) {
               <button class="btn btn-sm btn-outline-primary" onclick="verDetalles(${cita.id})" title="Ver detalles">
                 <i class="bi bi-eye"></i>
               </button>
-              ${cita.estado !== 'confirmada' && cita.estado !== 'cancelada' ? 
+              ${puedeEditar ? 
                 `<button class="btn btn-sm btn-outline-warning" onclick="editarCita(${cita.id})" title="Editar">
                   <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" onclick="cancelarCita(${cita.id})" title="Cancelar">
+                </button>` : 
+                ''
+              }
+              ${puedeCancelar ? 
+                `<button class="btn btn-sm btn-outline-danger" onclick="cancelarCita(${cita.id})" title="Cancelar">
                   <i class="bi bi-x-circle"></i>
                 </button>` : 
-                `<button class="btn btn-sm btn-outline-secondary" disabled title="Completada">
-                  <i class="bi bi-check-circle"></i>
+                `<button class="btn btn-sm btn-outline-secondary" disabled title="${cita.estado === 'completada' ? 'Completada' : 'Cancelada'}">
+                  <i class="bi bi-${cita.estado === 'completada' ? 'check' : 'x'}-circle"></i>
                 </button>`
               }
             </div>
@@ -809,18 +1005,15 @@ function mostrarCitasFiltradas(citasFiltradas) {
   container.innerHTML = html;
 }
 
-// Limpiar filtros
 window.limpiarFiltros = function() {
   document.getElementById('buscarCitas').value = '';
   document.getElementById('filtroEstado').value = '';
   document.getElementById('filtroMascota').value = '';
   document.getElementById('filtroFecha').value = '';
   
-  // Mostrar todas las citas del cliente actual
   mostrarCitas();
 };
 
-// Ver detalles de cita (verificando que sea del cliente actual)
 window.verDetalles = function(citaId) {
   const cita = citasData.find(c => c.id === citaId);
   if (!cita) {
@@ -828,7 +1021,6 @@ window.verDetalles = function(citaId) {
     return;
   }
   
-  // Verificar que la cita pertenece al cliente actual
   if (cita.cliente_id !== clienteId) {
     mostrarError('No tienes permisos para ver esta cita');
     return;
@@ -836,7 +1028,18 @@ window.verDetalles = function(citaId) {
   
   const mascota = mascotasData.find(m => m.id === cita.mascota_id);
   const servicio = serviciosData.find(s => s.id === cita.servicio_id);
+  const sucursal = sucursalesData.find(suc => suc.id === cita.sucursal_id);
   const fecha = new Date(cita.fecha);
+  
+  // Formato día/mes/año
+  const dia = fecha.getDate();
+  const mes = fecha.getMonth();
+  const anio = fecha.getFullYear();
+  const nombreMes = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'][mes];
+  const nombreDia = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'][fecha.getDay()];
+  
+  const fechaFormateada = `${nombreDia}, ${dia} de ${nombreMes} de ${anio}`;
   
   const estadoBadge = obtenerBadgeEstado(cita.estado);
   const avatarMascota = obtenerAvatarMascota(mascota?.especie);
@@ -860,12 +1063,7 @@ window.verDetalles = function(citaId) {
       <div class="col-md-6">
         <h6>Fecha y Hora</h6>
         <div class="mb-3">
-          <i class="bi bi-calendar-event me-2"></i>${fecha.toLocaleDateString('es-ES', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}
+          <i class="bi bi-calendar-event me-2"></i>${fechaFormateada}
           <br><i class="bi bi-clock me-2"></i>${cita.hora}
         </div>
       </div>
@@ -876,15 +1074,16 @@ window.verDetalles = function(citaId) {
         </div>
       </div>
       <div class="col-md-6">
-        <h6>Veterinario</h6>
+        <h6>Sucursal</h6>
         <div class="mb-3">
-          <i class="bi bi-person-badge me-2"></i>${cita.veterinario || 'Sin asignar'}
+          <i class="bi bi-building me-2"></i>${sucursal ? sucursal.nombre : 'No especificada'}
+          ${sucursal ? `<br><small class="text-muted">${sucursal.direccion}</small>` : ''}
         </div>
       </div>
       <div class="col-md-6">
-        <h6>Prioridad</h6>
+        <h6>Veterinario</h6>
         <div class="mb-3">
-          <span class="badge bg-${cita.prioridad === 'urgente' ? 'danger' : cita.prioridad === 'alta' ? 'warning' : 'secondary'}">${cita.prioridad || 'Normal'}</span>
+          <i class="bi bi-person-badge me-2"></i>${cita.veterinario || 'Sin asignar'}
         </div>
       </div>
       ${cita.motivo ? `
@@ -910,30 +1109,6 @@ window.verDetalles = function(citaId) {
   modal.show();
 };
 
-// Editar cita (verificando que sea del cliente actual)
-window.editarCita = function(citaId) {
-  const cita = citasData.find(c => c.id === citaId);
-  if (!cita) {
-    mostrarError('Cita no encontrada');
-    return;
-  }
-  
-  // Verificar que la cita pertenece al cliente actual
-  if (cita.cliente_id !== clienteId) {
-    mostrarError('No tienes permisos para editar esta cita');
-    return;
-  }
-  
-  if (cita.estado === 'confirmada' || cita.estado === 'cancelada') {
-    mostrarError('No se puede editar esta cita');
-    return;
-  }
-  
-  // Aquí implementarías la lógica para editar la cita
-  mostrarInfo('Función de edición en desarrollo');
-};
-
-// Cancelar cita (verificando que sea del cliente actual)
 window.cancelarCita = async function(citaId) {
   const cita = citasData.find(c => c.id === citaId);
   if (!cita) {
@@ -941,7 +1116,6 @@ window.cancelarCita = async function(citaId) {
     return;
   }
   
-  // Verificar que la cita pertenece al cliente actual
   if (cita.cliente_id !== clienteId) {
     mostrarError('No tienes permisos para cancelar esta cita');
     return;
@@ -964,13 +1138,11 @@ window.cancelarCita = async function(citaId) {
 
     if (!response.ok) throw new Error('Error al cancelar la cita');
 
-    // Actualizar datos locales
     const citaIndex = citasData.findIndex(c => c.id === citaId);
     if (citaIndex !== -1) {
       citasData[citaIndex].estado = 'cancelada';
     }
 
-    // Actualizar UI
     actualizarEstadisticas();
     mostrarCitas();
     actualizarProximaCita();
@@ -984,7 +1156,6 @@ window.cancelarCita = async function(citaId) {
   }
 };
 
-// Cerrar sesión
 window.cerrarSesion = function() {
   if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
     sessionStorage.removeItem('usuario');
@@ -993,7 +1164,6 @@ window.cerrarSesion = function() {
   }
 };
 
-// Funciones de utilidad para mostrar mensajes
 function mostrarError(mensaje) {
   console.error('Error:', mensaje);
   alert('Error: ' + mensaje);

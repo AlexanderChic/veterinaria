@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayuda - Veterinaria Mascotico</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Estilos personalizados -->
+  <link href="css/visitas.css" rel="stylesheet">
+  <link href="css/cliente-ayuda.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header/Navbar -->
+  <header class="dashboard-header">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <!-- Logo y marca -->
+        <div class="navbar-brand d-flex align-items-center">
+          <div class="brand-icon me-2">
+            <img src="img/mascotico.png" alt="Logo Mascotico">
+          </div>
+          <div>
+            <h5 class="mb-0">Veterinaria Mascotico</h5>
+            <small class="text-muted">Centro de Ayuda</small>
+          </div>
+        </div>
+
+        <!-- Botón toggle para móvil -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Contenido del navbar -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <div class="navbar-nav ms-auto">
+            <!-- Notificaciones -->
+            <div class="nav-item dropdown me-3">
+              <a class="nav-link notification-bell" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-bell"></i>
+                <span class="notification-badge">3</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
+                <li><h6 class="dropdown-header">Notificaciones</h6></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-calendar-check me-2"></i>Cita programada para hoy</a></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-exclamation-circle me-2"></i>Recordatorio de vacuna</a></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle me-2"></i>Nuevo mensaje</a></li>
+              </ul>
+            </div>
+
+            <!-- Usuario -->
+            <div class="nav-item dropdown">
+              <a class="nav-link user-profile" href="#" role="button" data-bs-toggle="dropdown">
+                <div class="user-avatar">
+                  <i class="bi bi-person-circle"></i>
+                </div>
+                <div class="user-info">
+                  <span class="user-name">Usuario Ejemplo</span>
+                  <small class="user-role">Cliente</small>
+                </div>
+                <i class="bi bi-chevron-down ms-2"></i>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="cliente-perfil.html"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#" id="cerrarSesionBtn"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-content">
+        <nav class="sidebar-nav">
+          <div class="nav-section">
+            <h6 class="nav-section-title">Principal</h6>
+            <ul class="nav-items">
+              <li class="nav-item">
+                <a href="cliente-dashboard.html" class="nav-link">
+                  <i class="bi bi-house-door"></i>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="cliente-citas.html" class="nav-link">
+                  <i class="bi bi-calendar-event"></i>
+                  <span>Citas</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="cliente-mascota.html" class="nav-link">
+                  <i class="bi bi-heart"></i>
+                  <span>Mascotas</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="nav-section">
+            <h6 class="nav-section-title">Configuración</h6>
+            <ul class="nav-items">
+              <li class="nav-item">
+                <a href="cliente-perfil.html" class="nav-link">
+                  <i class="bi bi-person-gear"></i>
+                  <span>Mi Perfil</span>
+                </a>
+              </li>
+              <li class="nav-item active">
+                <a href="cliente-ayuda.html" class="nav-link">
+                  <i class="bi bi-question-circle"></i>
+                  <span>Ayuda</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="dashboard-main">
+      <!-- Header Section -->
+      <div class="help-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="help-title">
+              <i class="bi bi-life-preserver me-2"></i>Centro de Ayuda
+            </h1>
+            <p class="help-subtitle">¿Cómo podemos ayudarte hoy?</p>
+          </div>
+          <button class="btn btn-outline-light" onclick="window.history.back()">
+            <i class="bi bi-arrow-left me-2"></i>Volver
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-box">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="bi bi-search"></i>
+            </span>
+            <input type="text" class="form-control" id="searchHelp" placeholder="Buscar en el centro de ayuda...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Help Cards -->
+      <div class="quick-help-section">
+        <h4 class="section-title">Acceso Rápido</h4>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="help-card">
+              <div class="help-card-icon primary">
+                <i class="bi bi-calendar-plus"></i>
+              </div>
+              <h5>Agendar Citas</h5>
+              <p>Aprende cómo programar citas para tus mascotas</p>
+              <a href="#agendar-citas" class="help-link">Ver más <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-card">
+              <div class="help-card-icon success">
+                <i class="bi bi-heart-pulse"></i>
+              </div>
+              <h5>Registrar Mascotas</h5>
+              <p>Guía para agregar tus mascotas al sistema</p>
+              <a href="#registrar-mascotas" class="help-link">Ver más <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-card">
+              <div class="help-card-icon info">
+                <i class="bi bi-person-gear"></i>
+              </div>
+              <h5>Cuenta y Perfil</h5>
+              <p>Gestiona tu información personal y configuración</p>
+              <a href="#cuenta-perfil" class="help-link">Ver más <i class="bi bi-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-section">
+        <h4 class="section-title">Preguntas Frecuentes</h4>
+        
+        <div class="accordion" id="faqAccordion">
+          <!-- Agendar Citas -->
+          <div class="accordion-item" id="agendar-citas">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                <i class="bi bi-calendar-check me-2"></i>¿Cómo puedo agendar una cita?
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                <p>Para agendar una cita, sigue estos pasos:</p>
+                <ol>
+                  <li>Ve a la sección <strong>"Citas"</strong> desde el menú lateral</li>
+                  <li>Haz clic en el botón <strong>"Agendar Nueva Cita"</strong></li>
+                  <li>Selecciona la mascota para la cual quieres agendar la cita</li>
+                  <li>Elige el servicio que necesitas</li>
+                  <li>Selecciona la fecha y hora disponible</li>
+                  <li>Confirma tu cita</li>
+                </ol>
+                <div class="alert alert-info mt-3">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Recibirás una confirmación por correo electrónico una vez que tu cita sea procesada.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cancelar Citas -->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                <i class="bi bi-x-circle me-2"></i>¿Cómo cancelo o modifico una cita?
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                <p>Para cancelar o modificar una cita:</p>
+                <ol>
+                  <li>Ve a la sección <strong>"Citas"</strong></li>
+                  <li>Busca la cita que deseas modificar</li>
+                  <li>Haz clic en el botón de opciones (tres puntos)</li>
+                  <li>Selecciona <strong>"Cancelar"</strong> o <strong>"Modificar"</strong></li>
+                </ol>
+                <div class="alert alert-warning mt-3">
+                  <i class="bi bi-exclamation-triangle me-2"></i>
+                  Las cancelaciones deben realizarse con al menos 24 horas de anticipación.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Registrar Mascotas -->
+          <div class="accordion-item" id="registrar-mascotas">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                <i class="bi bi-heart me-2"></i>¿Cómo registro una nueva mascota?
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                <p>Para registrar una mascota:</p>
+                <ol>
+                  <li>Ve a la sección <strong>"Mascotas"</strong></li>
+                  <li>Haz clic en <strong>"Registrar Nueva Mascota"</strong></li>
+                  <li>Completa el formulario con la información de tu mascota:
+                    <ul>
+                      <li>Nombre</li>
+                      <li>Especie (perro, gato, etc.)</li>
+                      <li>Raza</li>
+                      <li>Fecha de nacimiento</li>
+                      <li>Género</li>
+                      <li>Color</li>
+                      <li>Información adicional (opcional)</li>
+                    </ul>
+                  </li>
+                  <li>Haz clic en <strong>"Guardar"</strong></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actualizar Perfil -->
+          <div class="accordion-item" id="cuenta-perfil">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                <i class="bi bi-person-circle me-2"></i>¿Cómo actualizo mi información personal?
+              </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                <p>Para actualizar tu información:</p>
+                <ol>
+                  <li>Ve a <strong>"Mi Perfil"</strong> desde el menú de usuario o el menú lateral</li>
+                  <li>En la sección "Editar Información Personal", modifica los campos que desees</li>
+                  <li>Haz clic en <strong>"Guardar Cambios"</strong></li>
+                </ol>
+                <div class="alert alert-info mt-3">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Tu correo electrónico no puede ser modificado. Si necesitas cambiarlo, contacta con soporte.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cambiar Contraseña -->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                <i class="bi bi-key me-2"></i>¿Cómo cambio mi contraseña?
+              </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                <p>Para cambiar tu contraseña:</p>
+                <ol>
+                  <li>Ve a <strong>"Mi Perfil"</strong></li>
+                  <li>Desplázate hasta la sección <strong>"Cambiar Contraseña"</strong></li>
+                  <li>Ingresa tu contraseña actual</li>
+                  <li>Ingresa tu nueva contraseña (debe cumplir con los requisitos de seguridad)</li>
+                  <li>Confirma la nueva contraseña</li>
+                  <li>Haz clic en <strong>"Cambiar Contraseña"</strong></li>
+                </ol>
+                <div class="alert alert-warning mt-3">
+                  <i class="bi bi-shield-lock me-2"></i>
+                  <strong>Requisitos de contraseña:</strong> Mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Servicios Disponibles -->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix">
+                <i class="bi bi-clipboard-pulse me-2"></i>¿Qué servicios ofrece la veterinaria?
+              </button>
+            </h2>
+            <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                <p>Veterinaria Mascotico ofrece una amplia gama de servicios:</p>
+                <ul class="service-list">
+                  <li><i class="bi bi-check-circle-fill me-2"></i>Consultas generales</li>
+                  <li><i class="bi bi-check-circle-fill me-2"></i>Vacunación</li>
+                  <li><i class="bi bi-check-circle-fill me-2"></i>Desparasitación</li>
+                  <li><i class="bi bi-check-circle-fill me-2"></i>Cirugías</li>
+                  <li><i class="bi bi-check-circle-fill me-2"></i>Emergencias 24/7</li>
+                  <li><i class="bi bi-check-circle-fill me-2"></i>Peluquería y estética</li>
+                  <li><i class="bi bi-check-circle-fill me-2"></i>Hospitalización</li>
+                  <li><i class="bi bi-check-circle-fill me-2"></i>Análisis de laboratorio</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Horarios -->
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven">
+                <i class="bi bi-clock me-2"></i>¿Cuáles son los horarios de atención?
+              </button>
+            </h2>
+            <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                <p><strong>Horarios de atención:</strong></p>
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                      <td><strong>Lunes a Viernes</strong></td>
+                      <td>8:00 AM - 6:00 PM</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Sábados</strong></td>
+                      <td>9:00 AM - 2:00 PM</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Domingos y Feriados</strong></td>
+                      <td>Cerrado</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Emergencias</strong></td>
+                      <td>24/7 (Llamar al número de emergencias)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Section -->
+      <div class="contact-section">
+        <div class="row g-4">
+          <div class="col-md-8">
+            <div class="contact-card">
+              <h4><i class="bi bi-envelope me-2"></i>Contáctanos</h4>
+              <p>¿No encontraste lo que buscabas? Envíanos un mensaje y te responderemos lo antes posible.</p>
+              
+              <form id="contactForm">
+                <div class="mb-3">
+                  <label for="asunto" class="form-label">Asunto</label>
+                  <input type="text" class="form-control" id="asunto" required>
+                </div>
+                <div class="mb-3">
+                  <label for="mensaje" class="form-label">Mensaje</label>
+                  <textarea class="form-control" id="mensaje" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-send me-2"></i>Enviar Mensaje
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="contact-info-card">
+              <h5><i class="bi bi-info-circle me-2"></i>Información de Contacto</h5>
+              
+              <div class="contact-item">
+                <i class="bi bi-telephone-fill"></i>
+                <div>
+                  <strong>Teléfono</strong>
+                  <p>+502 1234-5678</p>
+                </div>
+              </div>
+
+              <div class="contact-item">
+                <i class="bi bi-envelope-fill"></i>
+                <div>
+                  <strong>Email</strong>
+                  <p>info@mascotico.com</p>
+                </div>
+              </div>
+
+              <div class="contact-item">
+                <i class="bi bi-geo-alt-fill"></i>
+                <div>
+                  <strong>Dirección</strong>
+                  <p>Zona 10, Ciudad de Guatemala</p>
+                </div>
+              </div>
+
+              <div class="contact-item">
+                <i class="bi bi-clock-fill"></i>
+                <div>
+                  <strong>Emergencias 24/7</strong>
+                  <p>+502 9876-5432</p>
+                </div>
+              </div>
+
+              <div class="social-links">
+                <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
+                <a href="#" class="social-link"><i class="bi bi-twitter"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/cliente-ayuda.js"></script>
+</body>
+</html>

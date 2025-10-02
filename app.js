@@ -12,6 +12,7 @@ import servicioRoutes from './routes/servicioRoutes.js';
 import citaRoutes from './routes/citaRoutes.js';
 import clienteRoutes from './routes/clienteRoutes.js';
 import mascotaRoutes from './routes/mascotaRoutes.js';
+import { iniciarScheduler } from './services/citaScheduler.js';
 
 // Para obtener __dirname en ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -62,6 +63,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Error interno del servidor' });
 });
 
+// Iniciar el scheduler de citas automáticas
+iniciarScheduler();
+
 // Iniciar el servidor
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
@@ -70,4 +74,5 @@ app.listen(PORT, () => {
   console.log(`   GET  /              -> Login page`);
   console.log(`   GET  /test          -> Test endpoint`);
   console.log(`   POST /api/login     -> Login endpoint`);
+  console.log(`   POST /api/citas/actualizar-pasadas -> Actualizar citas manualmente`);
 });

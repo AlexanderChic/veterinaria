@@ -229,6 +229,13 @@ export const actualizarCita = (req, res) => {
       return res.status(404).json({ error: 'Cita no encontrada' });
     }
 
+    // No permitir modificar citas completadas
+    if (citaExistente.estado === 'completada') {
+      return res.status(400).json({ 
+        error: 'No se puede modificar una cita completada' 
+      });
+    }
+
     // No permitir modificar citas confirmadas (solo cancelar)
     if (citaExistente.estado === 'confirmada' && datosActualizar.estado !== 'cancelada') {
       return res.status(400).json({ 
@@ -341,10 +348,10 @@ export const eliminarCita = (req, res) => {
       return res.status(404).json({ error: 'Cita no encontrada' });
     }
 
-    // No permitir eliminar citas confirmadas (solo cancelar)
-    if (cita.estado === 'confirmada') {
+    // No permitir eliminar citas confirmadas o completadas (solo cancelar)
+    if (cita.estado === 'confirmada' || cita.estado === 'completada') {
       return res.status(400).json({ 
-        error: 'No se pueden eliminar citas confirmadas. Usa cancelar en su lugar.' 
+        error: 'No se pueden eliminar citas confirmadas o completadas. Usa cancelar en su lugar.' 
       });
     }
 
@@ -403,5 +410,23 @@ export const obtenerCitasPorFecha = (req, res) => {
     }
     
     res.json(resultados);
+  });
+};
+
+// NUEVA FUNCIÓN: Actualizar manualmente citas pasadas
+export const actualizarCitasPasadasManual = (req, res) => {
+  console.log('Ejecutando actualización manual de citas pasadas...');
+  
+  Cita.actualizarCitasPasadas((err, result) => {
+    if (err) {
+      console.error('Error al actualizar citas pasadas:', err);
+      return res.status(500).json({ error: 'Error al actualizar citas' });
+    }
+    
+    res.json({ 
+      message: 'Citas actualizadas exitosamente',
+      citasActualizadas: result.affectedRows,
+      timestamp: new Date()
+    });
   });
 };

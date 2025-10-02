@@ -113,13 +113,13 @@
             <h6 class="nav-section-title">Configuración</h6>
             <ul class="nav-items">
               <li class="nav-item">
-                <a href="#perfil" class="nav-link">
+                <a href="cliente-perfil.html" class="nav-link">
                   <i class="bi bi-person-gear"></i>
                   <span>Mi Perfil</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#ayuda" class="nav-link">
+                <a href="cliente-ayuda.html" class="nav-link">
                   <i class="bi bi-question-circle"></i>
                   <span>Ayuda</span>
                 </a>
@@ -224,7 +224,8 @@
             <div class="col-md-2">
               <select class="form-select" id="filtroEstado">
                 <option value="">Todos los estados</option>
-                <option value="programada">Programadas</option>
+                <option value="pendiente">Pendientes</option>
+                <option value="confirmada">Confirmadas</option>
                 <option value="completada">Completadas</option>
                 <option value="cancelada">Canceladas</option>
               </select>
@@ -324,8 +325,14 @@
                 </div>
               </div>
               <div class="col-md-6">
-                <label for="fechaCita" class="form-label">Fecha</label>
-                <input type="date" class="form-control" id="fechaCita" required>
+                <label for="fechaCita" class="form-label">Fecha (DD/MM/AAAA)</label>
+                <input type="text" 
+                       class="form-control" 
+                       id="fechaCita" 
+                       placeholder="07/10/2025" 
+                       pattern="\d{2}/\d{2}/\d{4}"
+                       maxlength="10"
+                       required>
               </div>
               <div class="col-md-6">
                 <label for="horaCita" class="form-label">Hora</label>

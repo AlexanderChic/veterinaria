@@ -288,6 +288,7 @@ export const obtenerEstadisticasPorCliente = (cliente_id, callback) => {
       pendiente: 0,
       confirmada: 0,
       cancelada: 0,
+      completada: 0,
       por_fecha: {}
     };
     
@@ -331,5 +332,26 @@ export const obtenerProximasCitas = (cliente_id, limite = 5, callback) => {
       return callback(err);
     }
     callback(null, results);
+  });
+};
+
+export const actualizarCitasPasadas = (callback) => {
+  const query = `
+    UPDATE cita 
+    SET estado = 'confirmada'
+    WHERE fecha < CURDATE() 
+    AND estado = 'pendiente'
+  `;
+  
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Error al actualizar citas pasadas:', err);
+      return callback(err);
+    }
+    
+    if (result.affectedRows > 0) {
+      console.log(`Citas actualizadas a confirmada: ${result.affectedRows}`);
+    }
+    callback(null, result);
   });
 };

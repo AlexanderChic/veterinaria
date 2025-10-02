@@ -1,0 +1,493 @@
+/* cliente-ayuda.css */
+
+.help-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.help-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.help-subtitle {
+    margin: 0;
+    opacity: 0.95;
+    font-size: 1.2rem;
+}
+
+/* Search Box */
+.search-box {
+    margin-top: 2rem;
+    max-width: 600px;
+}
+
+.search-box .input-group-text {
+    background: white;
+    border: none;
+    border-radius: 10px 0 0 10px;
+    color: #667eea;
+    font-size: 1.2rem;
+}
+
+.search-box .form-control {
+    border: none;
+    border-radius: 0 10px 10px 0;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-box .form-control:focus {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    outline: none;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid #667eea;
+}
+
+/* Quick Help Section */
+.quick-help-section {
+    margin-bottom: 3rem;
+}
+
+.help-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    height: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.help-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+}
+
+.help-card-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.help-card-icon.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.help-card-icon.success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.help-card-icon.info {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.help-card h5 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.help-card p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+.help-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.help-link:hover {
+    color: #764ba2;
+    transform: translateX(5px);
+}
+
+.help-link i {
+    margin-left: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.help-link:hover i {
+    transform: translateX(5px);
+}
+
+/* FAQ Section */
+.faq-section {
+    margin-bottom: 3rem;
+}
+
+.accordion-item {
+    border: none;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.accordion-item:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-button {
+    background: white;
+    color: #2c3e50;
+    font-weight: 600;
+    padding: 1.25rem 1.5rem;
+    border: none;
+    font-size: 1.05rem;
+}
+
+.accordion-button:not(.collapsed) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border: none;
+}
+
+.accordion-button::after {
+    background-size: 1.25rem;
+}
+
+.accordion-body {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    color: #495057;
+    line-height: 1.8;
+}
+
+.accordion-body ol,
+.accordion-body ul {
+    padding-left: 1.5rem;
+}
+
+.accordion-body li {
+    margin-bottom: 0.75rem;
+}
+
+.accordion-body strong {
+    color: #2c3e50;
+}
+
+/* Service List */
+.service-list {
+    list-style: none;
+    padding: 0;
+}
+
+.service-list li {
+    padding: 0.5rem 0;
+    color: #495057;
+}
+
+.service-list i {
+    color: #38ef7d;
+}
+
+/* Highlight Effects */
+.highlight-match {
+    border: 2px solid #667eea;
+    animation: pulse 1s ease-in-out;
+}
+
+.highlight-temp {
+    animation: highlightFade 2s ease;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+@keyframes highlightFade {
+    0% { background-color: rgba(102, 126, 234, 0.2); }
+    100% { background-color: transparent; }
+}
+
+/* Contact Section */
+.contact-section {
+    margin-top: 3rem;
+}
+
+.contact-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.contact-card h4 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.contact-card p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+.contact-info-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    color: white;
+    height: 100%;
+}
+
+.contact-info-card h5 {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.contact-item:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.contact-item i {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    margin-top: 0.25rem;
+}
+
+.contact-item strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.contact-item p {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.95;
+}
+
+/* Social Links */
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.social-link {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-3px);
+}
+
+/* Form Styles */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-outline-light {
+    border: 2px solid white;
+    color: white;
+}
+
+.btn-outline-light:hover {
+    background: white;
+    color: #667eea;
+}
+
+/* Table Styles */
+.table {
+    margin-top: 1rem;
+}
+
+.table-bordered td,
+.table-bordered th {
+    border-color: #dee2e6;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 10px;
+    border: none;
+    padding: 1rem 1.5rem;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: #667eea;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%);
+    color: #ff9800;
+}
+
+.alert i {
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .help-title {
+        font-size: 2rem;
+    }
+
+    .help-subtitle {
+        font-size: 1rem;
+    }
+
+    .search-box {
+        margin-top: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .help-header {
+        padding: 1.5rem;
+    }
+
+    .help-title {
+        font-size: 1.75rem;
+    }
+
+    .help-card {
+        margin-bottom: 1rem;
+    }
+
+    .contact-info-card {
+        margin-top: 1.5rem;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .help-card-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.75rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+    }
+
+    .accordion-button {
+        font-size: 0.95rem;
+        padding: 1rem;
+    }
+
+    .accordion-body {
+        padding: 1rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.help-card,
+.accordion-item,
+.contact-card,
+.contact-info-card {
+    animation: fadeIn 0.5s ease;
+}

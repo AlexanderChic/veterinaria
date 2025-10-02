@@ -8,7 +8,8 @@ import {
   actualizarCita,
   eliminarCita,
   obtenerEstadisticasCitas,
-  obtenerCitasPorFecha
+  obtenerCitasPorFecha,
+  actualizarCitasPasadasManual
 } from '../controllers/citaController.js';
 
 const router = express.Router();
@@ -54,6 +55,12 @@ router.get('/citas/estadisticas/:cliente_id', (req, res, next) => {
   obtenerEstadisticasCitas(req, res, next);
 });
 
+// NUEVA RUTA: Actualizar manualmente citas pasadas
+router.post('/citas/actualizar-pasadas', (req, res, next) => {
+  console.log('Llegó a la ruta POST /citas/actualizar-pasadas');
+  actualizarCitasPasadasManual(req, res, next);
+});
+
 // Ruta para crear una nueva cita
 router.post('/citas', (req, res, next) => {
   console.log('Llegó a la ruta POST /citas');
@@ -93,6 +100,7 @@ router.get('/citas-test', (req, res) => {
       'GET /api/citas/fecha/:fecha - Obtener citas por fecha',
       'GET /api/citas/estadisticas/:cliente_id - Obtener estadísticas',
       'POST /api/citas - Crear nueva cita',
+      'POST /api/citas/actualizar-pasadas - Actualizar citas pasadas (NUEVO)',
       'PUT /api/citas/:id - Actualizar cita',
       'PATCH /api/citas/:id - Actualizar cita parcial',
       'DELETE /api/citas/:id - Eliminar cita'
