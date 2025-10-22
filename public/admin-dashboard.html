@@ -1,391 +1,249 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Veterinaria Mascotico</title>
-  <!-- Bootstrap CSS -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Administrador - Dashboard</title>
+
+  <!-- Bootstrap / Icons / Fonts -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Estilos personalizados -->
+
+  <!-- Estilos -->
   <link href="css/visitas.css" rel="stylesheet">
+  <link href="css/admin.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Header/Navbar -->
+  <!-- Header / Navbar -->
   <header class="dashboard-header">
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg bg-white">
       <div class="container-fluid">
-        <!-- Logo y marca -->
-        <div class="navbar-brand d-flex align-items-center">
-          <div class="brand-icon me-2">
-            <img src="img/mascotico.png" alt="Logo Mascotico">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="admin-dashboard.html">
+          <div class="brand-icon d-flex align-items-center justify-content-center">
+            <i class="bi bi-shield-lock"></i>
           </div>
-          <div>
-            <h5 class="mb-0">Veterinaria Mascotico</h5>
-            <small class="text-muted">Panel de Control</small>
-          </div>
-        </div>
+          <strong>Panel de Administración</strong>
+        </a>
 
-        <!-- Botón toggle para móvil -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="d-flex align-items-center gap-3 ms-auto">
+          <!-- Campana de notificaciones -->
+          <a href="#" class="notification-bell position-relative">
+            <i class="bi bi-bell"></i>
+            <span class="notification-badge" id="adminNotifBadge" style="display:none">0</span>
+          </a>
 
-        <!-- Contenido del navbar -->
-        <div class="collapse navbar-collapse" id="navbarContent">
-          <div class="navbar-nav ms-auto">
-            <!-- Notificaciones -->
-            <div class="nav-item dropdown me-3">
-              <a class="nav-link notification-bell" href="#" role="button" data-bs-toggle="dropdown">
-                <i class="bi bi-bell"></i>
-                <span class="notification-badge">3</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
-                <li><h6 class="dropdown-header">Notificaciones</h6></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-calendar-check me-2"></i>Cita programada para hoy</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-exclamation-circle me-2"></i>Recordatorio de vacuna</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle me-2"></i>Nuevo mensaje</a></li>
-              </ul>
-            </div>
-
-            <!-- Usuario -->
-            <div class="nav-item dropdown">
-              <a class="nav-link user-profile" href="#" role="button" data-bs-toggle="dropdown">
-                <div class="user-avatar">
-                  <i class="bi bi-person-circle"></i>
-                </div>
-                <div class="user-info">
-                  <span class="user-name">Usuario Ejemplo</span>
-                  <small class="user-role">Cliente</small>
-                </div>
-                <i class="bi bi-chevron-down ms-2"></i>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
-              </ul>
-            </div>
+          <!-- Usuario -->
+          <div class="dropdown">
+            <a href="#" class="user-profile d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle user-avatar"></i>
+              <div class="user-info">
+                <span class="user-name" id="adminNombre">Admin</span>
+                <small class="user-role">Administrador</small>
+              </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" id="cerrarSesionBtn"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+            </ul>
           </div>
         </div>
       </div>
     </nav>
   </header>
 
-  <!-- Main Content -->
   <div class="dashboard-container">
     <!-- Sidebar -->
     <aside class="dashboard-sidebar">
       <div class="sidebar-content">
-        <!-- Menú principal -->
-        <nav class="sidebar-nav">
-          <div class="nav-section">
-            <h6 class="nav-section-title">Principal</h6>
-            <ul class="nav-items">
-              <li class="nav-item active">
-                <a href="#dashboard" class="nav-link">
-                  <i class="bi bi-house-door"></i>
-                  <span>Dashboard</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="cliente-citas.html" class="nav-link">
-                  <i class="bi bi-calendar-event"></i>
-                  <span>Citas</span>
-                  <span class="badge">5</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="cliente-mascota.html" class="nav-link">
-                  <i class="bi bi-heart"></i>
-                  <span>Mascotas</span>
-                </a>
-              </li>
-            </ul>
-          </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Gestión</div>
+          <ul class="nav-items">
+            <li class="nav-item"><a class="nav-link active" href="admin-dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="admin-citas.html"><i class="bi bi-calendar-event"></i>Citas</a></li>
+            <li class="nav-item"><a class="nav-link" href="admin-mascotas.html"><i class="bi bi-heart-pulse"></i>Mascotas</a></li>
+            <li class="nav-item"><a class="nav-link" href="admin-usuarios.html"><i class="bi bi-people"></i>Usuarios</a></li>
+            <li class="nav-item"><a class="nav-link" href="admin-servicios.html"><i class="bi bi-clipboard-pulse"></i>Servicios</a></li>
+            <li class="nav-item"><a class="nav-link" href="admin-reportes.html"><i class="bi bi-graph-up"></i>Reportes</a></li>
+          </ul>
+        </div>
 
-          <div class="nav-section">
-            <h6 class="nav-section-title">Gestión</h6>
-            <ul class="nav-items">
-              <li class="nav-item">
-                <a href="#servicios" class="nav-link">
-                  <i class="bi bi-clipboard-pulse"></i>
-                  <span>Servicios</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#historial" class="nav-link">
-                  <i class="bi bi-file-medical"></i>
-                  <span>Historial Médico</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#reportes" class="nav-link">
-                  <i class="bi bi-graph-up"></i>
-                  <span>Reportes</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div class="nav-section">
-            <h6 class="nav-section-title">Configuración</h6>
-            <ul class="nav-items">
-              <li class="nav-item">
-                <a href="#perfil" class="nav-link">
-                  <i class="bi bi-person-gear"></i>
-                  <span>Mi Perfil</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#ayuda" class="nav-link">
-                  <i class="bi bi-question-circle"></i>
-                  <span>Ayuda</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-
-        <!-- Widget de resumen -->
         <div class="sidebar-widget">
           <div class="widget-header">
-            <i class="bi bi-calendar-check"></i>
-            <h6>Próxima Cita</h6>
+            <i class="bi bi-info-circle"></i>
+            <h6>Estado del sistema</h6>
           </div>
           <div class="widget-content">
-            <p class="mb-1"><strong>Consulta General</strong></p>
-            <small class="text-muted">Mañana a las 10:00 AM</small>
+            <p class="mb-1"><strong id="resumenHoy">Cargando...</strong></p>
+            <small class="text-white-75">Última actualización: <span id="ultimaActualizacion">--:--</span></small>
           </div>
         </div>
       </div>
     </aside>
 
-    <!-- Content Area -->
+    <!-- Main -->
     <main class="dashboard-main">
-      <!-- Welcome Section -->
-      <div class="welcome-section">
+      <!-- Welcome Section - SIN días en operación -->
+      <div class="welcome-section mb-4">
         <div class="row align-items-center">
-          <div class="col-md-8">
-            <h1 class="welcome-title">¡Bienvenido de vuelta!</h1>
-            <p class="welcome-subtitle">Aquí tienes un resumen de la actividad reciente</p>
-          </div>
-          <div class="col-md-4 text-end">
-            <div class="welcome-stats">
-              <span class="stat-number">12</span>
-              <span class="stat-label">Días activo</span>
-            </div>
+          <div class="col-12">
+            <h2 class="welcome-title">¡Hola, <span class="user-name" id="adminNombreTitle">Admin</span>!</h2>
+            <p class="welcome-subtitle">Aquí tienes el estado general del sistema - <span id="fechaHoy"></span></p>
           </div>
         </div>
       </div>
 
-      <!-- Stats Cards -->
-      <div class="stats-section">
-        <div class="row g-4">
+      <!-- Tarjetas de KPIs -->
+      <div class="stats-section mb-4">
+        <div class="row g-3">
           <div class="col-xl-3 col-md-6">
             <div class="stat-card">
-              <div class="stat-icon primary">
-                <i class="bi bi-calendar-check"></i>
-              </div>
+              <div class="stat-icon primary"><i class="bi bi-calendar2-check"></i></div>
               <div class="stat-content">
-                <h3>8</h3>
-                <p>Citas Programadas</p>
-                <small class="stat-change positive">+12% vs mes anterior</small>
+                <h3 id="kpiCitasHoy">0</h3>
+                <p>Citas Hoy</p>
+                <small class="stat-change neutral" id="kpiTrendHoy">Cargando...</small>
               </div>
             </div>
           </div>
           <div class="col-xl-3 col-md-6">
             <div class="stat-card">
-              <div class="stat-icon success">
-                <i class="bi bi-heart-pulse"></i>
-              </div>
+              <div class="stat-icon success"><i class="bi bi-clipboard-check"></i></div>
               <div class="stat-content">
-                <h3>3</h3>
-                <p>Mascotas Registradas</p>
-                <small class="stat-change neutral">Sin cambios</small>
+                <h3 id="kpiCompletadasMes">0</h3>
+                <p>Completadas (Mes)</p>
+                <small class="stat-change positive" id="kpiCompletadasTrend">Cargando...</small>
               </div>
             </div>
           </div>
           <div class="col-xl-3 col-md-6">
             <div class="stat-card">
-              <div class="stat-icon warning">
-                <i class="bi bi-exclamation-triangle"></i>
-              </div>
+              <div class="stat-icon warning"><i class="bi bi-hourglass-split"></i></div>
               <div class="stat-content">
-                <h3>2</h3>
-                <p>Recordatorios Pendientes</p>
-                <small class="stat-change negative">Requiere atención</small>
+                <h3 id="kpiPendientes">0</h3>
+                <p>Pendientes</p>
+                <small class="stat-change warning" id="kpiPendientesTrend">Cargando...</small>
               </div>
             </div>
           </div>
           <div class="col-xl-3 col-md-6">
             <div class="stat-card">
-              <div class="stat-icon info">
-                <i class="bi bi-clipboard-data"></i>
-              </div>
+              <div class="stat-icon info"><i class="bi bi-people"></i></div>
               <div class="stat-content">
-                <h3>15</h3>
-                <p>Consultas Realizadas</p>
-                <small class="stat-change positive">+8% vs mes anterior</small>
+                <h3 id="kpiUsuarios">0</h3>
+                <p>Usuarios Registrados</p>
+                <small class="stat-change neutral" id="kpiUsuariosTrend">Cargando...</small>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Tab Content Area -->
-      <div class="content-tabs-section">
-        <!-- Tabs Navigation -->
-        <ul class="nav nav-tabs custom-tabs" id="dashboardTabs" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
-              <i class="bi bi-house-door me-2"></i>Resumen General
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab">
-              <i class="bi bi-calendar-event me-2"></i>Mis Citas
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pets-tab" data-bs-toggle="tab" data-bs-target="#pets" type="button" role="tab">
-              <i class="bi bi-heart me-2"></i>Mis Mascotas
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab">
-              <i class="bi bi-clipboard-pulse me-2"></i>Servicios
-            </button>
-          </li>
-        </ul>
-
-        <!-- Tab Content -->
-        <div class="tab-content custom-tab-content" id="dashboardTabsContent">
-          <!-- Overview Tab -->
-          <div class="tab-pane fade show active" id="overview" role="tabpanel">
-            <div class="row g-4">
-              <!-- Actividad Reciente -->
-              <div class="col-lg-8">
-                <div class="content-card">
-                  <div class="card-header">
-                    <h5><i class="bi bi-clock-history me-2"></i>Actividad Reciente</h5>
-                  </div>
-                  <div class="card-body">
-                    <div class="activity-list">
-                      <div class="activity-item">
-                        <div class="activity-icon success">
-                          <i class="bi bi-check-circle"></i>
-                        </div>
-                        <div class="activity-content">
-                          <p><strong>Cita completada</strong> - Consulta general para Max</p>
-                          <small class="text-muted">Hace 2 horas</small>
-                        </div>
-                      </div>
-                      <div class="activity-item">
-                        <div class="activity-icon primary">
-                          <i class="bi bi-calendar-plus"></i>
-                        </div>
-                        <div class="activity-content">
-                          <p><strong>Nueva cita programada</strong> - Vacunación para Luna</p>
-                          <small class="text-muted">Ayer a las 3:30 PM</small>
-                        </div>
-                      </div>
-                      <div class="activity-item">
-                        <div class="activity-icon warning">
-                          <i class="bi bi-bell"></i>
-                        </div>
-                        <div class="activity-content">
-                          <p><strong>Recordatorio</strong> - Próxima vacuna para Toby</p>
-                          <small class="text-muted">Hace 3 días</small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+      <!-- Sección de Citas Próximas y Estadísticas -->
+      <div class="row g-4 mb-4">
+        <!-- Citas Próximas -->
+        <div class="col-lg-8">
+          <div class="content-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5><i class="bi bi-calendar-week me-2"></i>Citas Próximas</h5>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-primary" id="btnActualizarCitas">
+                  <i class="bi bi-arrow-clockwise"></i> Actualizar
+                </button>
+                <a href="admin-citas.html" class="btn btn-sm btn-primary">
+                  Ver todas
+                </a>
               </div>
-
-              <!-- Quick Actions -->
-              <div class="col-lg-4">
-                <div class="content-card">
-                  <div class="card-header">
-                    <h5><i class="bi bi-lightning me-2"></i>Acciones Rápidas</h5>
-                  </div>
-                  <div class="card-body">
-                    <div class="quick-actions">
-                      <a href="#" class="quick-action-btn primary">
-                        <i class="bi bi-calendar-plus"></i>
-                        <span>Agendar Cita</span>
-                      </a>
-                      <a href="#" class="quick-action-btn success">
-                        <i class="bi bi-heart-pulse"></i>
-                        <span>Ver Mascotas</span>
-                      </a>
-                      <a href="#" class="quick-action-btn info">
-                        <i class="bi bi-file-medical"></i>
-                        <span>Historial Médico</span>
-                      </a>
-                      <a href="#" class="quick-action-btn warning">
-                        <i class="bi bi-telephone"></i>
-                        <span>Contactar Clínica</span>
-                      </a>
-                    </div>
+            </div>
+            <div class="card-body">
+              <div id="citasProximasContainer">
+                <div class="text-center py-4">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Appointments Tab -->
-          <div class="tab-pane fade" id="appointments" role="tabpanel">
-            <div class="content-card">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="bi bi-calendar-event me-2"></i>Mis Citas</h5>
-                <button class="btn btn-primary btn-sm">
-                  <i class="bi bi-plus me-1"></i>Nueva Cita
-                </button>
+        <!-- Estadísticas Rápidas -->
+        <div class="col-lg-4">
+          <div class="content-card">
+            <div class="card-header">
+              <h5><i class="bi bi-bar-chart me-2"></i>Estadísticas Rápidas</h5>
+            </div>
+            <div class="card-body">
+              <div class="quick-stats">
+                <div class="quick-stat-item mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span><i class="bi bi-check-circle text-success me-2"></i>Confirmadas</span>
+                    <strong id="statConfirmadas">0</strong>
+                  </div>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-success" id="progressConfirmadas" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <div class="quick-stat-item mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span><i class="bi bi-heart text-danger me-2"></i>Mascotas</span>
+                    <strong id="statMascotas">0</strong>
+                  </div>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-info" id="progressMascotas" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <div class="quick-stat-item mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span><i class="bi bi-people text-primary me-2"></i>Clientes</span>
+                    <strong id="statClientesActivos">0</strong>
+                  </div>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" id="progressClientes" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <div class="quick-stat-item mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span><i class="bi bi-clipboard-pulse text-warning me-2"></i>Servicios</span>
+                    <strong id="statServicios">0</strong>
+                  </div>
+                  <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-warning" id="progressServicios" style="width: 0%"></div>
+                  </div>
+                </div>
               </div>
-              <div class="card-body">
-                <p class="text-muted text-center py-4">
-                  <i class="bi bi-calendar-x display-1 text-muted mb-3"></i><br>
-                  Aquí aparecerán tus citas programadas
-                </p>
+
+              <hr>
+
+              <div class="text-center">
+                <button class="btn btn-outline-success btn-sm w-100 mb-2" id="btnGenerarReporteRapido">
+                  <i class="bi bi-file-earmark-bar-graph me-1"></i>
+                  Generar Reporte del Día
+                </button>
+                <a href="admin-reportes.html" class="btn btn-outline-primary btn-sm w-100">
+                  <i class="bi bi-graph-up me-1"></i>
+                  Ver Reportes Completos
+                </a>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Pets Tab -->
-          <div class="tab-pane fade" id="pets" role="tabpanel">
-            <div class="content-card">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="bi bi-heart me-2"></i>Mis Mascotas</h5>
-                <button class="btn btn-success btn-sm">
-                  <i class="bi bi-plus me-1"></i>Registrar Mascota
-                </button>
-              </div>
-              <div class="card-body">
-                <p class="text-muted text-center py-4">
-                  <i class="bi bi-heart display-1 text-muted mb-3"></i><br>
-                  Aquí aparecerán tus mascotas registradas
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Services Tab -->
-          <div class="tab-pane fade" id="services" role="tabpanel">
-            <div class="content-card">
-              <div class="card-header">
-                <h5><i class="bi bi-clipboard-pulse me-2"></i>Servicios Disponibles</h5>
-              </div>
-              <div class="card-body">
-                <p class="text-muted text-center py-4">
-                  <i class="bi bi-clipboard-pulse display-1 text-muted mb-3"></i><br>
-                  Aquí aparecerán los servicios disponibles
-                </p>
+      <!-- Actividad Reciente -->
+      <div class="content-card">
+        <div class="card-header">
+          <h5><i class="bi bi-clock-history me-2"></i>Actividad Reciente del Sistema</h5>
+        </div>
+        <div class="card-body">
+          <div id="actividadRecienteContainer">
+            <div class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
               </div>
             </div>
           </div>
@@ -394,7 +252,10 @@
     </main>
   </div>
 
-  <!-- Bootstrap JS -->
+  <!-- Bootstrap bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Script del dashboard -->
+  <script src="js/admin-dashboard.js"></script>
 </body>
 </html>

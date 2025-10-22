@@ -413,7 +413,7 @@ export const obtenerCitasPorFecha = (req, res) => {
   });
 };
 
-// NUEVA FUNCIÓN: Actualizar manualmente citas pasadas
+
 export const actualizarCitasPasadasManual = (req, res) => {
   console.log('Ejecutando actualización manual de citas pasadas...');
   
@@ -426,6 +426,35 @@ export const actualizarCitasPasadasManual = (req, res) => {
     res.json({ 
       message: 'Citas actualizadas exitosamente',
       citasActualizadas: result.affectedRows,
+      timestamp: new Date()
+    });
+  });
+};
+
+export const actualizarCitasPasadasPorCliente = (req, res) => {
+  const { clienteId } = req.params;
+  
+  if (!clienteId) {
+    return res.status(400).json({ 
+      error: 'ID de cliente requerido' 
+    });
+  }
+  
+  console.log(`Actualizando citas pasadas del cliente ${clienteId}...`);
+  
+  Cita.actualizarCitasPasadasPorCliente(clienteId, (err, result) => {
+    if (err) {
+      console.error(`Error al actualizar citas del cliente ${clienteId}:`, err);
+      return res.status(500).json({ 
+        error: 'Error al actualizar citas del cliente' 
+      });
+    }
+    
+    res.json({ 
+      success: true,
+      message: 'Citas del cliente actualizadas exitosamente',
+      citasActualizadas: result.affectedRows,
+      clienteId: parseInt(clienteId),
       timestamp: new Date()
     });
   });

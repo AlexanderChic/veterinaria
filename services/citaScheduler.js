@@ -1,7 +1,7 @@
 // /services/citaScheduler.js
 import * as Cita from '../models/cita.js';
 
-// Función para actualizar citas pasadas
+// Función para actualizar citas pasadas (TODAS)
 export const verificarYActualizarCitas = () => {
   const ahora = new Date();
   const fechaHora = ahora.toLocaleString('es-GT', { 
@@ -25,8 +25,40 @@ export const verificarYActualizarCitas = () => {
     if (result.affectedRows > 0) {
       console.log(`✅ ${result.affectedRows} cita(s) actualizada(s) a completada`);
     } else {
-      console.log('✓ No hay citas pendientes para actualizar');
+      console.log('ℹ️ No hay citas pendientes para actualizar');
     }
+  });
+};
+
+// NUEVA FUNCIÓN: Actualizar citas pasadas de un cliente específico
+export const verificarYActualizarCitasCliente = (clienteId, callback) => {
+  const ahora = new Date();
+  const fechaHora = ahora.toLocaleString('es-GT', { 
+    timeZone: 'America/Guatemala',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  
+  console.log(`\n🔄 [${fechaHora}] Verificando citas pasadas del cliente ${clienteId}...`);
+  
+  Cita.actualizarCitasPasadasPorCliente(clienteId, (err, result) => {
+    if (err) {
+      console.error(`❌ Error al actualizar citas del cliente ${clienteId}:`, err);
+      if (callback) callback(err);
+      return;
+    }
+    
+    if (result.affectedRows > 0) {
+      console.log(`✅ ${result.affectedRows} cita(s) del cliente ${clienteId} actualizada(s) a completada`);
+    } else {
+      console.log(`ℹ️ No hay citas pasadas para actualizar del cliente ${clienteId}`);
+    }
+    
+    if (callback) callback(null, result);
   });
 };
 

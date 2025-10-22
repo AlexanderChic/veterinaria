@@ -8,36 +8,39 @@ import {
 
 const router = express.Router();
 
-// Middleware de debugging para estas rutas específicas
-router.use((req, res, next) => {
-  console.log('=== MUNICIPIO ROUTES DEBUG ===');
-  console.log('Método:', req.method);
-  console.log('URL completa:', req.originalUrl);
-  console.log('Ruta:', req.route?.path || 'No definida');
-  next();
+// ==================== MIDDLEWARE DE DEBUGGING ====================
+// Solo activo en desarrollo
+if (process.env.NODE_ENV !== 'production') {
+  router.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] Municipios: ${req.method} ${req.originalUrl}`);
+    next();
+  });
+}
+
+// ==================== RUTAS ====================
+
+// Ruta de prueba/health check (primero, para evitar conflictos)
+router.get('/municipios-test', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    message: 'Rutas de municipios funcionando correctamente',
+    timestamp: new Date().toISOString(),
+    endpoints: [
+      'GET /api/municipios - Obtener todos los municipios',
+      'GET /api/municipios/departamento/:departamentoId - Obtener municipios por departamento',
+      'GET /api/municipios/:id - Obtener municipio por ID'
+    ]
+  });
 });
+
+// IMPORTANTE: Ruta específica antes de la genérica
+// Obtener municipios por departamento
+router.get('/municipios/departamento/:departamentoId', obtenerMunicipiosDepartamento);
 
 // Obtener todos los municipios
-router.get('/municipios', (req, res, next) => {
-  console.log('Llegó a la ruta GET /municipios');
-  obtenerMunicipios(req, res, next);
-});
+router.get('/municipios', obtenerMunicipios);
 
-// Obtener municipios por departamento
-router.get('/municipios/departamento/:departamentoId', (req, res, next) => {
-  console.log('Llegó a la ruta GET /municipios/departamento/:departamentoId');
-  obtenerMunicipiosDepartamento(req, res, next);
-});
-
-// Obtener un municipio por ID
-router.get('/municipios/:id', (req, res, next) => {
-  console.log('Llegó a la ruta GET /municipios/:id');
-  obtenerMunicipio(req, res, next);
-});
-
-// Ruta de prueba
-router.get('/municipios-test', (req, res) => {
-  res.json({ message: 'Rutas de municipios funcionando correctamente' });
-});
+// Obtener un municipio por ID (al final para no capturar las rutas específicas)
+router.get('/municipios/:id', obtenerMunicipio);
 
 export default router;

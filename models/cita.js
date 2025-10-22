@@ -338,9 +338,12 @@ export const obtenerProximasCitas = (cliente_id, limite = 5, callback) => {
 export const actualizarCitasPasadas = (callback) => {
   const query = `
     UPDATE cita 
-    SET estado = 'confirmada'
-    WHERE fecha < CURDATE() 
-    AND estado = 'pendiente'
+    SET estado = 'completada'
+    WHERE (
+      fecha < CURDATE() 
+      OR (fecha = CURDATE() AND hora < CURTIME())
+    )
+    AND estado IN ('pendiente', 'confirmada')
   `;
   
   db.query(query, (err, result) => {
@@ -350,7 +353,33 @@ export const actualizarCitasPasadas = (callback) => {
     }
     
     if (result.affectedRows > 0) {
-      console.log(`Citas actualizadas a confirmada: ${result.affectedRows}`);
+      console.log(`✅ ${result.affectedRows} cita(s) actualizada(s) a completada`);
+    }
+    callback(null, result);
+  });
+};
+
+// NUEVA FUNCIÓN
+export const actualizarCitasPasadasPorCliente = (cliente_id, callback) => {
+  const query = `
+    UPDATE cita 
+    SET estado = 'completada'
+    WHERE cliente_id = ?
+    AND (
+      fecha < CURDATE() 
+      OR (fecha = CURDATE() AND hora < CURTIME())
+    )
+    AND estado IN ('pendiente', 'confirmada')
+  `;
+  
+  db.query(query, [cliente_id], (err, result) => {
+    if (err) {
+      console.error(`Error al actualizar citas del cliente ${cliente_id}:`, err);
+      return callback(err);
+    }
+    
+    if (result.affectedRows > 0) {
+      console.log(`✅ ${result.affectedRows} cita(s) del cliente ${cliente_id} actualizada(s) a completada`);
     }
     callback(null, result);
   });

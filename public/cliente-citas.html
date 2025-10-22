@@ -63,7 +63,7 @@
                 <i class="bi bi-chevron-down ms-2"></i>
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+                <li><a class="dropdown-item" href="cliente-perfil.html"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
                 <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-danger" href="#" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
@@ -293,81 +293,149 @@
     </main>
   </div>
 
-  <!-- Modal Nueva Cita -->
-  <div class="modal fade" id="nuevaCitaModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            <i class="bi bi-calendar-plus me-2"></i>Agendar Nueva Cita
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+  <!-- Modal Nueva Cita MEJORADO -->
+<div class="modal fade" id="nuevaCitaModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-calendar-plus me-2"></i>Agendar Nueva Cita
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Alert para errores -->
+        <div id="alertErrorCita" class="alert alert-danger alert-dismissible fade" role="alert" style="display: none;">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <span id="mensajeErrorCita"></span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <div class="modal-body">
-          <form id="formNuevaCita">
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label for="mascotaSelect" class="form-label">Mascota</label>
-                <select class="form-select" id="mascotaSelect" required>
-                  <option value="">Selecciona una mascota</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label for="servicioSelect" class="form-label">Tipo de Servicio</label>
-                <select class="form-select" id="servicioSelect" required>
-                  <option value="">Selecciona un servicio</option>
-                </select>
-                <div class="col-md-6">
-                  <label for="sucursalSelect" class="form-label">Sucursal</label>
-                  <select class="form-select" id="sucursalSelect" required>
-                    <option value="">Selecciona una sucursal</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <label for="fechaCita" class="form-label">Fecha (DD/MM/AAAA)</label>
-                <input type="text" 
-                       class="form-control" 
-                       id="fechaCita" 
-                       placeholder="07/10/2025" 
-                       pattern="\d{2}/\d{2}/\d{4}"
-                       maxlength="10"
-                       required>
-              </div>
-              <div class="col-md-6">
-                <label for="horaCita" class="form-label">Hora</label>
-                <select class="form-select" id="horaCita" required>
-                  <option value="">Selecciona una hora</option>
-                  <option value="08:00">08:00 AM</option>
-                  <option value="09:00">09:00 AM</option>
-                  <option value="10:00">10:00 AM</option>
-                  <option value="11:00">11:00 AM</option>
-                  <option value="14:00">02:00 PM</option>
-                  <option value="15:00">03:00 PM</option>
-                  <option value="16:00">04:00 PM</option>
-                  <option value="17:00">05:00 PM</option>
-                </select>
-              </div>
-              <div class="col-12">
-                <label for="motivoConsulta" class="form-label">Motivo de la Consulta</label>
-                <textarea class="form-control" id="motivoConsulta" rows="3" placeholder="Describe brevemente el motivo de la consulta..."></textarea>
-              </div>
-              <div class="col-12">
-                <label for="observaciones" class="form-label">Observaciones Adicionales</label>
-                <textarea class="form-control" id="observaciones" rows="2" placeholder="Información adicional que consideres importante..."></textarea>
+
+        <form id="formNuevaCita" novalidate>
+          <div class="row g-3">
+            <!-- Mascota -->
+            <div class="col-md-6">
+              <label for="mascotaSelect" class="form-label">
+                Mascota <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="mascotaSelect" required>
+                <option value="">Selecciona una mascota</option>
+              </select>
+              <div class="invalid-feedback">
+                Por favor selecciona una mascota.
               </div>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" onclick="agendarCita()">
-            <i class="bi bi-check-circle me-1"></i>Agendar Cita
-          </button>
-        </div>
+
+            <!-- Servicio -->
+            <div class="col-md-6">
+              <label for="servicioSelect" class="form-label">
+                Tipo de Servicio <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="servicioSelect" required>
+                <option value="">Selecciona un servicio</option>
+              </select>
+              <div class="invalid-feedback">
+                Por favor selecciona un servicio.
+              </div>
+            </div>
+
+            <!-- Sucursal -->
+            <div class="col-md-12">
+              <label for="sucursalSelect" class="form-label">
+                Sucursal <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="sucursalSelect" required>
+                <option value="">Selecciona una sucursal</option>
+              </select>
+              <div class="invalid-feedback">
+                Por favor selecciona una sucursal.
+              </div>
+            </div>
+
+            <!-- Fecha -->
+            <div class="col-md-6">
+              <label for="fechaCita" class="form-label">
+                Fecha <span class="text-danger">*</span>
+              </label>
+              <input type="date" 
+                     class="form-control" 
+                     id="fechaCita" 
+                     required>
+              <div class="invalid-feedback">
+                Por favor selecciona una fecha válida.
+              </div>
+              <small class="text-muted">La fecha debe ser hoy o posterior</small>
+            </div>
+
+            <!-- Hora -->
+            <div class="col-md-6">
+              <label for="horaCita" class="form-label">
+                Hora <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="horaCita" required>
+                <option value="">Selecciona una hora</option>
+                <option value="08:00">08:00 AM</option>
+                <option value="09:00">09:00 AM</option>
+                <option value="10:00">10:00 AM</option>
+                <option value="11:00">11:00 AM</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="13:00">01:00 PM</option>
+                <option value="14:00">02:00 PM</option>
+                <option value="15:00">03:00 PM</option>
+                <option value="16:00">04:00 PM</option>
+                <option value="17:00">05:00 PM</option>
+                <option value="18:00">06:00 PM</option>
+              </select>
+              <div class="invalid-feedback">
+                Por favor selecciona una hora.
+              </div>
+            </div>
+
+            <!-- Motivo de la Consulta -->
+            <div class="col-12">
+              <label for="motivoConsulta" class="form-label">
+                Motivo de la Consulta
+              </label>
+              <textarea class="form-control" 
+                        id="motivoConsulta" 
+                        rows="3" 
+                        maxlength="500"
+                        placeholder="Describe brevemente el motivo de la consulta..."></textarea>
+              <small class="text-muted">Opcional - Máximo 500 caracteres</small>
+            </div>
+
+            <!-- Observaciones Adicionales -->
+            <div class="col-12">
+              <label for="observaciones" class="form-label">
+                Observaciones Adicionales
+              </label>
+              <textarea class="form-control" 
+                        id="observaciones" 
+                        rows="2" 
+                        maxlength="300"
+                        placeholder="Información adicional que consideres importante..."></textarea>
+              <small class="text-muted">Opcional - Máximo 300 caracteres</small>
+            </div>
+
+            <div class="col-12">
+              <small class="text-muted">
+                <span class="text-danger">*</span> Campos obligatorios
+              </small>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i>Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" id="btnAgendarCita">
+          <i class="bi bi-check-circle me-1"></i>Agendar Cita
+        </button>
       </div>
     </div>
   </div>
+</div>
 
   <!-- Modal Detalles Cita -->
   <div class="modal fade" id="detallesCitaModal" tabindex="-1">
