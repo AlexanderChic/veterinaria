@@ -1,43 +1,42 @@
-// /routes/usuariosRoutes.js
+// routes/usuariosRoutes.js - Rutas completas para gestión de usuarios
 import express from 'express';
-import { loginUsuario, registrarUsuario } from '../controllers/usuariosController.js';
+import { 
+  loginUsuario, 
+  registrarUsuario,
+  obtenerTodosUsuarios,
+  obtenerUsuarioPorId,
+  actualizarUsuario,
+  eliminarUsuario
+} from '../controllers/usuariosController.js';
 
 const router = express.Router();
 
-// ==================== MIDDLEWARE DE DEBUGGING ====================
-// Solo activo en desarrollo
-if (process.env.NODE_ENV !== 'production') {
-  router.use((req, res, next) => {
-    // No logear contraseñas por seguridad
-    const sanitizedBody = { ...req.body };
-    if (sanitizedBody.password) sanitizedBody.password = '***';
-    if (sanitizedBody.contrasena) sanitizedBody.contrasena = '***';
-    
-    console.log(`[${new Date().toISOString()}] Usuarios: ${req.method} ${req.originalUrl}`);
-    console.log('Body (sanitizado):', sanitizedBody);
-    next();
-  });
-}
+// ==================== RUTAS PÚBLICAS ====================
+// IMPORTANTE: Estas rutas se acceden como /api/login y /api/registro
+// porque en app.js se usa: app.use('/api', usuariosRoutes)
 
-// ==================== RUTAS ====================
-
-// Ruta de prueba/health check
-router.get('/usuarios-test', (req, res) => {
-  res.json({ 
-    status: 'ok',
-    message: 'Rutas de usuarios funcionando correctamente',
-    timestamp: new Date().toISOString(),
-    endpoints: [
-      'POST /api/login - Iniciar sesión',
-      'POST /api/register - Registrar nuevo usuario'
-    ]
-  });
-});
-
-// Ruta para iniciar sesión
+// Login
 router.post('/login', loginUsuario);
 
-// Ruta para registrar usuario
-router.post('/register', registrarUsuario);
+// Registro
+router.post('/registro', registrarUsuario);
+
+// ==================== RUTAS DE ADMINISTRACIÓN ====================
+// Estas rutas se acceden como /api/usuarios, /api/usuarios/:id, etc.
+
+// Obtener todos los usuarios
+router.get('/usuarios', obtenerTodosUsuarios);
+
+// Obtener usuario por ID
+router.get('/usuarios/:id', obtenerUsuarioPorId);
+
+// Crear nuevo usuario (admin)
+router.post('/usuarios', registrarUsuario);
+
+// Actualizar usuario
+router.put('/usuarios/:id', actualizarUsuario);
+
+// Eliminar usuario
+router.delete('/usuarios/:id', eliminarUsuario);
 
 export default router;

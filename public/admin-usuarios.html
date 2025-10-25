@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Usuarios - Admin Dashboard</title>
+
+  <!-- Bootstrap / Icons / Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link href="css/visitas.css" rel="stylesheet">
+  <link href="css/admin.css" rel="stylesheet">
+  <link href="css/admin-usuarios.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header / Navbar -->
+  <header class="dashboard-header">
+    <nav class="navbar navbar-expand-lg bg-white">
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="admin-dashboard.html">
+          <div class="brand-icon d-flex align-items-center justify-content-center">
+            <i class="bi bi-shield-lock"></i>
+          </div>
+          <strong>Panel de Administración</strong>
+        </a>
+
+        <div class="d-flex align-items-center gap-3 ms-auto">
+          <!-- Campana de notificaciones -->
+          <a href="#" class="notification-bell position-relative">
+            <i class="bi bi-bell"></i>
+            <span class="notification-badge" id="adminNotifBadge" style="display:none">0</span>
+          </a>
+
+          <!-- Usuario -->
+          <div class="dropdown">
+            <a href="#" class="user-profile d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle user-avatar"></i>
+              <div class="user-info">
+                <span class="user-name" id="adminNombre">Admin</span>
+                <small class="user-role">Administrador</small>
+              </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" id="cerrarSesionBtn"><i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-content">
+        <div class="nav-section">
+          <div class="nav-section-title">Gestión</div>
+          <ul class="nav-items">
+            <li class="nav-item"><a class="nav-link" href="admin-dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="admin-citas.html"><i class="bi bi-calendar-event"></i>Citas</a></li>
+            <li class="nav-item"><a class="nav-link active" href="admin-usuarios.html"><i class="bi bi-people"></i>Usuarios</a></li>
+            <li class="nav-item"><a class="nav-link" href="admin-servicios.html"><i class="bi bi-clipboard-pulse"></i>Servicios</a></li>
+            <li class="nav-item"><a class="nav-link" href="admin-reportes.html"><i class="bi bi-graph-up"></i>Reportes</a></li>
+          </ul>
+        </div>
+
+        <div class="sidebar-widget">
+          <div class="widget-header">
+            <i class="bi bi-people"></i>
+            <h6>Usuarios del Sistema</h6>
+          </div>
+          <div class="widget-content">
+            <p class="mb-1"><strong id="totalUsuariosWidget">0</strong> usuarios totales</p>
+            <small class="text-white-75">Actualizado: <span id="horaActualizacion">--:--</span></small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="dashboard-main">
+      <!-- Header de la página -->
+      <div class="page-header mb-4">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h2 class="page-title">
+              <i class="bi bi-people me-2"></i>
+              Gestión de Usuarios
+            </h2>
+            <p class="page-subtitle">Administra todos los usuarios del sistema</p>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <button class="btn btn-primary" id="btnActualizarUsuarios">
+              <i class="bi bi-arrow-clockwise me-1"></i>
+              Actualizar
+            </button>
+            <button class="btn btn-success" id="btnNuevoUsuario">
+              <i class="bi bi-plus-circle me-1"></i>
+              Nuevo Usuario
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjetas de resumen -->
+      <div class="stats-cards mb-4">
+        <div class="row g-3">
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-card-mini">
+              <div class="stat-icon bg-primary">
+                <i class="bi bi-people"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="statTotalUsuarios">0</h3>
+                <p>Total Usuarios</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-card-mini">
+              <div class="stat-icon bg-info">
+                <i class="bi bi-person-check"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="statClientes">0</h3>
+                <p>Clientes</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-card-mini">
+              <div class="stat-icon bg-warning">
+                <i class="bi bi-briefcase"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="statVendedores">0</h3>
+                <p>Vendedores</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stat-card-mini">
+              <div class="stat-icon bg-danger">
+                <i class="bi bi-shield-lock"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="statAdmins">0</h3>
+                <p>Administradores</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs y filtros -->
+      <div class="content-card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <ul class="nav nav-tabs-custom" id="usuariosTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="todos-tab" data-bs-toggle="tab" data-bs-target="#todos" type="button">
+                    <i class="bi bi-list-ul me-1"></i>Todos
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="clientes-tab" data-bs-toggle="tab" data-bs-target="#clientes" type="button">
+                    <i class="bi bi-person-check me-1"></i>Clientes
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="vendedores-tab" data-bs-toggle="tab" data-bs-target="#vendedores" type="button">
+                    <i class="bi bi-briefcase me-1"></i>Vendedores
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="admins-tab" data-bs-toggle="tab" data-bs-target="#admins" type="button">
+                    <i class="bi bi-shield-lock me-1"></i>Admins
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex gap-2 justify-content-md-end mt-3 mt-md-0">
+                <!-- Filtro por rol -->
+                <select class="form-select form-select-sm" id="filtroRol" style="max-width: 180px;">
+                  <option value="">Todos los roles</option>
+                  <option value="cliente">Cliente</option>
+                  <option value="vendedor">Vendedor</option>
+                  <option value="admin">Administrador</option>
+                </select>
+
+                <!-- Buscador -->
+                <div class="input-group input-group-sm" style="max-width: 250px;">
+                  <span class="input-group-text"><i class="bi bi-search"></i></span>
+                  <input type="text" class="form-control" id="buscarUsuario" placeholder="Buscar nombre, email...">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <!-- Tab content -->
+          <div class="tab-content" id="usuariosTabContent">
+            <!-- Todos los usuarios -->
+            <div class="tab-pane fade show active" id="todos" role="tabpanel">
+              <div id="todosUsuariosContainer">
+                <div class="text-center py-5">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Clientes -->
+            <div class="tab-pane fade" id="clientes" role="tabpanel">
+              <div id="clientesContainer">
+                <div class="text-center py-5">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vendedores -->
+            <div class="tab-pane fade" id="vendedores" role="tabpanel">
+              <div id="vendedoresContainer">
+                <div class="text-center py-5">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Administradores -->
+            <div class="tab-pane fade" id="admins" role="tabpanel">
+              <div id="adminsContainer">
+                <div class="text-center py-5">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal para ver detalles de usuario -->
+  <div class="modal fade" id="modalDetalleUsuario" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="bi bi-person-circle me-2"></i>
+            Detalles del Usuario
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="detallesUsuarioContent">
+          <!-- Se llenará dinámicamente -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-warning" id="btnEditarUsuario">
+            <i class="bi bi-pencil me-1"></i>Editar
+          </button>
+          <button type="button" class="btn btn-danger" id="btnEliminarUsuario">
+            <i class="bi bi-trash me-1"></i>Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear/editar usuario -->
+  <div class="modal fade" id="modalFormUsuario" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tituloFormUsuario">
+            <i class="bi bi-person-plus me-2"></i>
+            Nuevo Usuario
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formUsuario">
+            <input type="hidden" id="usuarioId">
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Nombre Completo *</label>
+                <input type="text" class="form-control" id="usuarioNombre" required>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Email *</label>
+                <input type="email" class="form-control" id="usuarioEmail" required>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Teléfono *</label>
+                <input type="tel" class="form-control" id="usuarioTelefono" required pattern="[0-9]{8}">
+                <small class="text-muted">8 dígitos</small>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Rol *</label>
+                <select class="form-select" id="usuarioRol" required>
+                  <option value="">Seleccionar rol...</option>
+                  <option value="cliente">Cliente</option>
+                  <option value="vendedor">Vendedor</option>
+                  <option value="admin">Administrador</option>
+                </select>
+              </div>
+              
+              <div class="col-md-12">
+                <label class="form-label">Dirección</label>
+                <textarea class="form-control" id="usuarioDireccion" rows="2"></textarea>
+              </div>
+              
+              <div class="col-md-6" id="passwordGroup">
+                <label class="form-label">Contraseña *</label>
+                <input type="password" class="form-control" id="usuarioPassword">
+                <small class="text-muted">Mín. 8 caracteres, incluir mayúscula, minúscula, número y símbolo</small>
+              </div>
+              
+              <div class="col-md-6" id="confirmPasswordGroup">
+                <label class="form-label">Confirmar Contraseña *</label>
+                <input type="password" class="form-control" id="usuarioPasswordConfirm">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="btnGuardarUsuario">
+            <i class="bi bi-save me-1"></i>Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Script del dashboard -->
+  <script src="js/admin-usuarios.js"></script>
+</body>
+</html>
