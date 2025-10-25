@@ -1,0 +1,572 @@
+/* admin-citas.css - Estilos específicos para gestión de citas */
+
+/* ==================== PAGE HEADER ==================== */
+
+.page-header {
+  background: linear-gradient(135deg, #7729d3 0%, #5f1fa8 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(119, 41, 211, 0.2);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 0;
+}
+
+/* ==================== STAT CARDS MINI ==================== */
+
+.stats-cards {
+  margin-bottom: 2rem;
+}
+
+.stat-card-mini {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+}
+
+.stat-card-mini:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card-mini .stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.stat-card-mini .stat-icon.bg-warning {
+  background: linear-gradient(135deg, #ffc107, #ff9800);
+}
+
+.stat-card-mini .stat-icon.bg-success {
+  background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.stat-card-mini .stat-icon.bg-primary {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.stat-card-mini .stat-icon.bg-danger {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.stat-card-mini .stat-info h3 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0;
+  color: #2c2c2c;
+}
+
+.stat-card-mini .stat-info p {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6c757d;
+  margin-bottom: 0;
+}
+
+/* ==================== CONTENT CARD ==================== */
+
+.content-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.content-card .card-header {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-bottom: 2px solid #e9ecef;
+  padding: 1.5rem;
+}
+
+.content-card .card-body {
+  padding: 0;
+}
+
+/* ==================== CUSTOM TABS ==================== */
+
+.nav-tabs-custom {
+  border-bottom: none;
+  gap: 0.5rem;
+}
+
+.nav-tabs-custom .nav-item {
+  margin-bottom: 0;
+}
+
+.nav-tabs-custom .nav-link {
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-tabs-custom .nav-link:hover {
+  background: #f8f9fa;
+  color: #7729d3;
+}
+
+.nav-tabs-custom .nav-link.active {
+  background: #7729d3;
+  color: white;
+  box-shadow: 0 5px 15px rgba(119, 41, 211, 0.3);
+}
+
+.nav-tabs-custom .nav-link i {
+  font-size: 1rem;
+}
+
+/* ==================== TABLE STYLES ==================== */
+
+.citas-table {
+  margin-bottom: 0;
+}
+
+.citas-table thead {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.citas-table thead th {
+  font-weight: 600;
+  color: #2c2c2c;
+  border-bottom: 2px solid #dee2e6;
+  padding: 1rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.citas-table tbody tr {
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.citas-table tbody tr:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.citas-table tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.table-warning {
+  background-color: #fff3cd !important;
+}
+
+.table-warning:hover {
+  background-color: #ffecb5 !important;
+}
+
+/* ==================== TABLE FOOTER ==================== */
+
+.table-footer {
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+/* ==================== EMPTY STATE ==================== */
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6c757d;
+}
+
+.empty-state i {
+  font-size: 4rem;
+  color: #dee2e6;
+  margin-bottom: 1rem;
+}
+
+.empty-state h4 {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: #6c757d;
+  margin-bottom: 0;
+}
+
+/* ==================== BADGES ==================== */
+
+.badge {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+
+.badge i {
+  font-size: 0.9rem;
+}
+
+/* ==================== MODAL DETALLES ==================== */
+
+.cita-detalle .info-group {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 12px;
+  border-left: 4px solid #7729d3;
+}
+
+.cita-detalle .info-group label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.cita-detalle .info-group label i {
+  color: #7729d3;
+}
+
+.cita-detalle .info-group p {
+  margin-bottom: 0;
+  color: #2c2c2c;
+  font-size: 1rem;
+}
+
+/* ==================== BOTONES ==================== */
+
+.btn-group-sm > .btn {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.btn-outline-primary:hover {
+  background-color: #7729d3;
+  border-color: #7729d3;
+  color: white;
+}
+
+.btn-outline-warning:hover {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+}
+
+/* ==================== FORM CONTROLS ==================== */
+
+.form-select-sm,
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.form-select-sm:focus,
+.form-control:focus {
+  border-color: #7729d3;
+  box-shadow: 0 0 0 0.2rem rgba(119, 41, 211, 0.15);
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px 0 0 8px;
+  color: #6c757d;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+@media (max-width: 1200px) {
+  .page-title {
+    font-size: 1.6rem;
+  }
+  
+  .stat-card-mini .stat-info h3 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .page-header {
+    padding: 1.5rem;
+  }
+  
+  .page-header .col-md-4 {
+    margin-top: 1rem;
+  }
+  
+  .page-header .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .nav-tabs-custom {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding-bottom: 0.5rem;
+  }
+  
+  .nav-tabs-custom::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .nav-tabs-custom::-webkit-scrollbar-thumb {
+    background-color: #dee2e6;
+    border-radius: 4px;
+  }
+  
+  .nav-tabs-custom .nav-link {
+    white-space: nowrap;
+    padding: 0.6rem 1rem;
+  }
+  
+  .citas-table {
+    font-size: 0.85rem;
+  }
+  
+  .citas-table thead th,
+  .citas-table tbody td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.4rem;
+  }
+  
+  .page-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .stat-card-mini {
+    padding: 1rem;
+  }
+  
+  .stat-card-mini .stat-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  
+  .stat-card-mini .stat-info h3 {
+    font-size: 1.8rem;
+  }
+  
+  .stat-card-mini .stat-info p {
+    font-size: 0.8rem;
+  }
+  
+  /* Hacer la tabla scrollable en móvil */
+  .table-responsive {
+    border-radius: 12px;
+  }
+  
+  .citas-table {
+    font-size: 0.8rem;
+  }
+  
+  .citas-table thead th,
+  .citas-table tbody td {
+    padding: 0.5rem 0.4rem;
+  }
+  
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+  }
+  
+  .btn-group-sm > .btn {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .content-card .card-header {
+    padding: 1rem;
+  }
+  
+  .table-footer {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-header {
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .page-title {
+    font-size: 1.2rem;
+    justify-content: center;
+  }
+  
+  .stats-cards .row {
+    margin: 0 -0.5rem;
+  }
+  
+  .stats-cards .col-lg-3 {
+    padding: 0 0.5rem;
+  }
+  
+  .stat-card-mini {
+    flex-direction: column;
+    text-align: center;
+    padding: 0.75rem;
+  }
+  
+  .stat-card-mini .stat-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+  
+  .stat-card-mini .stat-info h3 {
+    font-size: 1.5rem;
+  }
+  
+  .form-select-sm,
+  .input-group {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 0.5rem;
+  }
+  
+  .content-card .card-header .col-md-6 {
+    margin-bottom: 1rem;
+  }
+  
+  .content-card .card-header .d-flex {
+    flex-direction: column;
+  }
+  
+  /* Ocultar columnas menos importantes en móvil */
+  .citas-table th:nth-child(5),
+  .citas-table td:nth-child(5),
+  .citas-table th:nth-child(7),
+  .citas-table td:nth-child(7) {
+    display: none;
+  }
+}
+
+/* ==================== ANIMACIONES ==================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.4s ease-out;
+}
+
+/* ==================== LOADING STATES ==================== */
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3rem;
+}
+
+/* ==================== TOAST NOTIFICATIONS ==================== */
+
+.toast {
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.toast-header {
+  border-radius: 12px 12px 0 0;
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+
+.btn:focus,
+.nav-link:focus,
+.form-control:focus,
+.form-select:focus {
+  outline: 2px solid #7729d3;
+  outline-offset: 2px;
+}
+
+/* ==================== PRINT STYLES ==================== */
+
+@media print {
+  .dashboard-header,
+  .dashboard-sidebar,
+  .page-header .btn,
+  .btn-group,
+  .content-card .card-header .d-flex,
+  .nav-tabs-custom {
+    display: none !important;
+  }
+  
+  .dashboard-main {
+    margin-left: 0;
+    padding: 0;
+  }
+  
+  .citas-table {
+    font-size: 10pt;
+  }
+  
+  .page-title {
+    color: #000;
+  }
+}
