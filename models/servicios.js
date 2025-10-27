@@ -1,370 +1,558 @@
-// models/servicios.js - Modelo completo de servicios y horarios
+// models/servicios.js - Modelo completo con gestión por sucursal
 import db from '../config/db.js';
 
-// ==================== SERVICIOS ====================
+// ==================== SUCURSALES ====================
 
-// Obtener todos los servicios
-export const obtenerTodosLosServicios = (callback) => {
-  console.log('📋 Obteniendo todos los servicios...');
-  
+export const obtenerTodasLasSucursales = (callback) => {
   const query = `
     SELECT 
-      id, nombre, descripcion, precio, duracion_minutos, 
-      activo, icono, color, fecha_creacion, fecha_modificacion
-    FROM servicio 
-    ORDER BY nombre ASC
+      s.id, 
+      s.nombre, 
+      s.direccion, 
+      s.telefono,
+      s.municipio_id,
+      m.nombre as municipio_nombre,
+      m.departamento_id,
+      d.nombre as departamento_nombre
+    FROM sucursal s
+    INNER JOIN municipio m ON s.municipio_id = m.id
+    INNER JOIN departamento d ON m.departamento_id = d.id
+    ORDER BY d.nombre, m.nombre, s.nombre
   `;
   
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error('Error al obtener servicios:', err);
-      return callback(err, null);
+  console.log('📋 Ejecutando query: obtener todas las sucursales');
+  
+  db.query(query, (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerTodasLasSucursales:', error);
+      return callback(error, null);
     }
-    console.log(`✅ ${result.length} servicios obtenidos`);
-    callback(null, result);
+    console.log(`✅ ${resultados.length} sucursales obtenidas`);
+    callback(null, resultados);
   });
 };
 
-// Obtener servicio por ID
-export const obtenerServicioPorId = (id, callback) => {
-  console.log('🔍 Buscando servicio con ID:', id);
-  
+export const obtenerSucursalesPorDepartamento = (departamentoId, callback) => {
   const query = `
     SELECT 
-      id, nombre, descripcion, precio, duracion_minutos, 
-      activo, icono, color, fecha_creacion, fecha_modificacion
-    FROM servicio 
-    WHERE id = ?
+      s.id, 
+      s.nombre, 
+      s.direccion, 
+      s.telefono,
+      s.municipio_id,
+      m.nombre as municipio_nombre,
+      m.departamento_id,
+      d.nombre as departamento_nombre
+    FROM sucursal s
+    INNER JOIN municipio m ON s.municipio_id = m.id
+    INNER JOIN departamento d ON m.departamento_id = d.id
+    WHERE m.departamento_id = ?
+    ORDER BY m.nombre, s.nombre
   `;
   
-  db.query(query, [id], (err, result) => {
-    if (err) {
-      console.error('Error al obtener servicio:', err);
-      return callback(err, null);
+  console.log(`📍 Buscando sucursales en departamento ID: ${departamentoId}`);
+  
+  db.query(query, [departamentoId], (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerSucursalesPorDepartamento:', error);
+      return callback(error, null);
+    }
+    console.log(`✅ ${resultados.length} sucursales encontradas en departamento ${departamentoId}`);
+    callback(null, resultados);
+  });
+};
+
+export const obtenerSucursalesPorMunicipio = (municipioId, callback) => {
+  const query = `
+    SELECT 
+      s.id, 
+      s.nombre, 
+      s.direccion, 
+      s.telefono,
+      s.municipio_id,
+      m.nombre as municipio_nombre,
+      m.departamento_id,
+      d.nombre as departamento_nombre
+    FROM sucursal s
+    INNER JOIN municipio m ON s.municipio_id = m.id
+    INNER JOIN departamento d ON m.departamento_id = d.id
+    WHERE s.municipio_id = ?
+    ORDER BY s.nombre
+  `;
+  
+  console.log(`🎯 Buscando sucursales en municipio ID: ${municipioId}`);
+  
+  db.query(query, [municipioId], (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerSucursalesPorMunicipio:', error);
+      return callback(error, null);
+    }
+    console.log(`✅ ${resultados.length} sucursales encontradas en municipio ${municipioId}`);
+    callback(null, resultados);
+  });
+};
+
+export const obtenerSucursalPorId = (id, callback) => {
+  const query = `
+    SELECT 
+      s.*, 
+      m.nombre as municipio_nombre,
+      m.departamento_id,
+      d.nombre as departamento_nombre
+    FROM sucursal s
+    INNER JOIN municipio m ON s.municipio_id = m.id
+    INNER JOIN departamento d ON m.departamento_id = d.id
+    WHERE s.id = ?
+  `;
+  
+  console.log(`🔍 Buscando sucursal ID: ${id}`);
+  
+  db.query(query, [id], (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerSucursalPorId:', error);
+      return callback(error, null);
     }
     
-    if (result.length === 0) {
+    if (resultados.length === 0) {
+      console.log(`⚠️ Sucursal ID ${id} no encontrada`);
       return callback(null, null);
     }
     
-    console.log('✅ Servicio encontrado:', result[0].nombre);
-    callback(null, result[0]);
+    console.log(`✅ Sucursal encontrada: ${resultados[0].nombre}`);
+    callback(null, resultados[0]);
   });
 };
 
-// Crear nuevo servicio
-export const crearServicio = (datos, callback) => {
-  console.log('➕ Creando nuevo servicio:', datos.nombre);
+// ==================== SERVICIOS (GLOBALES) ====================
+
+export const obtenerTodosLosServicios = (callback) => {
+  const query = 'SELECT * FROM servicio ORDER BY activo DESC, nombre ASC';
   
+  console.log('📋 Obteniendo todos los servicios');
+  
+  db.query(query, (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerTodosLosServicios:', error);
+      return callback(error, null);
+    }
+    console.log(`✅ ${resultados.length} servicios obtenidos`);
+    callback(null, resultados);
+  });
+};
+
+export const obtenerServicioPorId = (id, callback) => {
+  const query = 'SELECT * FROM servicio WHERE id = ?';
+  
+  console.log(`🔍 Buscando servicio ID: ${id}`);
+  
+  db.query(query, [id], (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerServicioPorId:', error);
+      return callback(error, null);
+    }
+    
+    if (resultados.length === 0) {
+      console.log(`⚠️ Servicio ID ${id} no encontrado`);
+      return callback(null, null);
+    }
+    
+    console.log(`✅ Servicio encontrado: ${resultados[0].nombre}`);
+    callback(null, resultados[0]);
+  });
+};
+
+export const crearServicio = (datos, callback) => {
   const query = `
     INSERT INTO servicio 
     (nombre, descripcion, precio, duracion_minutos, activo, icono, color) 
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
-  
-  const valores = [
+  const values = [
     datos.nombre,
-    datos.descripcion || null,
+    datos.descripcion,
     datos.precio,
-    datos.duracion_minutos || 30,
-    datos.activo !== undefined ? datos.activo : true,
-    datos.icono || 'bi-heart-pulse',
-    datos.color || 'primary'
+    datos.duracion_minutos,
+    datos.activo,
+    datos.icono,
+    datos.color
   ];
   
-  db.query(query, valores, (err, result) => {
-    if (err) {
-      console.error('Error al crear servicio:', err);
-      return callback(err, null);
+  console.log('➕ Creando nuevo servicio:', datos.nombre);
+  
+  db.query(query, values, (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en crearServicio:', error);
+      return callback(error, null);
     }
-    
-    console.log('✅ Servicio creado con ID:', result.insertId);
-    callback(null, { id: result.insertId, ...datos });
+    console.log(`✅ Servicio creado con ID: ${resultado.insertId}`);
+    callback(null, { id: resultado.insertId, ...datos });
   });
 };
 
-// Actualizar servicio
 export const actualizarServicio = (id, datos, callback) => {
-  console.log('📝 Actualizando servicio ID:', id);
+  const fields = Object.keys(datos).map(key => `${key} = ?`).join(', ');
+  const values = [...Object.values(datos), id];
+  const query = `UPDATE servicio SET ${fields} WHERE id = ?`;
   
-  const campos = [];
-  const valores = [];
+  console.log(`✏️ Actualizando servicio ID: ${id}`);
   
-  if (datos.nombre !== undefined) {
-    campos.push('nombre = ?');
-    valores.push(datos.nombre);
-  }
-  
-  if (datos.descripcion !== undefined) {
-    campos.push('descripcion = ?');
-    valores.push(datos.descripcion);
-  }
-  
-  if (datos.precio !== undefined) {
-    campos.push('precio = ?');
-    valores.push(datos.precio);
-  }
-  
-  if (datos.duracion_minutos !== undefined) {
-    campos.push('duracion_minutos = ?');
-    valores.push(datos.duracion_minutos);
-  }
-  
-  if (datos.activo !== undefined) {
-    campos.push('activo = ?');
-    valores.push(datos.activo);
-  }
-  
-  if (datos.icono !== undefined) {
-    campos.push('icono = ?');
-    valores.push(datos.icono);
-  }
-  
-  if (datos.color !== undefined) {
-    campos.push('color = ?');
-    valores.push(datos.color);
-  }
-  
-  if (campos.length === 0) {
-    return callback(new Error('No hay campos para actualizar'), null);
-  }
-  
-  valores.push(id);
-  const query = `UPDATE servicio SET ${campos.join(', ')} WHERE id = ?`;
-  
-  db.query(query, valores, (err, result) => {
-    if (err) {
-      console.error('Error al actualizar servicio:', err);
-      return callback(err, null);
+  db.query(query, values, (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en actualizarServicio:', error);
+      return callback(error, null);
     }
-    
-    console.log(`✅ Servicio actualizado. Filas afectadas: ${result.affectedRows}`);
-    callback(null, result);
+    console.log(`✅ Servicio ID ${id} actualizado`);
+    callback(null, resultado);
   });
 };
 
-// Eliminar servicio
 export const eliminarServicio = (id, callback) => {
-  console.log('🗑️ Eliminando servicio ID:', id);
-  
   const query = 'DELETE FROM servicio WHERE id = ?';
   
-  db.query(query, [id], (err, result) => {
-    if (err) {
-      console.error('Error al eliminar servicio:', err);
-      return callback(err, null);
+  console.log(`🗑️ Eliminando servicio ID: ${id}`);
+  
+  db.query(query, [id], (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en eliminarServicio:', error);
+      return callback(error, null);
     }
-    
-    console.log(`✅ Servicio eliminado. Filas afectadas: ${result.affectedRows}`);
-    callback(null, result);
+    console.log(`✅ Servicio ID ${id} eliminado`);
+    callback(null, resultado);
   });
 };
 
-// Activar/Desactivar servicio
 export const toggleServicio = (id, activo, callback) => {
-  console.log(`🔄 ${activo ? 'Activando' : 'Desactivando'} servicio ID:`, id);
-  
   const query = 'UPDATE servicio SET activo = ? WHERE id = ?';
   
-  db.query(query, [activo, id], (err, result) => {
-    if (err) {
-      console.error('Error al cambiar estado del servicio:', err);
-      return callback(err, null);
+  console.log(`🔄 Cambiando estado del servicio ID ${id} a: ${activo ? 'activo' : 'inactivo'}`);
+  
+  db.query(query, [activo, id], (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en toggleServicio:', error);
+      return callback(error, null);
     }
-    
-    console.log(`✅ Estado del servicio actualizado`);
-    callback(null, result);
+    console.log(`✅ Estado del servicio ID ${id} actualizado`);
+    callback(null, resultado);
   });
 };
 
-// ==================== HORARIOS DE ATENCIÓN ====================
+// ==================== HORARIOS DE ATENCIÓN POR SUCURSAL ====================
 
-// Obtener todos los horarios
-export const obtenerHorarios = (callback) => {
-  console.log('⏰ Obteniendo horarios de atención...');
-  
+export const obtenerHorariosPorSucursal = (sucursalId, callback) => {
   const query = `
-    SELECT 
-      id, dia_semana, hora_inicio, hora_fin, activo, 
-      sucursal_id, fecha_creacion, fecha_modificacion
-    FROM horario_atencion 
-    ORDER BY FIELD(dia_semana, 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo')
+    SELECT h.*, s.nombre as sucursal_nombre
+    FROM horario_atencion h
+    INNER JOIN sucursal s ON h.sucursal_id = s.id
+    WHERE h.sucursal_id = ?
+    ORDER BY FIELD(h.dia_semana, 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo')
   `;
   
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error('Error al obtener horarios:', err);
-      return callback(err, null);
+  console.log(`⏰ Obteniendo horarios de sucursal ID: ${sucursalId}`);
+  
+  db.query(query, [sucursalId], (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerHorariosPorSucursal:', error);
+      return callback(error, null);
     }
-    console.log(`✅ ${result.length} horarios obtenidos`);
-    callback(null, result);
+    console.log(`✅ ${resultados.length} horarios obtenidos para sucursal ${sucursalId}`);
+    callback(null, resultados);
   });
 };
 
-// Actualizar horario
 export const actualizarHorario = (id, datos, callback) => {
-  console.log('📝 Actualizando horario ID:', id);
+  const fields = Object.keys(datos).map(key => `${key} = ?`).join(', ');
+  const values = [...Object.values(datos), id];
+  const query = `UPDATE horario_atencion SET ${fields}, fecha_modificacion = CURRENT_TIMESTAMP WHERE id = ?`;
   
-  const campos = [];
-  const valores = [];
+  console.log(`✏️ Actualizando horario ID: ${id}`);
   
-  if (datos.hora_inicio !== undefined) {
-    campos.push('hora_inicio = ?');
-    valores.push(datos.hora_inicio);
-  }
-  
-  if (datos.hora_fin !== undefined) {
-    campos.push('hora_fin = ?');
-    valores.push(datos.hora_fin);
-  }
-  
-  if (datos.activo !== undefined) {
-    campos.push('activo = ?');
-    valores.push(datos.activo);
-  }
-  
-  if (campos.length === 0) {
-    return callback(new Error('No hay campos para actualizar'), null);
-  }
-  
-  valores.push(id);
-  const query = `UPDATE horario_atencion SET ${campos.join(', ')} WHERE id = ?`;
-  
-  db.query(query, valores, (err, result) => {
-    if (err) {
-      console.error('Error al actualizar horario:', err);
-      return callback(err, null);
+  db.query(query, values, (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en actualizarHorario:', error);
+      return callback(error, null);
     }
-    
-    console.log(`✅ Horario actualizado. Filas afectadas: ${result.affectedRows}`);
-    callback(null, result);
+    console.log(`✅ Horario ID ${id} actualizado`);
+    callback(null, resultado);
   });
 };
 
-// Actualizar múltiples horarios a la vez
-export const actualizarHorariosMasivo = (horarios, callback) => {
-  console.log('📝 Actualizando múltiples horarios...');
+export const actualizarHorariosMasivoPorSucursal = (sucursalId, horarios, callback) => {
+  console.log(`📝 Actualizando ${horarios.length} horarios de sucursal ID: ${sucursalId}`);
   
-  // Comenzar una transacción
   db.beginTransaction((err) => {
     if (err) {
-      console.error('Error al iniciar transacción:', err);
-      return callback(err, null);
+      console.error('❌ Error al iniciar transacción:', err);
+      return callback(err);
     }
-    
-    let completados = 0;
-    let errores = [];
-    
+
+    let completed = 0;
+    let hasError = false;
+
     horarios.forEach((horario) => {
+      const { id, hora_inicio, hora_fin, activo } = horario;
       const query = `
         UPDATE horario_atencion 
-        SET hora_inicio = ?, hora_fin = ?, activo = ? 
-        WHERE id = ?
+        SET hora_inicio = ?, hora_fin = ?, activo = ?, fecha_modificacion = CURRENT_TIMESTAMP 
+        WHERE id = ? AND sucursal_id = ?
       `;
       
-      const valores = [
-        horario.hora_inicio,
-        horario.hora_fin,
-        horario.activo,
-        horario.id
-      ];
-      
-      db.query(query, valores, (err, result) => {
-        if (err) {
-          errores.push({ id: horario.id, error: err });
+      db.query(query, [hora_inicio, hora_fin, activo, id, sucursalId], (err) => {
+        if (err && !hasError) {
+          hasError = true;
+          console.error('❌ Error en actualización masiva:', err);
+          return db.rollback(() => callback(err));
         }
-        
-        completados++;
-        
-        // Cuando todos se hayan procesado
-        if (completados === horarios.length) {
-          if (errores.length > 0) {
-            db.rollback(() => {
-              console.error('❌ Errores al actualizar horarios:', errores);
-              callback(new Error('Error al actualizar algunos horarios'), null);
-            });
-          } else {
-            db.commit((err) => {
-              if (err) {
-                db.rollback(() => {
-                  console.error('Error al hacer commit:', err);
-                  callback(err, null);
-                });
-              } else {
-                console.log('✅ Todos los horarios actualizados correctamente');
-                callback(null, { success: true, updated: horarios.length });
-              }
-            });
-          }
+
+        completed++;
+        if (completed === horarios.length && !hasError) {
+          db.commit((err) => {
+            if (err) {
+              console.error('❌ Error al hacer commit:', err);
+              return db.rollback(() => callback(err));
+            }
+            console.log(`✅ ${completed} horarios actualizados correctamente`);
+            callback(null, { updated: completed });
+          });
         }
       });
     });
   });
 };
 
-// ==================== DÍAS NO LABORABLES ====================
+export const crearHorariosPorSucursal = (sucursalId, callback) => {
+  const diasSemana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+  const horarioPredeterminado = {
+    lunes: { inicio: '08:00:00', fin: '18:00:00', activo: 1 },
+    martes: { inicio: '08:00:00', fin: '18:00:00', activo: 1 },
+    miercoles: { inicio: '08:00:00', fin: '18:00:00', activo: 1 },
+    jueves: { inicio: '08:00:00', fin: '18:00:00', activo: 1 },
+    viernes: { inicio: '08:00:00', fin: '18:00:00', activo: 1 },
+    sabado: { inicio: '08:00:00', fin: '14:00:00', activo: 1 },
+    domingo: { inicio: '00:00:00', fin: '00:00:00', activo: 0 }
+  };
 
-// Obtener días no laborables
-export const obtenerDiasNoLaborables = (callback) => {
-  console.log('📅 Obteniendo días no laborables...');
-  
-  const query = `
-    SELECT 
-      id, fecha, descripcion, sucursal_id, fecha_creacion
-    FROM dias_no_laborables 
-    WHERE fecha >= CURDATE()
-    ORDER BY fecha ASC
-  `;
-  
-  db.query(query, (err, result) => {
+  console.log(`➕ Creando horarios predeterminados para sucursal ID: ${sucursalId}`);
+
+  db.beginTransaction((err) => {
     if (err) {
-      console.error('Error al obtener días no laborables:', err);
-      return callback(err, null);
+      console.error('❌ Error al iniciar transacción:', err);
+      return callback(err);
     }
-    console.log(`✅ ${result.length} días no laborables obtenidos`);
-    callback(null, result);
+
+    let completed = 0;
+    let hasError = false;
+
+    diasSemana.forEach((dia) => {
+      const config = horarioPredeterminado[dia];
+      const query = `
+        INSERT INTO horario_atencion (dia_semana, hora_inicio, hora_fin, activo, sucursal_id)
+        VALUES (?, ?, ?, ?, ?)
+      `;
+      
+      db.query(query, [dia, config.inicio, config.fin, config.activo, sucursalId], (err) => {
+        if (err && !hasError) {
+          hasError = true;
+          console.error('❌ Error al crear horarios:', err);
+          return db.rollback(() => callback(err));
+        }
+
+        completed++;
+        if (completed === diasSemana.length && !hasError) {
+          db.commit((err) => {
+            if (err) {
+              console.error('❌ Error al hacer commit:', err);
+              return db.rollback(() => callback(err));
+            }
+            console.log(`✅ ${completed} horarios creados correctamente`);
+            callback(null, { created: completed });
+          });
+        }
+      });
+    });
   });
 };
 
-// Crear día no laborable
-export const crearDiaNoLaborable = (datos, callback) => {
-  console.log('➕ Creando día no laborable:', datos.fecha);
-  
+// ==================== HORARIOS ESPECIALES POR SUCURSAL ====================
+
+export const obtenerHorariosEspecialesPorSucursal = (sucursalId, callback) => {
   const query = `
-    INSERT INTO dias_no_laborables (fecha, descripcion, sucursal_id) 
-    VALUES (?, ?, ?)
+    SELECT he.*, s.nombre as sucursal_nombre
+    FROM horarios_especiales he
+    INNER JOIN sucursal s ON he.sucursal_id = s.id
+    WHERE he.sucursal_id = ? AND he.fecha >= CURDATE()
+    ORDER BY he.fecha ASC
   `;
   
-  const valores = [
+  console.log(`📅 Obteniendo horarios especiales de sucursal ID: ${sucursalId}`);
+  
+  db.query(query, [sucursalId], (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerHorariosEspecialesPorSucursal:', error);
+      return callback(error, null);
+    }
+    console.log(`✅ ${resultados.length} horarios especiales obtenidos`);
+    callback(null, resultados);
+  });
+};
+
+export const obtenerHorarioEspecialPorFecha = (fecha, sucursalId, callback) => {
+  const query = `
+    SELECT * FROM horarios_especiales 
+    WHERE fecha = ? AND sucursal_id = ?
+    LIMIT 1
+  `;
+  
+  console.log(`🔍 Buscando horario especial para fecha: ${fecha}, sucursal: ${sucursalId}`);
+  
+  db.query(query, [fecha, sucursalId], (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerHorarioEspecialPorFecha:', error);
+      return callback(error, null);
+    }
+    
+    const resultado = resultados.length > 0 ? resultados[0] : null;
+    console.log(resultado ? '✅ Horario especial encontrado' : 'ℹ️ No hay horario especial para esa fecha');
+    callback(null, resultado);
+  });
+};
+
+export const crearHorarioEspecial = (datos, callback) => {
+  const query = `
+    INSERT INTO horarios_especiales 
+    (fecha, hora_inicio, hora_fin, descripcion, sucursal_id) 
+    VALUES (?, ?, ?, ?, ?)
+  `;
+  const values = [
     datos.fecha,
+    datos.hora_inicio,
+    datos.hora_fin,
     datos.descripcion,
-    datos.sucursal_id || null
+    datos.sucursal_id
   ];
   
-  db.query(query, valores, (err, result) => {
-    if (err) {
-      console.error('Error al crear día no laborable:', err);
-      return callback(err, null);
+  console.log(`➕ Creando horario especial para fecha: ${datos.fecha}`);
+  
+  db.query(query, values, (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en crearHorarioEspecial:', error);
+      return callback(error, null);
     }
-    
-    console.log('✅ Día no laborable creado con ID:', result.insertId);
-    callback(null, { id: result.insertId, ...datos });
+    console.log(`✅ Horario especial creado con ID: ${resultado.insertId}`);
+    callback(null, { id: resultado.insertId, ...datos });
   });
 };
 
-// Eliminar día no laborable
-export const eliminarDiaNoLaborable = (id, callback) => {
-  console.log('🗑️ Eliminando día no laborable ID:', id);
+export const actualizarHorarioEspecial = (id, datos, callback) => {
+  const fields = Object.keys(datos).map(key => `${key} = ?`).join(', ');
+  const values = [...Object.values(datos), id];
+  const query = `UPDATE horarios_especiales SET ${fields} WHERE id = ?`;
   
-  const query = 'DELETE FROM dias_no_laborables WHERE id = ?';
+  console.log(`✏️ Actualizando horario especial ID: ${id}`);
   
-  db.query(query, [id], (err, result) => {
-    if (err) {
-      console.error('Error al eliminar día no laborable:', err);
-      return callback(err, null);
+  db.query(query, values, (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en actualizarHorarioEspecial:', error);
+      return callback(error, null);
+    }
+    console.log(`✅ Horario especial ID ${id} actualizado`);
+    callback(null, resultado);
+  });
+};
+
+export const eliminarHorarioEspecial = (id, callback) => {
+  const query = 'DELETE FROM horarios_especiales WHERE id = ?';
+  
+  console.log(`🗑️ Eliminando horario especial ID: ${id}`);
+  
+  db.query(query, [id], (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en eliminarHorarioEspecial:', error);
+      return callback(error, null);
+    }
+    console.log(`✅ Horario especial ID ${id} eliminado`);
+    callback(null, resultado);
+  });
+};
+
+// ==================== DÍAS NO LABORABLES POR SUCURSAL ====================
+
+export const obtenerDiasNoLaborablesPorSucursal = (sucursalId, callback) => {
+  const query = `
+    SELECT dnl.*, s.nombre as sucursal_nombre
+    FROM dias_no_laborables dnl
+    INNER JOIN sucursal s ON dnl.sucursal_id = s.id
+    WHERE dnl.sucursal_id = ? AND dnl.fecha >= CURDATE()
+    ORDER BY dnl.fecha ASC
+  `;
+  
+  console.log(`🚫 Obteniendo días no laborables de sucursal ID: ${sucursalId}`);
+  
+  db.query(query, [sucursalId], (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en obtenerDiasNoLaborablesPorSucursal:', error);
+      return callback(error, null);
+    }
+    console.log(`✅ ${resultados.length} días no laborables obtenidos`);
+    callback(null, resultados);
+  });
+};
+
+export const verificarDiaNoLaborable = (fecha, sucursalId, callback) => {
+  const query = `
+    SELECT * FROM dias_no_laborables 
+    WHERE fecha = ? AND sucursal_id = ?
+    LIMIT 1
+  `;
+  
+  console.log(`🔍 Verificando si ${fecha} es día no laborable en sucursal ${sucursalId}`);
+  
+  db.query(query, [fecha, sucursalId], (error, resultados) => {
+    if (error) {
+      console.error('❌ Error en verificarDiaNoLaborable:', error);
+      return callback(error, null);
     }
     
-    console.log(`✅ Día no laborable eliminado`);
-    callback(null, result);
+    const resultado = resultados.length > 0 ? resultados[0] : null;
+    console.log(resultado ? '⚠️ Es día no laborable' : '✅ Es día laborable');
+    callback(null, resultado);
+  });
+};
+
+export const crearDiaNoLaborable = (datos, callback) => {
+  const query = `
+    INSERT INTO dias_no_laborables 
+    (fecha, descripcion, sucursal_id) 
+    VALUES (?, ?, ?)
+  `;
+  const values = [
+    datos.fecha,
+    datos.descripcion,
+    datos.sucursal_id
+  ];
+  
+  console.log(`➕ Creando día no laborable para fecha: ${datos.fecha}`);
+  
+  db.query(query, values, (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en crearDiaNoLaborable:', error);
+      return callback(error, null);
+    }
+    console.log(`✅ Día no laborable creado con ID: ${resultado.insertId}`);
+    callback(null, { id: resultado.insertId, ...datos });
+  });
+};
+
+export const eliminarDiaNoLaborable = (id, callback) => {
+  const query = 'DELETE FROM dias_no_laborables WHERE id = ?';
+  
+  console.log(`🗑️ Eliminando día no laborable ID: ${id}`);
+  
+  db.query(query, [id], (error, resultado) => {
+    if (error) {
+      console.error('❌ Error en eliminarDiaNoLaborable:', error);
+      return callback(error, null);
+    }
+    console.log(`✅ Día no laborable ID ${id} eliminado`);
+    callback(null, resultado);
   });
 };

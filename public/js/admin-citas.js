@@ -61,7 +61,49 @@ async function cargarCitas() {
     if (!response.ok) throw new Error('Error al obtener citas');
     
     todasLasCitas = await response.json();
-    console.log(`📊 Total de citas cargadas: ${todasLasCitas.length}`);
+    console.log('🔍 ========== DEBUG DE CITAS CARGADAS ==========');
+console.log('Total de citas:', todasLasCitas.length);
+
+// Mostrar las primeras 3 citas para ver el formato
+if (todasLasCitas.length > 0) {
+  console.log('Ejemplo de cita (primera):', todasLasCitas[0]);
+  console.log('Formato de fecha:', typeof todasLasCitas[0].fecha, todasLasCitas[0].fecha);
+  console.log('Formato de hora:', typeof todasLasCitas[0].hora, todasLasCitas[0].hora);
+}
+
+// Agrupar citas por fecha para ver distribución
+const citasPorFecha = {};
+todasLasCitas.forEach(cita => {
+  let fechaKey = cita.fecha;
+  if (typeof fechaKey === 'object') {
+    fechaKey = new Date(fechaKey).toISOString().split('T')[0];
+  }
+  if (fechaKey.includes('T')) {
+    fechaKey = fechaKey.split('T')[0];
+  }
+  
+  if (!citasPorFecha[fechaKey]) {
+    citasPorFecha[fechaKey] = 0;
+  }
+  citasPorFecha[fechaKey]++;
+});
+
+console.log('Citas agrupadas por fecha:');
+console.table(citasPorFecha);
+
+// Contar por estado
+const citasPorEstado = {};
+todasLasCitas.forEach(cita => {
+  if (!citasPorEstado[cita.estado]) {
+    citasPorEstado[cita.estado] = 0;
+  }
+  citasPorEstado[cita.estado]++;
+});
+
+console.log('Citas agrupadas por estado:');
+console.table(citasPorEstado);
+
+console.log('===============================================\n');
 
     // Actualizar estadísticas
     actualizarEstadisticas();
@@ -118,16 +160,27 @@ function actualizarEstadisticas() {
 
 // ==================== MOSTRAR CITAS POR TAB ====================
 
+// ==================== MOSTRAR CITAS POR TAB (VERSIÓN CON DEBUG) ====================
+
 function mostrarCitasPorTab(tab) {
+  console.log('\n🔍 ========== INICIANDO FILTRO DE CITAS ==========');
+  console.log('Tab seleccionado:', tab);
+  console.log('Total de citas en memoria:', todasLasCitas.length);
+  
+  // Obtener fecha actual
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);
-  const fechaHoy = hoy.toISOString().split('T')[0];
-
+  const fechaHoyStr = hoy.toISOString().split('T')[0];
+  
+  console.log('Fecha de hoy (Date):', hoy);
+  console.log('Fecha de hoy (String):', fechaHoyStr);
+  
   let citas = [...todasLasCitas];
   let containerId = '';
 
   switch(tab) {
     case 'todas':
+      console.log('📋 Mostrando TODAS las citas');
       containerId = 'todasCitasContainer';
       citas.sort((a, b) => {
         const fechaA = new Date(`${a.fecha}T${a.hora || '00:00'}`);
@@ -137,44 +190,126 @@ function mostrarCitasPorTab(tab) {
       break;
 
     case 'hoy':
+      console.log('📅 Filtrando citas de HOY');
       containerId = 'hoyCitasContainer';
-      citas = citas.filter(c => c.fecha === fechaHoy);
+      
+      // Filtrar por fecha exacta
+      citas = citas.filter(c => {
+        // Normalizar la fecha de la cita (YYYY-MM-DD)
+        let fechaCitaStr = c.fecha;
+        
+        // Si viene como objeto Date, convertir a string
+        if (typeof fechaCitaStr === 'object') {
+          fechaCitaStr = new Date(fechaCitaStr).toISOString().split('T')[0];
+        }
+        
+        // Si tiene formato 'YYYY-MM-DDTHH:MM:SS', extraer solo la fecha
+        if (fechaCitaStr.includes('T')) {
+          fechaCitaStr = fechaCitaStr.split('T')[0];
+        }
+        
+        const esHoy = fechaCitaStr === fechaHoyStr;
+        
+        if (esHoy) {
+          console.log(`✅ Cita ID ${c.id}: ${fechaCitaStr} = HOY`);
+        }
+        
+        return esHoy;
+      });
+      
+      // Ordenar por hora
       citas.sort((a, b) => (a.hora || '').localeCompare(b.hora || ''));
+      console.log(`📊 Total citas de hoy encontradas: ${citas.length}`);
       break;
 
     case 'proximas':
+      console.log('🔜 Filtrando citas PRÓXIMAS (futuras)');
       containerId = 'proximasCitasContainer';
+      
       citas = citas.filter(c => {
-        const fechaCita = new Date(c.fecha);
+        // Normalizar fecha
+        let fechaCitaStr = c.fecha;
+        if (typeof fechaCitaStr === 'object') {
+          fechaCitaStr = new Date(fechaCitaStr).toISOString().split('T')[0];
+        }
+        if (fechaCitaStr.includes('T')) {
+          fechaCitaStr = fechaCitaStr.split('T')[0];
+        }
+        
+        // Crear objeto Date para comparar
+        const fechaCita = new Date(fechaCitaStr + 'T00:00:00');
         fechaCita.setHours(0, 0, 0, 0);
-        return fechaCita > hoy && (c.estado === 'pendiente' || c.estado === 'confirmada');
+        
+        // Debe ser MAYOR que hoy
+        const esFutura = fechaCita.getTime() > hoy.getTime();
+        
+        // Y tener estado pendiente o confirmada
+        const estadoValido = c.estado === 'pendiente' || c.estado === 'confirmada';
+        
+        const cumple = esFutura && estadoValido;
+        
+        if (cumple) {
+          console.log(`✅ Cita ID ${c.id}: ${fechaCitaStr} > ${fechaHoyStr} (${c.estado})`);
+        }
+        
+        return cumple;
       });
+      
+      // Ordenar por fecha ascendente (más cercana primero)
       citas.sort((a, b) => {
         const fechaA = new Date(`${a.fecha}T${a.hora || '00:00'}`);
         const fechaB = new Date(`${b.fecha}T${b.hora || '00:00'}`);
         return fechaA - fechaB;
       });
+      
+      console.log(`📊 Total citas próximas encontradas: ${citas.length}`);
       break;
 
     case 'anteriores':
+      console.log('📜 Filtrando citas ANTERIORES (pasadas)');
       containerId = 'anterioresCitasContainer';
+      
       citas = citas.filter(c => {
-        const fechaCita = new Date(c.fecha);
+        // Normalizar fecha
+        let fechaCitaStr = c.fecha;
+        if (typeof fechaCitaStr === 'object') {
+          fechaCitaStr = new Date(fechaCitaStr).toISOString().split('T')[0];
+        }
+        if (fechaCitaStr.includes('T')) {
+          fechaCitaStr = fechaCitaStr.split('T')[0];
+        }
+        
+        // Crear objeto Date para comparar
+        const fechaCita = new Date(fechaCitaStr + 'T00:00:00');
         fechaCita.setHours(0, 0, 0, 0);
-        return fechaCita < hoy;
+        
+        // Debe ser MENOR que hoy
+        const esPasada = fechaCita.getTime() < hoy.getTime();
+        
+        if (esPasada) {
+          console.log(`✅ Cita ID ${c.id}: ${fechaCitaStr} < ${fechaHoyStr}`);
+        }
+        
+        return esPasada;
       });
+      
+      // Ordenar por fecha descendente (más reciente primero)
       citas.sort((a, b) => {
         const fechaA = new Date(`${a.fecha}T${a.hora || '00:00'}`);
         const fechaB = new Date(`${b.fecha}T${b.hora || '00:00'}`);
         return fechaB - fechaA;
       });
+      
+      console.log(`📊 Total citas anteriores encontradas: ${citas.length}`);
       break;
   }
+
+  console.log(`🎯 Resultado final: ${citas.length} citas para mostrar en tab "${tab}"`);
+  console.log('========================================\n');
 
   citasFiltradas = citas;
   renderizarCitas(containerId, citas);
 }
-
 // ==================== RENDERIZAR CITAS ====================
 
 function renderizarCitas(containerId, citas) {
@@ -222,7 +357,7 @@ function renderizarCitas(containerId, citas) {
     html += `
       <tr ${esHoy ? 'class="table-warning"' : ''}>
         <td>
-          ${esHoy ? '<span class="badge bg-warning text-dark me-2">HOY</span>' : ''}
+          ${esHoy ? '<span class="badge bg-warning text-dark me-2">Mañana</span>' : ''}
           <strong>${fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}</strong>
         </td>
         <td>

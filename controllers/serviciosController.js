@@ -1,22 +1,114 @@
-// controllers/serviciosController.js - Controlador completo de servicios y horarios
+// controllers/serviciosController.js - Controlador con gestión por sucursal
 import {
+  obtenerTodasLasSucursales,
+  obtenerSucursalesPorDepartamento,
+  obtenerSucursalesPorMunicipio,
+  obtenerSucursalPorId,
   obtenerTodosLosServicios,
   obtenerServicioPorId,
   crearServicio,
   actualizarServicio,
   eliminarServicio,
   toggleServicio,
-  obtenerHorarios,
+  obtenerHorariosPorSucursal,
   actualizarHorario,
-  actualizarHorariosMasivo,
-  obtenerDiasNoLaborables as obtenerDiasNoLaborablesModel,
+  actualizarHorariosMasivoPorSucursal,
+  crearHorariosPorSucursal,
+  obtenerHorariosEspecialesPorSucursal,
+  obtenerHorarioEspecialPorFecha,
+  crearHorarioEspecial,
+  actualizarHorarioEspecial,
+  eliminarHorarioEspecial,
+  obtenerDiasNoLaborablesPorSucursal,
+  verificarDiaNoLaborable,
   crearDiaNoLaborable,
   eliminarDiaNoLaborable
 } from '../models/servicios.js';
 
+// ==================== SUCURSALES ====================
+
+export const obtenerSucursales = (req, res) => {
+  try {
+    console.log('🏢 Obteniendo todas las sucursales...');
+    
+    obtenerTodasLasSucursales((err, sucursales) => {
+      if (err) {
+        console.error('Error al obtener sucursales:', err);
+        return res.status(500).json({ error: 'Error al obtener las sucursales' });
+      }
+      
+      console.log(`✅ ${sucursales.length} sucursales obtenidas`);
+      res.status(200).json(sucursales);
+    });
+  } catch (error) {
+    console.error('Error general en obtenerSucursales:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+export const obtenerSucursalesFiltradas = (req, res) => {
+  try {
+    const { departamento_id, municipio_id } = req.query;
+    
+    if (municipio_id) {
+      console.log('🏢 Obteniendo sucursales por municipio:', municipio_id);
+      obtenerSucursalesPorMunicipio(municipio_id, (err, sucursales) => {
+        if (err) {
+          console.error('Error:', err);
+          return res.status(500).json({ error: 'Error al obtener las sucursales' });
+        }
+        res.status(200).json(sucursales);
+      });
+    } else if (departamento_id) {
+      console.log('🏢 Obteniendo sucursales por departamento:', departamento_id);
+      obtenerSucursalesPorDepartamento(departamento_id, (err, sucursales) => {
+        if (err) {
+          console.error('Error:', err);
+          return res.status(500).json({ error: 'Error al obtener las sucursales' });
+        }
+        res.status(200).json(sucursales);
+      });
+    } else {
+      obtenerTodasLasSucursales((err, sucursales) => {
+        if (err) {
+          console.error('Error:', err);
+          return res.status(500).json({ error: 'Error al obtener las sucursales' });
+        }
+        res.status(200).json(sucursales);
+      });
+    }
+  } catch (error) {
+    console.error('Error general:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+export const obtenerSucursal = (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('🔍 Buscando sucursal con ID:', id);
+    
+    obtenerSucursalPorId(id, (err, sucursal) => {
+      if (err) {
+        console.error('Error:', err);
+        return res.status(500).json({ error: 'Error al obtener la sucursal' });
+      }
+      
+      if (!sucursal) {
+        return res.status(404).json({ error: 'Sucursal no encontrada' });
+      }
+      
+      console.log('✅ Sucursal encontrada:', sucursal.nombre);
+      res.status(200).json(sucursal);
+    });
+  } catch (error) {
+    console.error('Error general:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
 // ==================== SERVICIOS ====================
 
-// Obtener todos los servicios
 export const obtenerServicios = (req, res) => {
   try {
     console.log('📋 Obteniendo todos los servicios...');
@@ -36,7 +128,6 @@ export const obtenerServicios = (req, res) => {
   }
 };
 
-// Obtener servicio por ID
 export const obtenerServicio = (req, res) => {
   try {
     const { id } = req.params;
@@ -61,14 +152,12 @@ export const obtenerServicio = (req, res) => {
   }
 };
 
-// Crear nuevo servicio
 export const nuevoServicio = (req, res) => {
   try {
     const { nombre, descripcion, precio, duracion_minutos, activo, icono, color } = req.body;
     
     console.log('➕ Creando nuevo servicio:', nombre);
     
-    // Validaciones
     if (!nombre || !precio) {
       return res.status(400).json({ error: 'Nombre y precio son requeridos' });
     }
@@ -109,7 +198,6 @@ export const nuevoServicio = (req, res) => {
   }
 };
 
-// Actualizar servicio
 export const modificarServicio = (req, res) => {
   try {
     const { id } = req.params;
@@ -117,12 +205,10 @@ export const modificarServicio = (req, res) => {
     
     console.log('📝 Actualizando servicio ID:', id);
     
-    // Validar que al menos un campo esté presente
     if (!nombre && !descripcion && !precio && !duracion_minutos && activo === undefined && !icono && !color) {
       return res.status(400).json({ error: 'Debe proporcionar al menos un campo para actualizar' });
     }
     
-    // Validaciones
     if (precio !== undefined && precio <= 0) {
       return res.status(400).json({ error: 'El precio debe ser mayor a 0' });
     }
@@ -163,7 +249,6 @@ export const modificarServicio = (req, res) => {
   }
 };
 
-// Eliminar servicio
 export const borrarServicio = (req, res) => {
   try {
     const { id } = req.params;
@@ -198,7 +283,6 @@ export const borrarServicio = (req, res) => {
   }
 };
 
-// Activar/Desactivar servicio
 export const cambiarEstadoServicio = (req, res) => {
   try {
     const { id } = req.params;
@@ -233,14 +317,14 @@ export const cambiarEstadoServicio = (req, res) => {
   }
 };
 
-// ==================== HORARIOS ====================
+// ==================== HORARIOS POR SUCURSAL ====================
 
-// Obtener horarios de atención
-export const obtenerHorariosAtencion = (req, res) => {
+export const obtenerHorariosAtencionPorSucursal = (req, res) => {
   try {
-    console.log('⏰ Obteniendo horarios de atención...');
+    const { sucursal_id } = req.params;
+    console.log('⏰ Obteniendo horarios de la sucursal:', sucursal_id);
     
-    obtenerHorarios((err, horarios) => {
+    obtenerHorariosPorSucursal(sucursal_id, (err, horarios) => {
       if (err) {
         console.error('Error al obtener horarios:', err);
         return res.status(500).json({ error: 'Error al obtener los horarios' });
@@ -250,12 +334,11 @@ export const obtenerHorariosAtencion = (req, res) => {
       res.status(200).json(horarios);
     });
   } catch (error) {
-    console.error('Error general en obtenerHorariosAtencion:', error);
+    console.error('Error general:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
 
-// Actualizar horario individual
 export const modificarHorario = (req, res) => {
   try {
     const { id } = req.params;
@@ -263,12 +346,10 @@ export const modificarHorario = (req, res) => {
     
     console.log('📝 Actualizando horario ID:', id);
     
-    // Validaciones
     if (!hora_inicio && !hora_fin && activo === undefined) {
       return res.status(400).json({ error: 'Debe proporcionar al menos un campo para actualizar' });
     }
     
-    // Validar formato de horas
     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
     if (hora_inicio && !timeRegex.test(hora_inicio)) {
       return res.status(400).json({ error: 'Formato de hora de inicio inválido (HH:MM)' });
@@ -278,7 +359,6 @@ export const modificarHorario = (req, res) => {
       return res.status(400).json({ error: 'Formato de hora de fin inválido (HH:MM)' });
     }
     
-    // Validar que hora_fin sea mayor que hora_inicio
     if (hora_inicio && hora_fin) {
       const [h1, m1] = hora_inicio.split(':').map(Number);
       const [h2, m2] = hora_fin.split(':').map(Number);
@@ -313,23 +393,22 @@ export const modificarHorario = (req, res) => {
       });
     });
   } catch (error) {
-    console.error('Error general en modificarHorario:', error);
+    console.error('Error general:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
 
-// Actualizar múltiples horarios
 export const modificarHorariosMasivo = (req, res) => {
   try {
+    const { sucursal_id } = req.params;
     const { horarios } = req.body;
     
-    console.log('📝 Actualizando múltiples horarios...');
+    console.log('📝 Actualizando múltiples horarios de la sucursal:', sucursal_id);
     
     if (!Array.isArray(horarios) || horarios.length === 0) {
       return res.status(400).json({ error: 'Debe proporcionar un array de horarios' });
     }
     
-    // Validar cada horario
     const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
     for (const h of horarios) {
       if (!h.id) {
@@ -344,7 +423,6 @@ export const modificarHorariosMasivo = (req, res) => {
         return res.status(400).json({ error: `Formato de hora inválido en horario ID ${h.id}` });
       }
       
-      // Agregar segundos si no los tienen
       if (h.hora_inicio && !h.hora_inicio.includes(':00', 5)) {
         h.hora_inicio += ':00';
       }
@@ -353,7 +431,7 @@ export const modificarHorariosMasivo = (req, res) => {
       }
     }
     
-    actualizarHorariosMasivo(horarios, (err, resultado) => {
+    actualizarHorariosMasivoPorSucursal(sucursal_id, horarios, (err, resultado) => {
       if (err) {
         console.error('Error al actualizar horarios:', err);
         return res.status(500).json({ error: 'Error al actualizar los horarios' });
@@ -366,21 +444,161 @@ export const modificarHorariosMasivo = (req, res) => {
       });
     });
   } catch (error) {
-    console.error('Error general en modificarHorariosMasivo:', error);
+    console.error('Error general:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
 
-// ==================== DÍAS NO LABORABLES ====================
+// ==================== HORARIOS ESPECIALES POR SUCURSAL ====================
 
-// Obtener días no laborables
-export const obtenerDiasNoLaborablesController = (req, res) => {
+export const obtenerHorariosEspeciales = (req, res) => {
   try {
-    console.log('📅 Obteniendo días no laborables...');
+    const { sucursal_id } = req.params;
+    console.log('📅 Obteniendo horarios especiales de la sucursal:', sucursal_id);
     
-    obtenerDiasNoLaborablesModel((err, dias) => {
+    obtenerHorariosEspecialesPorSucursal(sucursal_id, (err, horarios) => {
       if (err) {
-        console.error('Error al obtener días no laborables:', err);
+        console.error('Error:', err);
+        return res.status(500).json({ error: 'Error al obtener los horarios especiales' });
+      }
+      
+      console.log(`✅ ${horarios.length} horarios especiales obtenidos`);
+      res.status(200).json(horarios);
+    });
+  } catch (error) {
+    console.error('Error general:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+export const nuevoHorarioEspecial = (req, res) => {
+  try {
+    const { sucursal_id } = req.params;
+    const { fecha, hora_inicio, hora_fin, descripcion } = req.body;
+    
+    console.log('➕ Creando horario especial para sucursal:', sucursal_id);
+    
+    if (!fecha || !hora_inicio || !hora_fin || !descripcion) {
+      return res.status(400).json({ error: 'Todos los campos son requeridos' });
+    }
+    
+    const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!fechaRegex.test(fecha)) {
+      return res.status(400).json({ error: 'Formato de fecha inválido (YYYY-MM-DD)' });
+    }
+    
+    const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!timeRegex.test(hora_inicio) || !timeRegex.test(hora_fin)) {
+      return res.status(400).json({ error: 'Formato de hora inválido (HH:MM)' });
+    }
+    
+    const datos = {
+      fecha,
+      hora_inicio: hora_inicio + ':00',
+      hora_fin: hora_fin + ':00',
+      descripcion: descripcion.trim(),
+      sucursal_id: parseInt(sucursal_id)
+    };
+    
+    crearHorarioEspecial(datos, (err, resultado) => {
+      if (err) {
+        console.error('Error:', err);
+        
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(400).json({ error: 'Ya existe un horario especial para esa fecha en esta sucursal' });
+        }
+        
+        return res.status(500).json({ error: 'Error al crear el horario especial' });
+      }
+      
+      console.log('✅ Horario especial creado exitosamente');
+      res.status(201).json({
+        message: 'Horario especial creado correctamente',
+        horario: resultado
+      });
+    });
+  } catch (error) {
+    console.error('Error general:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+export const modificarHorarioEspecial = (req, res) => {
+  try {
+    const { id } = req.params;
+    const { hora_inicio, hora_fin, descripcion } = req.body;
+    
+    console.log('📝 Actualizando horario especial ID:', id);
+    
+    if (!hora_inicio && !hora_fin && !descripcion) {
+      return res.status(400).json({ error: 'Debe proporcionar al menos un campo para actualizar' });
+    }
+    
+    const datos = {};
+    if (hora_inicio) datos.hora_inicio = hora_inicio + ':00';
+    if (hora_fin) datos.hora_fin = hora_fin + ':00';
+    if (descripcion) datos.descripcion = descripcion.trim();
+    
+    actualizarHorarioEspecial(id, datos, (err, resultado) => {
+      if (err) {
+        console.error('Error:', err);
+        return res.status(500).json({ error: 'Error al actualizar el horario especial' });
+      }
+      
+      if (resultado.affectedRows === 0) {
+        return res.status(404).json({ error: 'Horario especial no encontrado' });
+      }
+      
+      console.log('✅ Horario especial actualizado');
+      res.status(200).json({
+        message: 'Horario especial actualizado correctamente',
+        id: id,
+        cambios: datos
+      });
+    });
+  } catch (error) {
+    console.error('Error general:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+export const borrarHorarioEspecial = (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('🗑️ Eliminando horario especial ID:', id);
+    
+    eliminarHorarioEspecial(id, (err, resultado) => {
+      if (err) {
+        console.error('Error:', err);
+        return res.status(500).json({ error: 'Error al eliminar el horario especial' });
+      }
+      
+      if (resultado.affectedRows === 0) {
+        return res.status(404).json({ error: 'Horario especial no encontrado' });
+      }
+      
+      console.log('✅ Horario especial eliminado');
+      res.status(200).json({
+        message: 'Horario especial eliminado correctamente',
+        id: id
+      });
+    });
+  } catch (error) {
+    console.error('Error general:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+// ==================== DÍAS NO LABORABLES POR SUCURSAL ====================
+
+export const obtenerDiasNoLaborables = (req, res) => {
+  try {
+    const { sucursal_id } = req.params;
+    console.log('📅 Obteniendo días no laborables de la sucursal:', sucursal_id);
+    
+    obtenerDiasNoLaborablesPorSucursal(sucursal_id, (err, dias) => {
+      if (err) {
+        console.error('Error:', err);
         return res.status(500).json({ error: 'Error al obtener los días no laborables' });
       }
       
@@ -388,23 +606,22 @@ export const obtenerDiasNoLaborablesController = (req, res) => {
       res.status(200).json(dias);
     });
   } catch (error) {
-    console.error('Error general en obtenerDiasNoLaborables:', error);
+    console.error('Error general:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
 
-// Crear día no laborable
 export const nuevoDiaNoLaborable = (req, res) => {
   try {
-    const { fecha, descripcion, sucursal_id } = req.body;
+    const { sucursal_id } = req.params;
+    const { fecha, descripcion } = req.body;
     
-    console.log('➕ Creando día no laborable:', fecha);
+    console.log('➕ Creando día no laborable para sucursal:', sucursal_id);
     
     if (!fecha || !descripcion) {
       return res.status(400).json({ error: 'Fecha y descripción son requeridos' });
     }
     
-    // Validar formato de fecha
     const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!fechaRegex.test(fecha)) {
       return res.status(400).json({ error: 'Formato de fecha inválido (YYYY-MM-DD)' });
@@ -413,15 +630,15 @@ export const nuevoDiaNoLaborable = (req, res) => {
     const datos = {
       fecha,
       descripcion: descripcion.trim(),
-      sucursal_id: sucursal_id || null
+      sucursal_id: parseInt(sucursal_id)
     };
     
     crearDiaNoLaborable(datos, (err, resultado) => {
       if (err) {
-        console.error('Error al crear día no laborable:', err);
+        console.error('Error:', err);
         
         if (err.code === 'ER_DUP_ENTRY') {
-          return res.status(400).json({ error: 'Ya existe un día no laborable para esa fecha' });
+          return res.status(400).json({ error: 'Ya existe un día no laborable para esa fecha en esta sucursal' });
         }
         
         return res.status(500).json({ error: 'Error al crear el día no laborable' });
@@ -434,12 +651,11 @@ export const nuevoDiaNoLaborable = (req, res) => {
       });
     });
   } catch (error) {
-    console.error('Error general en nuevoDiaNoLaborable:', error);
+    console.error('Error general:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
 
-// Eliminar día no laborable
 export const borrarDiaNoLaborable = (req, res) => {
   try {
     const { id } = req.params;
@@ -447,7 +663,7 @@ export const borrarDiaNoLaborable = (req, res) => {
     
     eliminarDiaNoLaborable(id, (err, resultado) => {
       if (err) {
-        console.error('Error al eliminar día no laborable:', err);
+        console.error('Error:', err);
         return res.status(500).json({ error: 'Error al eliminar el día no laborable' });
       }
       
@@ -455,14 +671,14 @@ export const borrarDiaNoLaborable = (req, res) => {
         return res.status(404).json({ error: 'Día no laborable no encontrado' });
       }
       
-      console.log('✅ Día no laborable eliminado exitosamente');
+      console.log('✅ Día no laborable eliminado');
       res.status(200).json({
         message: 'Día no laborable eliminado correctamente',
         id: id
       });
     });
   } catch (error) {
-    console.error('Error general en borrarDiaNoLaborable:', error);
+    console.error('Error general:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };

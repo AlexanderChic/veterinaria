@@ -1,4 +1,4 @@
-// /routes/citaRoutes.js
+// /routes/citaRoutes.js - AJUSTADO PARA FUNCIONAR CON EL NUEVO INDEX.JS
 import express from 'express';
 import { 
   obtenerCitas, 
@@ -16,7 +16,6 @@ import {
 const router = express.Router();
 
 // ==================== MIDDLEWARE DE DEBUGGING ====================
-// Solo activo en desarrollo
 if (process.env.NODE_ENV !== 'production') {
   router.use((req, res, next) => {
     console.log('\n=== CITAS ROUTES DEBUG ===');
@@ -31,9 +30,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // ==================== RUTAS DE PRUEBA ====================
-
-// Ruta de prueba/health check (PRIMERO)
-router.get('/citas-test', (req, res) => {
+router.get('/test', (req, res) => {
   res.json({ 
     status: 'ok',
     message: 'Rutas de citas funcionando correctamente',
@@ -55,47 +52,47 @@ router.get('/citas-test', (req, res) => {
 });
 
 // ==================== RUTAS ESPECÍFICAS (GET) ====================
-// IMPORTANTE: Las rutas MÁS específicas van PRIMERO
+// NOTA: Ya no llevan /citas porque index.js ya lo agrega
 
 // Obtener estadísticas de citas por cliente
-router.get('/citas/estadisticas/:cliente_id', obtenerEstadisticasCitas);
+router.get('/estadisticas/:cliente_id', obtenerEstadisticasCitas);
 
 // Obtener citas por cliente
-router.get('/citas/cliente/:cliente_id', obtenerCitasPorCliente);
+router.get('/cliente/:cliente_id', obtenerCitasPorCliente);
 
 // Obtener citas por fecha
-router.get('/citas/fecha/:fecha', obtenerCitasPorFecha);
+router.get('/fecha/:fecha', obtenerCitasPorFecha);
 
 // ==================== RUTAS GENERALES (GET) ====================
 
 // Obtener todas las citas
-router.get('/citas', obtenerCitas);
+router.get('/', obtenerCitas);
 
 // Obtener una cita por ID (ÚLTIMA, para no capturar las anteriores)
-router.get('/citas/:id', obtenerCitaPorId);
+router.get('/:id', obtenerCitaPorId);
 
 // ==================== RUTAS POST ====================
 
 // Actualizar manualmente todas las citas pasadas
-router.post('/citas/actualizar-pasadas', actualizarCitasPasadasManual);
+router.post('/actualizar-pasadas', actualizarCitasPasadasManual);
 
 // Actualizar citas pasadas de un cliente específico
-router.post('/citas/actualizar-cliente/:clienteId', actualizarCitasPasadasPorCliente);
+router.post('/actualizar-cliente/:clienteId', actualizarCitasPasadasPorCliente);
 
 // Crear una nueva cita
-router.post('/citas', crearCita);
+router.post('/', crearCita);
 
 // ==================== RUTAS PUT/PATCH ====================
 
 // Actualizar una cita (completa)
-router.put('/citas/:id', actualizarCita);
+router.put('/:id', actualizarCita);
 
 // Actualizar una cita (parcial)
-router.patch('/citas/:id', actualizarCita);
+router.patch('/:id', actualizarCita);
 
 // ==================== RUTAS DELETE ====================
 
 // Eliminar una cita
-router.delete('/citas/:id', eliminarCita);
+router.delete('/:id', eliminarCita);
 
 export default router;

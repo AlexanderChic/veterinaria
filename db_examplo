@@ -1,96 +1,394 @@
--- Crear la base de datos
-CREATE DATABASE IF NOT EXISTS mascotico;
-USE mascotico;
+-- MySQL dump 10.13  Distrib 9.4.0, for Win64 (x86_64)
+--
+-- Host: localhost    Database: mascotico
+-- ------------------------------------------------------
+-- Server version	9.4.0
 
--- Crear la tabla de usuarios
-CREATE TABLE IF NOT EXISTS usuarios (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(255) NOT NULL,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  telefono VARCHAR(20),
-  direccion TEXT,
-  rol ENUM('admin', 'vendedor', 'cliente') NOT NULL
-);
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- Crear la tabla de clientes
-CREATE TABLE IF NOT EXISTS cliente (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  usuario_id INT,
-  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+--
+-- Table structure for table `cita`
+--
 
+DROP TABLE IF EXISTS `cita`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cita` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `fecha` date NOT NULL,
+  `hora` time NOT NULL,
+  `cliente_id` int DEFAULT NULL,
+  `mascota_id` int DEFAULT NULL,
+  `sucursal_id` int DEFAULT NULL,
+  `servicio_id` int DEFAULT NULL,
+  `estado` enum('pendiente','confirmada','cancelada','completada') DEFAULT 'pendiente',
+  PRIMARY KEY (`id`),
+  KEY `cliente_id` (`cliente_id`),
+  KEY `mascota_id` (`mascota_id`),
+  KEY `sucursal_id` (`sucursal_id`),
+  KEY `servicio_id` (`servicio_id`),
+  CONSTRAINT `cita_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cita_ibfk_2` FOREIGN KEY (`mascota_id`) REFERENCES `mascota` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cita_ibfk_3` FOREIGN KEY (`sucursal_id`) REFERENCES `sucursal` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `cita_ibfk_4` FOREIGN KEY (`servicio_id`) REFERENCES `servicio` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-);
+--
+-- Dumping data for table `cita`
+--
 
--- Crear tabla para trackear días activos del cliente
-CREATE TABLE IF NOT EXISTS cliente_actividad (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  cliente_id INT NOT NULL,
-  fecha_actividad DATE NOT NULL,
-  ultima_conexion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE,
-  UNIQUE KEY unique_cliente_fecha (cliente_id, fecha_actividad)
-);
+LOCK TABLES `cita` WRITE;
+/*!40000 ALTER TABLE `cita` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cita` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Índice para mejorar consultas
-CREATE INDEX idx_cliente_fecha ON cliente_actividad (cliente_id, fecha_actividad);
+--
+-- Table structure for table `cliente`
+--
 
+DROP TABLE IF EXISTS `cliente`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cliente` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `usuario_id` int DEFAULT NULL,
+  `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `cliente_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `cliente`
+--
 
--- Crear la tabla de departamentos
-CREATE TABLE IF NOT EXISTS departamento (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(255) NOT NULL
-);
+LOCK TABLES `cliente` WRITE;
+/*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
+INSERT INTO `cliente` VALUES (1,1,'2025-09-26 23:22:06'),(2,4,'2025-09-26 23:22:06'),(3,7,'2025-09-26 23:22:06'),(4,10,'2025-09-26 23:22:06'),(5,13,'2025-09-26 23:22:06'),(6,2,'2025-09-26 23:24:47'),(7,3,'2025-09-26 23:24:47'),(8,5,'2025-09-26 23:24:47'),(9,6,'2025-09-26 23:24:47'),(10,8,'2025-09-26 23:24:47'),(11,9,'2025-09-26 23:24:47'),(12,11,'2025-09-26 23:24:47'),(13,12,'2025-09-26 23:24:47'),(14,13,'2025-09-26 23:25:09'),(15,14,'2025-09-26 23:25:09'),(16,16,'2025-09-27 01:56:58'),(17,17,'2025-09-27 14:04:24'),(18,18,'2025-09-27 14:25:10'),(19,19,'2025-09-27 18:18:28'),(20,21,'2025-09-28 05:02:48'),(21,20,'2025-09-28 05:02:48'),(22,22,'2025-10-04 18:11:26');
+/*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Crear la tabla de municipios
-CREATE TABLE IF NOT EXISTS municipio (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(255) NOT NULL,
-  departamento_id INT,
-  FOREIGN KEY (departamento_id) REFERENCES departamento(id) ON DELETE CASCADE
-);
+--
+-- Table structure for table `cliente_actividad`
+--
 
--- Crear la tabla de zonas
-CREATE TABLE IF NOT EXISTS zona (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(255) NOT NULL
-);
+DROP TABLE IF EXISTS `cliente_actividad`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cliente_actividad` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cliente_id` int NOT NULL,
+  `fecha_actividad` date NOT NULL,
+  `ultima_conexion` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_cliente_fecha` (`cliente_id`,`fecha_actividad`),
+  KEY `idx_cliente_fecha` (`cliente_id`,`fecha_actividad`),
+  CONSTRAINT `cliente_actividad_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Crear la tabla de sucursales
-CREATE TABLE IF NOT EXISTS sucursal (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(255) NOT NULL,
-  direccion TEXT NOT NULL,
-  telefono VARCHAR(20),
-  zona_id INT,
-  FOREIGN KEY (zona_id) REFERENCES zona(id) ON DELETE CASCADE
-);
+--
+-- Dumping data for table `cliente_actividad`
+--
 
--- Crear la tabla de servicios (como grooming, chequeos, etc.)
-CREATE TABLE IF NOT EXISTS servicio (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(255) NOT NULL,
-  descripcion TEXT,
-  precio DECIMAL(10, 2) NOT NULL
-);
+LOCK TABLES `cliente_actividad` WRITE;
+/*!40000 ALTER TABLE `cliente_actividad` DISABLE KEYS */;
+INSERT INTO `cliente_actividad` VALUES (1,1,'2025-09-28','2025-09-30 22:51:54');
+/*!40000 ALTER TABLE `cliente_actividad` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Crear la tabla de mascotas
-CREATE TABLE IF NOT EXISTS mascota (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(255),
-  especie VARCHAR(255),
-  raza VARCHAR(255),
-  edad INT,
-  peso FLOAT,
-  observaciones TEXT,
-  cliente_id INT,
-  FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE
-);
+--
+-- Table structure for table `departamento`
+--
 
--- mascotico.tipo_mascota definition
+DROP TABLE IF EXISTS `departamento`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `departamento` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `departamento`
+--
+
+LOCK TABLES `departamento` WRITE;
+/*!40000 ALTER TABLE `departamento` DISABLE KEYS */;
+INSERT INTO `departamento` VALUES (1,'Guatemala'),(2,'Sacatepéquez'),(3,'Chimaltenango'),(4,'Quetzaltenango'),(5,'Escuintla'),(6,'El Progreso'),(7,'Santa Rosa'),(8,'Sololá'),(9,'Totonicapán'),(10,'Suchitepéquez'),(11,'Retalhuleu'),(12,'San Marcos'),(13,'Huehuetenango'),(14,'El Quiché'),(15,'Baja Verapaz'),(16,'Alta Verapaz'),(17,'El Petén'),(18,'Izabal'),(19,'Zacapa'),(20,'Chiquimula'),(21,'Jalapa'),(22,'Jutiapa');
+/*!40000 ALTER TABLE `departamento` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `dias_no_laborables`
+--
+
+DROP TABLE IF EXISTS `dias_no_laborables`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dias_no_laborables` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `fecha` date NOT NULL,
+  `descripcion` varchar(255) DEFAULT NULL COMMENT 'Motivo del día no laborable',
+  `sucursal_id` int DEFAULT NULL COMMENT 'NULL = aplica a todas las sucursales',
+  `fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_fecha_sucursal` (`fecha`,`sucursal_id`),
+  KEY `sucursal_id` (`sucursal_id`),
+  CONSTRAINT `dias_no_laborables_ibfk_1` FOREIGN KEY (`sucursal_id`) REFERENCES `sucursal` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Días no laborables (festivos, vacaciones, etc.)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dias_no_laborables`
+--
+
+LOCK TABLES `dias_no_laborables` WRITE;
+/*!40000 ALTER TABLE `dias_no_laborables` DISABLE KEYS */;
+INSERT INTO `dias_no_laborables` VALUES (1,'2025-10-26','DIA DE CAPACITACION',NULL,'2025-10-26 04:02:26');
+/*!40000 ALTER TABLE `dias_no_laborables` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `horario_atencion`
+--
+
+DROP TABLE IF EXISTS `horario_atencion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `horario_atencion` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `dia_semana` enum('lunes','martes','miercoles','jueves','viernes','sabado','domingo') NOT NULL,
+  `hora_inicio` time NOT NULL,
+  `hora_fin` time NOT NULL,
+  `activo` tinyint(1) DEFAULT '1',
+  `sucursal_id` int NOT NULL DEFAULT '50' COMMENT 'Sucursal específica',
+  `fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_dia_sucursal` (`dia_semana`,`sucursal_id`),
+  KEY `sucursal_id` (`sucursal_id`),
+  CONSTRAINT `horario_atencion_ibfk_1` FOREIGN KEY (`sucursal_id`) REFERENCES `sucursal` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Horarios de atención por día';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `horario_atencion`
+--
+
+LOCK TABLES `horario_atencion` WRITE;
+/*!40000 ALTER TABLE `horario_atencion` DISABLE KEYS */;
+INSERT INTO `horario_atencion` VALUES (1,'lunes','08:00:00','18:00:00',1,42,'2025-10-25 16:51:50','2025-10-26 04:37:31'),(2,'martes','08:00:00','18:00:00',1,43,'2025-10-25 16:51:50','2025-10-26 04:37:31'),(3,'miercoles','08:00:00','18:00:00',1,44,'2025-10-25 16:51:50','2025-10-26 04:37:31'),(4,'jueves','08:00:00','18:00:00',1,45,'2025-10-25 16:51:50','2025-10-26 04:37:31'),(5,'viernes','08:00:00','18:00:00',1,46,'2025-10-25 16:51:50','2025-10-26 04:37:31'),(6,'sabado','08:00:00','14:00:00',1,47,'2025-10-25 16:51:50','2025-10-26 04:37:31'),(7,'domingo','00:00:00','00:00:00',0,48,'2025-10-25 16:51:50','2025-10-26 04:37:31'),(8,'lunes','08:00:00','18:00:00',1,49,'2025-10-25 16:55:25','2025-10-26 04:37:31'),(9,'martes','08:00:00','18:00:00',1,50,'2025-10-25 16:55:25','2025-10-26 04:37:31'),(10,'miercoles','08:00:00','18:00:00',1,51,'2025-10-25 16:55:25','2025-10-26 04:37:31'),(11,'jueves','08:00:00','18:00:00',1,52,'2025-10-25 16:55:25','2025-10-26 04:37:31'),(12,'viernes','08:00:00','18:00:00',1,53,'2025-10-25 16:55:25','2025-10-26 04:37:31'),(13,'sabado','08:00:00','14:00:00',1,54,'2025-10-25 16:55:25','2025-10-26 04:37:31'),(14,'domingo','00:00:00','00:00:00',0,55,'2025-10-25 16:55:25','2025-10-26 04:37:31');
+/*!40000 ALTER TABLE `horario_atencion` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `horarios_especiales`
+--
+
+DROP TABLE IF EXISTS `horarios_especiales`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `horarios_especiales` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `fecha` date NOT NULL,
+  `hora_inicio` time NOT NULL,
+  `hora_fin` time NOT NULL,
+  `descripcion` varchar(255) DEFAULT NULL COMMENT 'Motivo del horario especial',
+  `sucursal_id` int DEFAULT NULL COMMENT 'NULL = aplica a todas las sucursales',
+  `fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_fecha_sucursal` (`fecha`,`sucursal_id`),
+  KEY `sucursal_id` (`sucursal_id`),
+  CONSTRAINT `horarios_especiales_ibfk_1` FOREIGN KEY (`sucursal_id`) REFERENCES `sucursal` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Horarios especiales para fechas específicas';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `horarios_especiales`
+--
+
+LOCK TABLES `horarios_especiales` WRITE;
+/*!40000 ALTER TABLE `horarios_especiales` DISABLE KEYS */;
+/*!40000 ALTER TABLE `horarios_especiales` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mascota`
+--
+
+DROP TABLE IF EXISTS `mascota`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mascota` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) DEFAULT NULL,
+  `raza` varchar(255) DEFAULT NULL,
+  `edad` int DEFAULT NULL,
+  `peso` float DEFAULT NULL,
+  `observaciones` text,
+  `cliente_id` int DEFAULT NULL,
+  `tipo_mascota_id` int DEFAULT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `fecha_nacimiento` date DEFAULT NULL,
+  `color` varchar(100) DEFAULT NULL,
+  `genero` enum('macho','hembra') DEFAULT NULL,
+  `estado_salud` enum('excelente','bueno','regular','delicado') DEFAULT 'bueno',
+  `microchip` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `especie` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cliente_id` (`cliente_id`),
+  KEY `tipo_mascota_id` (`tipo_mascota_id`),
+  CONSTRAINT `mascota_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `mascota_ibfk_2` FOREIGN KEY (`tipo_mascota_id`) REFERENCES `tipo_mascota` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mascota`
+--
+
+LOCK TABLES `mascota` WRITE;
+/*!40000 ALTER TABLE `mascota` DISABLE KEYS */;
+INSERT INTO `mascota` VALUES (21,'Bobby','Labrador',5,25.5,'Mascota juguetona',1,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Perro'),(22,'Luna','Siames',3,4.2,'Muy amigable',4,2,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Gato'),(23,'Rocky','Pastor Alemán',7,30,'Protector',7,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Perro'),(24,'Chester','Chihuahua',2,3,'Le gusta dormir mucho',10,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Perro'),(25,'Max','Persa',4,5.5,'Muy consentido',13,2,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Gato'),(26,'Simba','León Africano',6,200,'Mascota exótica',1,17,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','León'),(27,'Bella','Poodle',3,6,'Inteligente y cariñosa',4,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Perro'),(28,'Toby','Mini Rex',1,2,'Le gusta saltar',7,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Conejo'),(29,'Maya','Maine Coon',5,7.5,'Le encanta jugar con otros gatos',10,2,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Gato'),(30,'Coco','French Bulldog',3,12,'Muy sociable',13,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Perro'),(31,'Maximus','Pitbull',4,22.5,'Le encanta jugar al aire libre',2,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Perro'),(32,'Whiskers','Maine Coon',6,9,'Le gusta estar en lugares altos',3,2,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Gato'),(33,'Cleo','Abisinio',2,3.5,'Súper curioso y juguetón',5,2,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Gato'),(34,'Oreo','Dachshund',1,8,'Siempre corriendo',6,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Perro'),(35,'Nina','Bulldog Francés',3,10,'Le encanta dormir en el sofá',8,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-27 22:18:08','2025-10-20 06:35:54','Perro'),(36,'Max','Golden Retriever',3,28.5,'Muy activo, le encanta jugar en el parque. Necesita ejercicio diario.',1,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-28 05:02:48','2025-10-20 06:35:54','perro'),(37,'Luna','Persa',2,4.2,'Gata muy tranquila, le gusta dormir al sol. Pelo largo que requiere cepillado diario.',1,2,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-28 05:02:48','2025-10-20 06:35:54','gato'),(38,'Toby','Bulldog Francés',5,12.3,'Problemas respiratorios leves. Cuidado con el ejercicio intenso en calor.',1,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-28 05:02:48','2025-10-20 06:35:54','perro'),(39,'Coco','Canario',1,0.02,'Muy cantarín por las mañanas. Le gusta la música clásica.',1,3,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-28 05:02:48','2025-10-20 06:35:54','ave'),(40,'Bella','Labrador',4,25,'Muy obediente y cariñosa. Le encanta nadar.',21,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-28 05:02:48','2025-10-20 06:35:54','perro'),(41,'Whiskers','Siamés',3,3.8,'Gato independiente pero cariñoso. Muy vocal.',21,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-28 05:02:48','2025-10-20 06:35:54','gato'),(42,'Rocky','Pastor Alemán',6,35.2,'Perro guardián muy leal. Entrenado para obediencia básica.',20,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-28 05:02:48','2025-10-20 06:35:54','perro'),(43,'Brownie','Labrador',2,10,'Ojos color miel, lunar blanco en pata, cola y cabeza',1,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-09-30 03:43:39','2025-10-20 06:35:54','perro'),(44,'Copito',NULL,15,15,'asd',1,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-10-02 02:21:42','2025-10-20 06:35:54','gato'),(45,'Daniel','brama',2,190,'Ciego',1,1,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-10-04 18:03:56','2025-10-20 06:35:54','perro'),(46,'Patrick','apir',12,12,'12',1,3,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-10-20 06:08:24','2025-10-20 06:35:54','ave'),(47,'Gomes','Persa',15,15,'GATO ARRUGADO',22,NULL,NULL,NULL,NULL,NULL,'bueno',NULL,'2025-10-22 06:30:56','2025-10-22 06:30:56','gato');
+/*!40000 ALTER TABLE `mascota` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mascota_especie_backup`
+--
+
+DROP TABLE IF EXISTS `mascota_especie_backup`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mascota_especie_backup` (
+  `id` int NOT NULL DEFAULT '0',
+  `nombre` varchar(255) DEFAULT NULL,
+  `especie` varchar(255) DEFAULT NULL,
+  `tipo_mascota_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mascota_especie_backup`
+--
+
+LOCK TABLES `mascota_especie_backup` WRITE;
+/*!40000 ALTER TABLE `mascota_especie_backup` DISABLE KEYS */;
+INSERT INTO `mascota_especie_backup` VALUES (21,'Bobby','Perro',NULL),(22,'Luna','Gato',NULL),(23,'Rocky','Perro',NULL),(24,'Chester','Perro',NULL),(25,'Max','Gato',NULL),(26,'Simba','León',NULL),(27,'Bella','Perro',NULL),(28,'Toby','Conejo',NULL),(29,'Maya','Gato',NULL),(30,'Coco','Perro',NULL),(31,'Maximus','Perro',NULL),(32,'Whiskers','Gato',NULL),(33,'Cleo','Gato',NULL),(34,'Oreo','Perro',NULL),(35,'Nina','Perro',NULL),(36,'Max','perro',NULL),(37,'Luna','gato',NULL),(38,'Toby','perro',NULL),(39,'Coco','ave',NULL),(40,'Bella','perro',NULL),(41,'Whiskers','gato',NULL),(42,'Rocky','perro',NULL),(43,'Brownie','perro',NULL),(44,'Copito','gato',NULL),(45,'Daniel','perro',NULL),(46,'Patrick','ave',NULL);
+/*!40000 ALTER TABLE `mascota_especie_backup` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `municipio`
+--
+
+DROP TABLE IF EXISTS `municipio`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `municipio` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `departamento_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `departamento_id` (`departamento_id`),
+  CONSTRAINT `municipio_ibfk_1` FOREIGN KEY (`departamento_id`) REFERENCES `departamento` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=331 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `municipio`
+--
+
+LOCK TABLES `municipio` WRITE;
+/*!40000 ALTER TABLE `municipio` DISABLE KEYS */;
+INSERT INTO `municipio` VALUES (1,'Guatemala',1),(2,'Santa Catarina Pinula',1),(3,'San José Pinula',1),(4,'San José del Golfo',1),(5,'Palencia',1),(6,'Chinautla',1),(7,'San Pedro Ayampuc',1),(8,'Mixco',1),(9,'San Pedro Sacatepéquez',1),(10,'San Juan Sacatepéquez',1),(11,'San Raimundo',1),(12,'Chuarrancho',1),(13,'Fraijanes',1),(14,'Amatitlán',1),(15,'Villa Nueva',1),(16,'Villa Canales',1),(17,'Petapa',1),(18,'Antigua Guatemala',2),(19,'Jocotenango',2),(20,'Pastores',2),(21,'Sumpango',2),(22,'Santo Domingo Xenacoj',2),(23,'Santiago Sacatepéquez',2),(24,'San Bartolomé Milpas Altas',2),(25,'San Lucas Sacatepéquez',2),(26,'Santa Lucia Milpas Altas',2),(27,'Magdalena Milpas Altas',2),(28,'Santa María de Jesús',2),(29,'Ciudad Vieja',2),(30,'San Miguel Dueñas',2),(31,'Alotenango',2),(32,'San Antonio Aguas Calientes',2),(33,'Santa Catalina Barahona',2),(34,'Chimaltenango',3),(35,'San José Poaquil',3),(36,'San Martín Jilotepeque',3),(37,'Comalapa',3),(38,'Santa Apolonia',3),(39,'Tecpan Guatemala',3),(40,'Patzún',3),(41,'Pochuta',3),(42,'Patzicía',3),(43,'Santa Cruz Balanyá',3),(44,'Acatenango',3),(45,'Yepocapa',3),(46,'San Andrés Itzapa',3),(47,'Parramos',3),(48,'Zaragoza',3),(49,'El Tejar',3),(50,'Quetzaltenango',4),(51,'Salcajá',4),(52,'Olintepeque',4),(53,'San Carlos Sija',4),(54,'Sibilia',4),(55,'Cabricán',4),(56,'Cajolá',4),(57,'San Miguel Siguilá',4),(58,'Ostuncalco',4),(59,'San Mateo',4),(60,'Concepción Chiquirichapa',4),(61,'San Martín Sacatepéquez',4),(62,'Almolonga',4),(63,'Cantel',4),(64,'Huitán',4),(65,'Zunil',4),(66,'Colomba',4),(67,'San Francisco La Unión',4),(68,'El Palmar',4),(69,'Coatepeque',4),(70,'Génova',4),(71,'Flores Costa Cuca',4),(72,'La Esperanza',4),(73,'Palestina de Los Altos',4),(74,'Escuintla',5),(75,'Santa Lucía Cotzumalguapa',5),(76,'La Democracia',5),(77,'Siquinalá',5),(78,'Masagua',5),(79,'Tiquisate',5),(80,'La Gomera',5),(81,'Guanagazapa',5),(82,'San José',5),(83,'Iztapa',5),(84,'Palín',5),(85,'San Vicente Pacaya',5),(86,'Nueva Concepción',5),(87,'Guastatoya',6),(88,'Morazán',6),(89,'San Agustín Acasaguastlán',6),(90,'San Cristóbal Acasaguastlán',6),(91,'El Jícaro',6),(92,'Sansare',6),(93,'Sanarate',6),(94,'San Antonio La Paz',6),(95,'Cuilapa',7),(96,'Barberena',7),(97,'Santa Rosa de Lima',7),(98,'Casillas',7),(99,'San Rafael Las Flores',7),(100,'Oratorio',7),(101,'San Juan Tecuaco',7),(102,'Chiquimulilla',7),(103,'Taxisco',7),(104,'Santa María Ixhuatán',7),(105,'Guazacapán',7),(106,'Santa Cruz Naranjo',7),(107,'Pueblo Nuevo Viñas',7),(108,'Nueva Santa Rosa',7),(109,'Sololá',8),(110,'San José Chacayá',8),(111,'Santa María Visitación',8),(112,'Santa Lucía Utatlán',8),(113,'Nahualá',8),(114,'Santa Catarina Ixtahuacán',8),(115,'Santa Clara La Laguna',8),(116,'Concepción',8),(117,'San Andrés Semetabaj',8),(118,'Panajachel',8),(119,'Santa Catarina Palopó',8),(120,'San Antonio Palopó',8),(121,'San Lucas Tolimán',8),(122,'Santa Cruz La Laguna',8),(123,'San Pablo La Laguna',8),(124,'San Marcos La Laguna',8),(125,'San Juan La Laguna',8),(126,'San Pedro La Laguna',8),(127,'Santiago Atitlán',8),(128,'Totonicapán',9),(129,'San Cristóbal Totonicapán',9),(130,'San Francisco El Alto',9),(131,'San Andrés Xecul',9),(132,'Momostenango',9),(133,'Santa María Chiquimula',9),(134,'Santa Lucía La Reforma',9),(135,'San Bartolo',9),(136,'Mazatenango',10),(137,'Cuyotenango',10),(138,'San Francisco Zapotitlán',10),(139,'San Bernardino',10),(140,'San José El Ídolo',10),(141,'Santo Domingo Suchitepéquez',10),(142,'San Lorenzo',10),(143,'Samayac',10),(144,'San Pablo Jocopilas',10),(145,'San Antonio Suchitepéquez',10),(146,'San Miguel Panán',10),(147,'San Gabriel',10),(148,'Chicacao',10),(149,'Patulul',10),(150,'Santa Bárbara',10),(151,'San Juan Bautista',10),(152,'Santo Tomás La Unión',10),(153,'Zunilito',10),(154,'Pueblo Nuevo',10),(155,'Río Bravo',10),(156,'Retalhuleu',11),(157,'San Sebastián',11),(158,'Santa Cruz Muluá',11),(159,'San Martín Zapotitlán',11),(160,'San Felipe',11),(161,'San Andrés Villa Seca',11),(162,'Champerico',11),(163,'Nuevo San Carlos',11),(164,'El Asintal',11),(165,'San Marcos',12),(166,'San Pedro Sacatepéquez',12),(167,'San Antonio Sacatepéquez',12),(168,'Comitancillo',12),(169,'San Miguel Ixtahuacán',12),(170,'Concepción Tutuapa',12),(171,'Tacaná',12),(172,'Sibinal',12),(173,'Tajumulco',12),(174,'Tejutla',12),(175,'San Rafael Pie de la Cuesta',12),(176,'Nuevo Progreso',12),(177,'El Tumbador',12),(178,'El Rodeo',12),(179,'Malacatán',12),(180,'Catarina',12),(181,'Ayutla',12),(182,'Ocós',12),(183,'San Pablo',12),(184,'El Quetzal',12),(185,'La Reforma',12),(186,'Pajapita',12),(187,'Ixchiguán',12),(188,'San José Ojetenam',12),(189,'San Cristóbal Cucho',12),(190,'Sipacapa',12),(191,'Esquipulas Palo Gordo',12),(192,'Río Blanco',12),(193,'San Lorenzo',12),(194,'Huehuetenango',13),(195,'Chiantla',13),(196,'Malacatancito',13),(197,'Cuilco',13),(198,'Nentón',13),(199,'San Pedro Necta',13),(200,'Jacaltenango',13),(201,'Soloma',13),(202,'Ixtahuacán',13),(203,'Santa Bárbara',13),(204,'La Libertad',13),(205,'La Democracia',13),(206,'San Miguel Acatán',13),(207,'San Rafael La Independencia',13),(208,'Todos Santos Cuchumatanes',13),(209,'San Juan Atitán',13),(210,'Santa Eulalia',13),(211,'San Mateo Ixtatán',13),(212,'Colotenango',13),(213,'San Sebastián Huehuetenango',13),(214,'Tectitán',13),(215,'Concepción Huista',13),(216,'San Juan Ixcoy',13),(217,'San Antonio Huista',13),(218,'San Sebastián Coatán',13),(219,'Barillas',13),(220,'Aguacatán',13),(221,'San Rafael Petzal',13),(222,'San Gaspar Ixchil',13),(223,'Santiago Chimaltenango',13),(224,'Santa Ana Huista',13),(225,'Santa Cruz del Quiché',14),(226,'Chiché',14),(227,'Chinique',14),(228,'Zacualpa',14),(229,'Chajul',14),(230,'Chichicastenango',14),(231,'Patzité',14),(232,'San Antonio Ilotenango',14),(233,'San Pedro Jocopilas',14),(234,'Cunén',14),(235,'San Juan Cotzal',14),(236,'Joyabaj',14),(237,'Nebaj',14),(238,'San Andrés Sajcabajá',14),(239,'Uspantán',14),(240,'Sacapulas',14),(241,'San Bartolomé Jocotenango',14),(242,'Canillá',14),(243,'Chicamán',14),(244,'Ixcán',14),(245,'Pachalum',14),(246,'Salamá',15),(247,'San Miguel Chicaj',15),(248,'Rabinal',15),(249,'Cubulco',15),(250,'Granados',15),(251,'El Chol',15),(252,'San Jerónimo',15),(253,'Purulhá',15),(254,'Cobán',16),(255,'Santa Cruz Verapaz',16),(256,'San Cristóbal Verapaz',16),(257,'Tactic',16),(258,'Tamahú',16),(259,'Tucurú',16),(260,'Panzós',16),(261,'Senahú',16),(262,'San Pedro Carchá',16),(263,'San Juan Chamelco',16),(264,'Lanquín',16),(265,'Cahabón',16),(266,'Chisec',16),(267,'Chahal',16),(268,'Fray Bartolomé de Las Casas',16),(269,'Flores',17),(270,'San José',17),(271,'San Benito',17),(272,'San Andrés',17),(273,'La Libertad',17),(274,'San Francisco',17),(275,'Santa Ana',17),(276,'Dolores',17),(277,'San Luis',17),(278,'Sayaxché',17),(279,'Melchor de Mencos',17),(280,'Poptún',17),(281,'Puerto Barrios',18),(282,'Lívingston',18),(283,'El Estor',18),(284,'Morales',18),(285,'Los Amates',18),(286,'Zacapa',19),(287,'Estanzuela',19),(288,'Río Hondo',19),(289,'Gualán',19),(290,'Teculután',19),(291,'Usumatlán',19),(292,'Cabañas',19),(293,'San Diego',19),(294,'La Unión',19),(295,'Huité',19),(296,'Chiquimula',20),(297,'San José La Arada',20),(298,'San Juan Ermita',20),(299,'Jocotán',20),(300,'Camotán',20),(301,'Olopa',20),(302,'Esquipulas',20),(303,'Concepción Las Minas',20),(304,'Quezaltepeque',20),(305,'San Jacinto',20),(306,'Ipala',20),(307,'Jalapa',21),(308,'San Pedro Pinula',21),(309,'San Luis Jilotepeque',21),(310,'San Manuel Chaparrón',21),(311,'San Carlos Alzatate',21),(312,'Monjas',21),(313,'Mataquescuintla',21),(314,'Jutiapa',22),(315,'El Progreso',22),(316,'Santa Catarina Mita',22),(317,'Agua Blanca',22),(318,'Asunción Mita',22),(319,'Yupiltepeque',22),(320,'Atescatempa',22),(321,'Jerez',22),(322,'El Adelanto',22),(323,'Zapotitlán',22),(324,'Comapa',22),(325,'Jalpatagua',22),(326,'Conguaco',22),(327,'Moyuta',22),(328,'Pasaco',22),(329,'San José Acatempa',22),(330,'Quesada',22);
+/*!40000 ALTER TABLE `municipio` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `servicio`
+--
+
+DROP TABLE IF EXISTS `servicio`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `servicio` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `descripcion` text,
+  `precio` decimal(10,2) NOT NULL,
+  `duracion_minutos` int DEFAULT '30' COMMENT 'Duración del servicio en minutos',
+  `activo` tinyint(1) DEFAULT '1' COMMENT 'Si el servicio está activo o no',
+  `icono` varchar(50) DEFAULT 'bi-scissors' COMMENT 'Icono de Bootstrap Icons',
+  `color` varchar(20) DEFAULT 'primary' COMMENT 'Color del badge',
+  `fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `servicio`
+--
+
+LOCK TABLES `servicio` WRITE;
+/*!40000 ALTER TABLE `servicio` DISABLE KEYS */;
+INSERT INTO `servicio` VALUES (1,'Grooming Básico','Baño y corte básico para mascotas',150.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(2,'Chequeo General','Examen físico completo de la mascota',200.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(3,'Vacunación Antirrábica','Vacuna contra la rabia',50.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(4,'Grooming Avanzado','Corte especializado y baño',250.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(5,'Cirugía Menor','Cirugía para esterilización',300.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(6,'Chequeo Dental','Limpieza dental para mascotas',100.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(7,'Control de Parásitos','Tratamiento contra parásitos internos y externos',120.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(8,'Examen de Sangre','Análisis completo de sangre para mascotas',150.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(9,'Consulta Nutricional','Asesoría sobre dieta para mascotas',80.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(10,'Chequeo Dermatológico','Revisión de problemas dermatológicos en mascotas',180.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(11,'Consulta General','Revisión médica general y chequeo de salud',150.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(12,'Vacunación','Aplicación de vacunas según calendario',80.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(13,'Desparasitación','Tratamiento antiparasitario interno y externo',60.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(14,'Grooming Básico','Baño, corte de uñas y limpieza de oídos',120.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(15,'Grooming Completo','Baño, corte de pelo, uñas, oídos y glándulas anales',200.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(16,'Cirugía Menor','Procedimientos quirúrgicos menores',500.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(17,'Esterilización','Castración o esterilización',800.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(18,'Emergencia','Atención médica de emergencia',300.00,30,1,'bi-scissors','primary','2025-10-25 16:53:08','2025-10-25 16:53:08'),(19,'Baño para la perra','ad',150.00,30,1,'bi-clipboard2-pulse','warning','2025-10-25 17:00:01','2025-10-25 17:00:01');
+/*!40000 ALTER TABLE `servicio` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sucursal`
+--
+
+DROP TABLE IF EXISTS `sucursal`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sucursal` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `direccion` text NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `municipio_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sucursal_ibfk_municipio` (`municipio_id`),
+  CONSTRAINT `sucursal_ibfk_municipio` FOREIGN KEY (`municipio_id`) REFERENCES `municipio` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sucursal`
+--
+
+LOCK TABLES `sucursal` WRITE;
+/*!40000 ALTER TABLE `sucursal` DISABLE KEYS */;
+INSERT INTO `sucursal` VALUES (42,'Mascotico Zona 1 Centro Histórico','8va Avenida 12-45, Zona 1','2232-1100',11),(43,'Mascotico Zona 4','7ma Avenida 15-30, Zona 4','2334-2200',11),(44,'Mascotico Zona 9','Avenida Reforma 12-70, Zona 9','2361-3300',11),(45,'Mascotico Zona 10','6ta Avenida 14-55, Zona 10, Oakland Mall','2367-4400',11),(46,'Mascotico Pradera Zona 10','Boulevard Los Próceres, CC Pradera','2385-5500',11),(47,'Mascotico Zona 11','Calzada Roosevelt 22-43, Zona 11','2440-6600',11),(48,'Mascotico Zona 12','Calzada Aguilar Batres 45-12, Zona 12','2476-7700',11),(49,'Mascotico Zona 13','Avenida Petapa 38-00, Zona 13','2440-8800',11),(50,'Mascotico Zona 14','20 Calle 10-17, Zona 14','2366-9900',11),(51,'Mascotico Zona 15','Boulevard Vista Hermosa, CC Vista Hermosa II','2369-1010',11),(52,'Mascotico Zona 16','Carretera a San José Pinula, Zona 16','2259-1111',11),(53,'Mascotico Zona 17','Avenida Petapa 50-81, Zona 17','2254-1212',11),(54,'Mascotico Miraflores','Calzada San Juan 45-67, CC Miraflores','2440-1313',11),(55,'Mascotico Portales','Calzada Aguilar Batres 27-75, CC Portales','2439-1414',11),(56,'Mascotico Tikal Futura','Calzada Roosevelt 22-43, CC Tikal Futura','2442-1515',11),(57,'Mascotico Mixco Centro','3ra Avenida 4-25, Zona 1, Mixco','2433-1616',17),(58,'Mascotico San Cristóbal','Calzada San Juan, San Cristóbal, Mixco','2598-1717',17),(59,'Mascotico Molino de Las Flores','Calzada Roosvelt Km 13.5, Mixco','2438-1818',17),(60,'Mascotico Plaza Montserrat','Boulevard Los Próceres, Plaza Montserrat, Mixco','2433-1919',17),(61,'Mascotico Villa Nueva Centro','7ma Calle 6-45, Zona 1, Villa Nueva','6630-2020',26),(62,'Mascotico Villa Lobos','Calzada Mateo Flores, Villa Lobos','6631-2121',26),(63,'Mascotico Petapa','Calzada San José, Villa Nueva','6632-2222',26),(64,'Mascotico Villa Canales','5ta Avenida 3-12, Villa Canales','6633-2323',27),(65,'Mascotico Amatitlán','4ta Calle 2-55, Amatitlán','6634-2424',25),(66,'Mascotico San Juan Sacatepéquez','2da Avenida 5-30, San Juan Sacatepéquez','6635-2525',21),(67,'Mascotico Fraijanes','Carretera a Fraijanes Km 22','6636-2626',24),(68,'Mascotico Palencia','Calle Principal, Palencia','6637-2727',16),(69,'Mascotico San José Pinula','3ra Calle 4-15, San José Pinula','6638-2828',14),(70,'Mascotico Santa Catarina Pinula','Avenida Principal, Santa Catarina Pinula','6639-2929',13),(71,'Mascotico Chinautla','6ta Avenida 2-45, Chinautla','6640-3030',17),(72,'Mascotico Antigua Guatemala','5ta Avenida Norte 12, Antigua Guatemala','7832-3131',28),(73,'Mascotico San Lucas Sacatepéquez','Carretera Interamericana Km 30','7833-3232',35),(74,'Mascotico Ciudad Vieja','Calle del Cementerio, Ciudad Vieja','7834-3333',39),(75,'Mascotico Jocotenango','Calle Real, Jocotenango','7835-3434',29),(76,'Mascotico Sumpango','Avenida Principal, Sumpango','7836-3535',31),(77,'Mascotico Chimaltenango Centro','4ta Calle 5-30, Zona 1, Chimaltenango','7839-3636',44),(78,'Mascotico Patzún','Calle Real, Patzún','7840-3737',50),(79,'Mascotico Tecpán','Avenida Central, Tecpán Guatemala','7841-3838',49),(80,'Mascotico El Tejar','Carretera Interamericana, El Tejar','7842-3939',59),(81,'Mascotico Escuintla Centro','4ta Avenida 3-15, Zona 1, Escuintla','7888-4040',68),(82,'Mascotico Santa Lucía Cotzumalguapa','Calle Principal, Santa Lucía Cotzumalguapa','7882-4141',69),(83,'Mascotico La Democracia','Avenida Central, La Democracia','7885-4242',70),(84,'Mascotico Palín','Carretera a Palín Km 40','7887-4343',78),(85,'Mascotico Tiquisate','Calle Real, Tiquisate','7883-4444',73),(86,'Mascotico Puerto San José','5ta Calle, Puerto San José','7881-4545',76),(87,'Mascotico Quetzaltenango Centro','12 Avenida 5-30, Zona 1, Xela','7761-4646',84),(88,'Mascotico Xela Plaza','15 Avenida, CC Pradera Xela','7765-4747',84),(89,'Mascotico Zona 3 Xela','11 Calle 18-45, Zona 3, Xela','7763-4848',84),(90,'Mascotico Coatepeque','Calle Principal, Coatepeque','7775-4949',103),(91,'Mascotico Salcajá','Avenida Central, Salcajá','7766-5050',85),(92,'Mascotico Cantel','Calle Real, Cantel','7767-5151',97),(93,'Mascotico Zunil','Carretera a Zunil','7768-5252',99),(94,'Mascotico San Carlos Sija','Calle Principal, San Carlos Sija','7769-5353',87),(95,'Mascotico Sololá Centro','6ta Avenida 4-25, Sololá','7762-5454',125),(96,'Mascotico Panajachel','Calle Santander, Panajachel','7762-5555',134),(97,'Mascotico Santiago Atitlán','Calle Principal, Santiago Atitlán','7721-5656',143),(98,'Mascotico Cobán Centro','1ra Calle 3-13, Zona 1, Cobán','7951-5757',296),(99,'Mascotico San Pedro Carchá','Calle Principal, San Pedro Carchá','7952-5858',304),(100,'Mascotico San Juan Chamelco','Avenida Central, San Juan Chamelco','7953-5959',305),(101,'Mascotico Flores','Calle Central, Isla de Flores','7926-6060',311),(102,'Mascotico Santa Elena','Avenida Principal, Santa Elena','7927-6161',313),(103,'Mascotico Puerto Barrios','6ta Avenida 12-30, Puerto Barrios','7948-6262',326),(104,'Mascotico Morales','Carretera al Atlántico, Morales','7949-6363',329),(105,'Mascotico Huehuetenango Centro','5ta Avenida 3-12, Zona 1, Huehue','7764-6464',223),(106,'Mascotico Chiantla','Calle Principal, Chiantla','7769-6565',224),(107,'Mascotico La Democracia','Avenida Central, La Democracia','7770-6666',234),(108,'Mascotico San Marcos Centro','7ma Calle 8-45, San Marcos','7760-6767',194),(109,'Mascotico Malacatán','Calle Real, Malacatán','7761-6868',209),(110,'Mascotico Tacaná','Avenida Principal, Tacaná','7762-6969',200);
+/*!40000 ALTER TABLE `sucursal` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tipo_mascota`
+--
+
+DROP TABLE IF EXISTS `tipo_mascota`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tipo_mascota` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
@@ -98,21 +396,61 @@ CREATE TABLE `tipo_mascota` (
   `descripcion` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `tipo_mascota`
+--
 
--- Crear la tabla de citas
-CREATE TABLE IF NOT EXISTS cita (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  fecha DATE NOT NULL,
-  hora TIME NOT NULL,
-  cliente_id INT,
-  mascota_id INT,
-  sucursal_id INT,
-  servicio_id INT,
-  estado ENUM('pendiente', 'confirmada', 'cancelada') DEFAULT 'pendiente',
-  FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE,
-  FOREIGN KEY (mascota_id) REFERENCES mascota(id) ON DELETE CASCADE,
-  FOREIGN KEY (sucursal_id) REFERENCES sucursal(id) ON DELETE CASCADE,
-  FOREIGN KEY (servicio_id) REFERENCES servicio(id) ON DELETE CASCADE
-);
+LOCK TABLES `tipo_mascota` WRITE;
+/*!40000 ALTER TABLE `tipo_mascota` DISABLE KEYS */;
+INSERT INTO `tipo_mascota` VALUES (1,'Perro','🐕','Caninos domésticos','2025-09-27 22:18:08'),(2,'Gato','🐱','Felinos domésticos','2025-09-27 22:18:08'),(3,'Ave','🐦','Aves domésticas y exóticas','2025-09-27 22:18:08'),(4,'Conejo','🐰','Lagomorfos domésticos','2025-09-27 22:18:08'),(5,'Hamster','🐹','Roedores pequeños','2025-09-27 22:18:08'),(6,'Pez','🐠','Peces ornamentales','2025-09-27 22:18:08'),(7,'Reptil','🦎','Reptiles domésticos','2025-09-27 22:18:08'),(8,'Tortuga','🐢','Quelonios domésticos','2025-09-27 22:18:08'),(17,'León','🦁','Felinos grandes y exóticos','2025-10-20 06:18:23');
+/*!40000 ALTER TABLE `tipo_mascota` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `usuarios`
+--
+
+DROP TABLE IF EXISTS `usuarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `usuarios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `direccion` text,
+  `rol` enum('admin','vendedor','cliente') NOT NULL,
+  `fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `usuarios`
+--
+
+LOCK TABLES `usuarios` WRITE;
+/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
+INSERT INTO `usuarios` VALUES (1,'Juan Pérez','juan.perez@example.com','password123','1234567890','Calle 123, Ciudad','cliente','2025-10-25 16:41:16'),(2,'Ana Gómez','ana.gomez@example.com','password456','0987654321','Avenida 45, Ciudad','vendedor','2025-10-25 16:41:16'),(3,'Carlos Ruiz','carlos.ruiz@example.com','password789','2345678901','Boulevard 789, Ciudad','admin','2025-10-25 16:41:16'),(4,'Marta López','marta.lopez@example.com','password321','3456789012','Calle 555, Ciudad','cliente','2025-10-25 16:41:16'),(5,'Pedro Martínez','pedro.martinez@example.com','password654','4567890123','Avenida 22, Ciudad','vendedor','2025-10-25 16:41:16'),(6,'Luis Fernández','luis.fernandez@example.com','password987','5678901234','Calle 777, Ciudad','admin','2025-10-25 16:41:16'),(7,'Lucía Sánchez','lucia.sanchez@example.com','password111','6789012345','Calle 888, Ciudad','cliente','2025-10-25 16:41:16'),(8,'Fernando Díaz','fernando.diaz@example.com','password222','7890123456','Calle 1234, Ciudad','vendedor','2025-10-25 16:41:16'),(9,'Raquel Torres','raquel.torres@example.com','password333','8901234567','Avenida 111, Ciudad','admin','2025-10-25 16:41:16'),(10,'Miguel Gómez','miguel.gomez@example.com','password444','9012345678','Calle 222, Ciudad','cliente','2025-10-25 16:41:16'),(11,'Isabel Hernández','isabel.hernandez@example.com','password555','0123456789','Calle 333, Ciudad','vendedor','2025-10-25 16:41:16'),(12,'José Pérez','jose.perez@example.com','password666','1239876543','Calle 444, Ciudad','admin','2025-10-25 16:41:16'),(13,'María Ramírez','maria.ramirez@example.com','password777','2341987654','Avenida 555, Ciudad','cliente','2025-10-25 16:41:16'),(14,'Antonio Díaz','antonio.diaz@example.com','password888','3452098765','Calle 666, Ciudad','vendedor','2025-10-25 16:41:16'),(15,'Carmen García','carmen.garcia@example.com','password999','4563209876','Avenida 777, Ciudad','admin','2025-10-25 16:41:16'),(16,'Francisco Cliente','cliente@vet.com','Cliente123.','25252525','a, 12, Ciudad de Guatemala, Guatemala','cliente','2025-10-25 16:41:16'),(17,'Willy Culajay','wculajay@hotmail.es','Control2025.','56754324','a, 12, Escuintla, Escuintla','cliente','2025-10-25 16:41:16'),(18,'Joshua Mendez','joshuamendez@gmail.com','1234.Nadie','12345678','12, 2, Mixco, Guatemala','cliente','2025-10-25 16:41:16'),(19,'Anderson Godoy','anderssongodoy@gmail.com','Ander123#','45789632','12, 1, Mixco, Guatemala','cliente','2025-10-25 16:41:16'),(20,'María González','maria.gonzalez@example.com','password456','9876543210','Avenida Central 456, Guatemala','cliente','2025-10-25 16:41:16'),(21,'Carlos López','carlos.lopez@example.com','password789','5555555555','Zona 10, Guatemala','cliente','2025-10-25 16:41:16'),(22,'Joshua Perez','joshuaperez@gmail.com','Password123**','54957516','asda, asd, Escuintla, Escuintla','cliente','2025-10-25 16:41:16');
+/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'mascotico'
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-10-26 19:45:24

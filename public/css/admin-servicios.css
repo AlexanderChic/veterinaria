@@ -1,253 +1,271 @@
-/* admin-servicios.css - Estilos para gestión de servicios */
+/* public/css/admin-servicios.css */
 
-/* ==================== TARJETAS DE SERVICIOS ==================== */
-
-.servicio-card {
-  height: 100%;
-  border: 1px solid #e0e0e0;
-  transition: all 0.3s ease;
-}
-
-.servicio-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.servicio-card.inactive {
-  opacity: 0.6;
-}
-
-.servicio-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
+/* ==================== ICONO DE SERVICIO PEQUEÑO ==================== */
+.servicio-icon-sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
   color: white;
+  flex-shrink: 0;
 }
 
-.servicio-card .card-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
+.servicio-icon-sm i {
+  font-size: 1.2rem;
 }
 
-.servicio-info {
-  display: flex;
-  gap: 1rem;
-  padding: 0.75rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-}
+/* Colores de fondo para iconos */
+.bg-primary { background-color: #0d6efd !important; }
+.bg-success { background-color: #198754 !important; }
+.bg-danger { background-color: #dc3545 !important; }
+.bg-warning { background-color: #ffc107 !important; color: #000 !important; }
+.bg-info { background-color: #0dcaf0 !important; }
+.bg-secondary { background-color: #6c757d !important; }
 
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.info-item i {
-  font-size: 1.1rem;
-}
-
-/* ==================== HORARIOS ==================== */
-
-.horarios-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
-.horario-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  overflow: hidden;
-  background: white;
-  transition: all 0.3s ease;
-}
-
-.horario-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.horario-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.horario-header h6 {
-  font-weight: 600;
-  margin: 0;
-}
-
-.horario-header .form-check-input {
-  width: 2.5rem;
-  height: 1.25rem;
-  cursor: pointer;
-}
-
-.horario-header .form-check-input:checked {
-  background-color: #10b981;
-  border-color: #10b981;
-}
-
-.horario-body {
-  padding: 1rem;
-  transition: all 0.3s ease;
-}
-
-.horario-body.disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.horario-body label {
-  font-weight: 600;
-  color: #6b7280;
-  margin-bottom: 0.25rem;
-}
-
-.horario-body input[type="time"] {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-/* ==================== TABLA DE DÍAS NO LABORABLES ==================== */
-
-.table-hover tbody tr {
+/* ==================== TABLAS ==================== */
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
   transition: background-color 0.2s ease;
 }
 
-.table-hover tbody tr:hover {
+.table thead {
   background-color: #f8f9fa;
-}
-
-/* ==================== EMPTY STATES ==================== */
-
-.empty-state {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: #6b7280;
-}
-
-.empty-state i {
-  font-size: 4rem;
-  color: #d1d5db;
-  margin-bottom: 1rem;
-}
-
-.empty-state h4 {
-  color: #374151;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #dee2e6;
 }
 
-.empty-state p {
-  color: #9ca3af;
-  margin: 0;
+.table td {
+  vertical-align: middle;
 }
 
-/* ==================== TABS PERSONALIZADOS ==================== */
+/* ==================== GRID DE HORARIOS ==================== */
+.row.g-3 {
+  margin: 0 -0.75rem;
+}
 
-.nav-pills .nav-link {
-  border-radius: 10px;
-  padding: 0.75rem 1.5rem;
+.row.g-3 > * {
+  padding: 0 0.75rem;
+}
+
+/* Cards de horario */
+.card.border-primary {
+  border-width: 2px !important;
+}
+
+.card.border-secondary {
+  border-width: 1px !important;
+  opacity: 0.7;
+}
+
+.card-header.bg-primary {
+  background-color: #0d6efd !important;
+}
+
+.card-header.bg-light {
+  background-color: #f8f9fa !important;
+  color: #6c757d;
+}
+
+/* ==================== ESTADOS VACÍOS ==================== */
+.text-center.py-5 i {
+  opacity: 0.3;
+}
+
+.text-center.py-5 h4 {
+  margin-top: 1rem;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+.text-center.py-5 p {
+  color: #adb5bd;
+}
+
+/* ==================== FORM SWITCHES ==================== */
+.form-check-switch .form-check-input {
+  cursor: pointer;
+  width: 2.5em;
+  height: 1.25em;
+}
+
+.form-check-switch .form-check-input:checked {
+  background-color: #198754;
+  border-color: #198754;
+}
+
+/* ==================== BOTONES DE GRUPO ==================== */
+.btn-group .btn {
+  border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.btn-group .btn:last-child {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+/* ==================== ALERTAS ==================== */
+.alert {
+  border-radius: 8px;
+  border: none;
+  padding: 1rem 1.25rem;
+}
+
+.alert i {
+  font-size: 1.1rem;
+}
+
+.alert-info {
+  background-color: #e7f3ff;
+  color: #004085;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* ==================== MODALES ==================== */
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.modal-title i {
+  color: #0d6efd;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+/* ==================== INPUTS ==================== */
+.form-control:focus,
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background-color: #e9ecef;
+  opacity: 0.6;
+}
+
+.form-control-sm {
+  font-size: 0.875rem;
+}
+
+/* ==================== BADGES ==================== */
+.badge {
+  padding: 0.35rem 0.65rem;
   font-weight: 500;
-  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+/* ==================== SPINNER DE CARGA ==================== */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+}
+
+/* ==================== TABS ==================== */
+.nav-pills .nav-link {
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  color: #6c757d;
+  font-weight: 500;
   transition: all 0.3s ease;
 }
 
 .nav-pills .nav-link:hover {
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: #e9ecef;
+  color: #0d6efd;
 }
 
 .nav-pills .nav-link.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #0d6efd;
   color: white;
 }
 
 .nav-pills .nav-link i {
-  margin-right: 0.5rem;
+  font-size: 1.1rem;
 }
 
-/* ==================== MODAL PERSONALIZADO ==================== */
-
-.modal-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-bottom: none;
-}
-
-.modal-header .btn-close {
-  filter: brightness(0) invert(1);
-}
-
-.modal-title i {
-  margin-right: 0.5rem;
-}
-
-/* ==================== BADGES Y ESTADOS ==================== */
-
-.badge {
-  padding: 0.375rem 0.75rem;
-  font-weight: 500;
-  font-size: 0.8rem;
-}
-
-/* ==================== BOTONES ==================== */
-
-.btn-sm {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-}
-
-.btn i {
-  font-size: 1rem;
-}
-
-/* ==================== ALERTAS ==================== */
-
-.alert {
+/* ==================== CARDS ==================== */
+.card {
+  border: 1px solid #dee2e6;
   border-radius: 10px;
-  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: box-shadow 0.3s ease;
 }
 
-.alert i {
-  font-size: 1.2rem;
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 1.25rem;
 }
 
 /* ==================== RESPONSIVE ==================== */
-
 @media (max-width: 768px) {
-  .horarios-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .servicio-card {
-    margin-bottom: 1rem;
-  }
-  
-  .nav-pills {
+  .btn-group {
+    display: flex;
     flex-direction: column;
   }
   
+  .btn-group .btn {
+    border-radius: 0.25rem !important;
+    margin-bottom: 0.25rem;
+  }
+  
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .nav-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  
   .nav-pills .nav-link {
-    width: 100%;
-    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    padding: 0.5rem 1rem;
   }
 }
 
 /* ==================== ANIMACIONES ==================== */
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -259,70 +277,203 @@
   }
 }
 
-.servicio-card,
-.horario-card {
-  animation: fadeIn 0.3s ease;
-}
-
-/* ==================== COLORES DE FONDO PARA ICONOS ==================== */
-
-.bg-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.bg-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.bg-danger {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-}
-
-.bg-warning {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-}
-
-.bg-info {
-  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-}
-
-.bg-secondary {
-  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-}
-
-/* ==================== FORMULARIOS ==================== */
-
-.form-label {
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 0.5rem;
-}
-
-.form-control:focus,
-.form-select:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+.card {
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 /* ==================== TOASTS ==================== */
-
 .toast {
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  min-width: 300px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .toast-header {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.toast-body {
+  padding: 0.75rem 1rem;
+}
+
+/* ==================== BOTONES PERSONALIZADOS ==================== */
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.btn-outline-success:hover {
+  background-color: #198754;
+  color: white;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-outline-warning:hover {
+  background-color: #ffc107;
+  color: #000;
+}
+
+/* ==================== FILTROS DE SUCURSAL ==================== */
+.content-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 1.5rem;
+}
+
+#alertaSucursal {
+  border-left: 4px solid #0d6efd;
+  border-radius: 6px;
+}
+
+#alertaSucursal.alert-success {
+  border-left-color: #198754;
+}
+
+#alertaSucursal.alert-info {
+  border-left-color: #0dcaf0;
+}
+
+/* ==================== HORA DE ACTUALIZACIÓN ==================== */
+#horaActualizacion {
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+/* ==================== TABLA DE HORARIOS ==================== */
+.table td i {
+  font-size: 1rem;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.table tbody tr:last-child {
   border-bottom: none;
 }
 
-/* ==================== UTILIDADES ==================== */
-
-.text-white-75 {
-  color: rgba(255, 255, 255, 0.75);
+/* ==================== SELECT DISABLED ==================== */
+select:disabled {
+  cursor: not-allowed;
 }
 
-.cursor-pointer {
-  cursor: pointer;
+/* ==================== MEJORAS VISUALES ==================== */
+strong {
+  font-weight: 600;
 }
+
+small.text-muted {
+  color: #6c757d !important;
+  font-size: 0.875rem;
+}
+
+.text-success {
+  color: #198754 !important;
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+/* ==================== SCROLLBAR PERSONALIZADO ==================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* ==================== LOADING STATES ==================== */
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==================== MEJORAS DE ACCESIBILIDAD ==================== */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+}
+
+button[title] {
+  position: relative;
+}
+
+/* ==================== ESPACIADO CONSISTENTE ==================== */
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.mt-3 {
+  margin-top: 1rem !important;
+}
+
+.gap-2 {
+  gap: 0.5rem !important;
+}
+
+.gap-3 {
+  gap: 1rem !important;
+}
+
+/* ==================== ESTADOS DE HORARIO ==================== */
+.card-body.text-muted {
+  opacity: 0.6;
+}
+
+.card-body.text-muted input {
+  background-color: #e9ecef !important;
+}
+
+/* ==================== ICONO EN HEADER ==================== */
+.page-title i {
+  color: #0d6efd;
+}
+
+/* ==================== FIN DE ESTILOS ==================== */

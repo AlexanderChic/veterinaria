@@ -1,4 +1,4 @@
-// /models/cita.js
+// /models/cita.js - ACTUALIZADO PARA USAR usuario_id
 import db from '../config/db.js';
 
 // Obtener todas las citas con información relacionada
@@ -14,13 +14,13 @@ export const obtenerCitas = (callback) => {
       suc.nombre as sucursal_nombre,
       suc.direccion as sucursal_direccion,
       u.nombre as cliente_nombre,
-      u.telefono as cliente_telefono
+      u.telefono as cliente_telefono,
+      u.email as cliente_email
     FROM cita c
     LEFT JOIN mascota m ON c.mascota_id = m.id
     LEFT JOIN servicio s ON c.servicio_id = s.id
     LEFT JOIN sucursal suc ON c.sucursal_id = suc.id
-    LEFT JOIN cliente cl ON c.cliente_id = cl.id
-    LEFT JOIN usuarios u ON cl.usuario_id = u.id
+    LEFT JOIN usuarios u ON c.usuario_id = u.id
     ORDER BY c.fecha DESC, c.hora DESC
   `;
   
@@ -33,8 +33,8 @@ export const obtenerCitas = (callback) => {
   });
 };
 
-// Obtener citas por cliente
-export const obtenerCitasPorCliente = (cliente_id, callback) => {
+// Obtener citas por usuario (antes era por cliente)
+export const obtenerCitasPorCliente = (usuario_id, callback) => {
   const query = `
     SELECT 
       c.*,
@@ -49,13 +49,13 @@ export const obtenerCitasPorCliente = (cliente_id, callback) => {
     LEFT JOIN mascota m ON c.mascota_id = m.id
     LEFT JOIN servicio s ON c.servicio_id = s.id
     LEFT JOIN sucursal suc ON c.sucursal_id = suc.id
-    WHERE c.cliente_id = ?
+    WHERE c.usuario_id = ?
     ORDER BY c.fecha DESC, c.hora DESC
   `;
   
-  db.query(query, [cliente_id], (err, results) => {
+  db.query(query, [usuario_id], (err, results) => {
     if (err) {
-      console.error('Error al obtener citas por cliente:', err);
+      console.error('Error al obtener citas por usuario:', err);
       return callback(err);
     }
     callback(null, results);
@@ -81,8 +81,7 @@ export const obtenerCitaPorId = (id, callback) => {
     LEFT JOIN mascota m ON c.mascota_id = m.id
     LEFT JOIN servicio s ON c.servicio_id = s.id
     LEFT JOIN sucursal suc ON c.sucursal_id = suc.id
-    LEFT JOIN cliente cl ON c.cliente_id = cl.id
-    LEFT JOIN usuarios u ON cl.usuario_id = u.id
+    LEFT JOIN usuarios u ON c.usuario_id = u.id
     WHERE c.id = ?
   `;
   
@@ -95,13 +94,13 @@ export const obtenerCitaPorId = (id, callback) => {
   });
 };
 
-// Verificar que una mascota pertenece a un cliente
-export const verificarMascotaCliente = (mascota_id, cliente_id, callback) => {
-  const query = 'SELECT id FROM mascota WHERE id = ? AND cliente_id = ?';
+// Verificar que una mascota pertenece a un usuario
+export const verificarMascotaCliente = (mascota_id, usuario_id, callback) => {
+  const query = 'SELECT id FROM mascota WHERE id = ? AND usuario_id = ?';
   
-  db.query(query, [mascota_id, cliente_id], (err, results) => {
+  db.query(query, [mascota_id, usuario_id], (err, results) => {
     if (err) {
-      console.error('Error al verificar mascota-cliente:', err);
+      console.error('Error al verificar mascota-usuario:', err);
       return callback(err);
     }
     callback(null, results.length > 0);
@@ -138,7 +137,7 @@ export const verificarSucursal = (sucursal_id, callback) => {
 export const crearCita = (datosCita, callback) => {
   const query = `
     INSERT INTO cita (
-      cliente_id, 
+      usuario_id, 
       mascota_id, 
       servicio_id, 
       sucursal_id,
@@ -149,7 +148,7 @@ export const crearCita = (datosCita, callback) => {
   `;
   
   const valores = [
-    datosCita.cliente_id,
+    datosCita.usuario_id || datosCita.cliente_id, // Acepta ambos por compatibilidad
     datosCita.mascota_id,
     datosCita.servicio_id,
     datosCita.sucursal_id,
@@ -216,7 +215,7 @@ export const eliminarCita = (id, callback) => {
   });
 };
 
-// Verificar disponibilidad de horario en una sucursal
+// Verificar disponibilidad de horario
 export const verificarDisponibilidad = (fecha, hora, sucursal_id, callback) => {
   const query = `
     SELECT COUNT(*) as count 
@@ -249,8 +248,7 @@ export const obtenerCitasPorFecha = (fecha, callback) => {
     LEFT JOIN mascota m ON c.mascota_id = m.id
     LEFT JOIN servicio s ON c.servicio_id = s.id
     LEFT JOIN sucursal suc ON c.sucursal_id = suc.id
-    LEFT JOIN cliente cl ON c.cliente_id = cl.id
-    LEFT JOIN usuarios u ON cl.usuario_id = u.id
+    LEFT JOIN usuarios u ON c.usuario_id = u.id
     WHERE c.fecha = ?
     ORDER BY c.hora ASC
   `;
@@ -264,20 +262,20 @@ export const obtenerCitasPorFecha = (fecha, callback) => {
   });
 };
 
-// Obtener estadísticas por cliente
-export const obtenerEstadisticasPorCliente = (cliente_id, callback) => {
+// Obtener estadísticas por usuario
+export const obtenerEstadisticasPorCliente = (usuario_id, callback) => {
   const query = `
     SELECT 
       estado,
       COUNT(*) as cantidad,
       DATE(fecha) as fecha_grupo
     FROM cita 
-    WHERE cliente_id = ?
+    WHERE usuario_id = ?
     GROUP BY estado, DATE(fecha)
     ORDER BY fecha_grupo DESC
   `;
   
-  db.query(query, [cliente_id], (err, results) => {
+  db.query(query, [usuario_id], (err, results) => {
     if (err) {
       console.error('Error al obtener estadísticas:', err);
       return callback(err);
@@ -306,8 +304,8 @@ export const obtenerEstadisticasPorCliente = (cliente_id, callback) => {
   });
 };
 
-// Obtener próximas citas por cliente
-export const obtenerProximasCitas = (cliente_id, limite = 5, callback) => {
+// Obtener próximas citas por usuario
+export const obtenerProximasCitas = (usuario_id, limite = 5, callback) => {
   const query = `
     SELECT 
       c.*,
@@ -319,14 +317,14 @@ export const obtenerProximasCitas = (cliente_id, limite = 5, callback) => {
     LEFT JOIN mascota m ON c.mascota_id = m.id
     LEFT JOIN servicio s ON c.servicio_id = s.id
     LEFT JOIN sucursal suc ON c.sucursal_id = suc.id
-    WHERE c.cliente_id = ? 
+    WHERE c.usuario_id = ? 
       AND c.fecha >= CURDATE() 
       AND c.estado IN ('pendiente', 'confirmada')
     ORDER BY c.fecha ASC, c.hora ASC
     LIMIT ?
   `;
   
-  db.query(query, [cliente_id, limite], (err, results) => {
+  db.query(query, [usuario_id, limite], (err, results) => {
     if (err) {
       console.error('Error al obtener próximas citas:', err);
       return callback(err);
@@ -359,12 +357,11 @@ export const actualizarCitasPasadas = (callback) => {
   });
 };
 
-// NUEVA FUNCIÓN
-export const actualizarCitasPasadasPorCliente = (cliente_id, callback) => {
+export const actualizarCitasPasadasPorCliente = (usuario_id, callback) => {
   const query = `
     UPDATE cita 
     SET estado = 'completada'
-    WHERE cliente_id = ?
+    WHERE usuario_id = ?
     AND (
       fecha < CURDATE() 
       OR (fecha = CURDATE() AND hora < CURTIME())
@@ -372,14 +369,14 @@ export const actualizarCitasPasadasPorCliente = (cliente_id, callback) => {
     AND estado IN ('pendiente', 'confirmada')
   `;
   
-  db.query(query, [cliente_id], (err, result) => {
+  db.query(query, [usuario_id], (err, result) => {
     if (err) {
-      console.error(`Error al actualizar citas del cliente ${cliente_id}:`, err);
+      console.error(`Error al actualizar citas del usuario ${usuario_id}:`, err);
       return callback(err);
     }
     
     if (result.affectedRows > 0) {
-      console.log(`✅ ${result.affectedRows} cita(s) del cliente ${cliente_id} actualizada(s) a completada`);
+      console.log(`✅ ${result.affectedRows} cita(s) del usuario ${usuario_id} actualizada(s) a completada`);
     }
     callback(null, result);
   });

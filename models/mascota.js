@@ -1,20 +1,48 @@
 // /models/mascota.js
 import db from '../config/db.js';
 
-// Función para obtener todas las mascotas de un cliente específico
-export const obtenerMascotasPorCliente = (clienteId, callback) => {
-  console.log('Obteniendo mascotas para cliente ID:', clienteId);
+export const obtenerMascotas = (callback) => {
+  const query = `
+    SELECT 
+      m.*,
+      u.nombre as dueno_nombre,
+      u.email as dueno_email,
+      u.telefono as dueno_telefono,
+      tm.nombre as tipo_nombre,
+      tm.emoji as tipo_emoji
+    FROM mascota m
+    LEFT JOIN usuarios u ON m.usuario_id = u.id
+    LEFT JOIN tipo_mascota tm ON m.tipo_mascota_id = tm.id
+    ORDER BY m.created_at DESC
+  `;
   
-  const query = 'SELECT * FROM mascota WHERE cliente_id = ? ORDER BY nombre ASC';
-  
-  db.query(query, [clienteId], (err, result) => {
+  db.query(query, (err, results) => {
     if (err) {
-      console.error('Error en la consulta SQL:', err);
-      return callback(err, null);
+      console.error('Error al obtener mascotas:', err);
+      return callback(err);
     }
-    
-    console.log('Mascotas encontradas:', result.length);
-    callback(null, result);
+    callback(null, results);
+  });
+};
+
+export const obtenerMascotasPorCliente = (usuario_id, callback) => {
+  const query = `
+    SELECT 
+      m.*,
+      tm.nombre as tipo_nombre,
+      tm.emoji as tipo_emoji
+    FROM mascota m
+    LEFT JOIN tipo_mascota tm ON m.tipo_mascota_id = tm.id
+    WHERE m.usuario_id = ?
+    ORDER BY m.created_at DESC
+  `;
+  
+  db.query(query, [usuario_id], (err, results) => {
+    if (err) {
+      console.error('Error al obtener mascotas por usuario:', err);
+      return callback(err);
+    }
+    callback(null, results);
   });
 };
 
@@ -41,38 +69,38 @@ export const obtenerMascotaPorId = (mascotaId, callback) => {
 
 // Función para crear una nueva mascota
 export const crearMascota = (datosMascota, callback) => {
-  console.log('Creando mascota:', datosMascota);
-  
   const query = `
-    INSERT INTO mascota (nombre, especie, raza, edad, peso, observaciones, cliente_id) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO mascota (
+      nombre, raza, edad, peso, observaciones,
+      usuario_id, tipo_mascota_id, imagen,
+      fecha_nacimiento, color, genero, estado_salud,
+      microchip, especie
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   
   const valores = [
     datosMascota.nombre,
-    datosMascota.especie,
-    datosMascota.raza,
-    datosMascota.edad,
-    datosMascota.peso,
-    datosMascota.observaciones,
-    datosMascota.cliente_id
+    datosMascota.raza || null,
+    datosMascota.edad || null,
+    datosMascota.peso || null,
+    datosMascota.observaciones || null,
+    datosMascota.usuario_id, // ← Cambio de cliente_id a usuario_id
+    datosMascota.tipo_mascota_id || null,
+    datosMascota.imagen || null,
+    datosMascota.fecha_nacimiento || null,
+    datosMascota.color || null,
+    datosMascota.genero || null,
+    datosMascota.estado_salud || 'bueno',
+    datosMascota.microchip || null,
+    datosMascota.especie || null
   ];
   
   db.query(query, valores, (err, result) => {
     if (err) {
       console.error('Error al crear mascota:', err);
-      return callback(err, null);
+      return callback(err);
     }
-    
-    console.log('Mascota creada exitosamente con ID:', result.insertId);
-    
-    // Devolver la mascota creada con su ID
-    const mascotaCreada = {
-      id: result.insertId,
-      ...datosMascota
-    };
-    
-    callback(null, mascotaCreada);
+    callback(null, result);
   });
 };
 
